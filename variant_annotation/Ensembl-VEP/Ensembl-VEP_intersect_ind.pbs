@@ -1,0 +1,18 @@
+#!/bin/bash -l
+#PBS -l nodes=1:ppn=6,walltime=120:00:00,mem=60g
+#PBS -m abe
+#PBS -M durwa004@umn.edu
+#PBS -q mcqueue
+
+
+source /home/mccuem/shared/.local/conda/bin/activate ensembl-vep
+
+#Set up database
+
+#grep -v "#" GCF_002863925.1_EquCab3.0_genomic.gff | sort -k1,1 -k4,4n -k5,5n -t$'\t' | bgzip -c > GCF_002863925.1_EquCab3.0_genomic_VEP.gff.gz
+#tabix -p gff GCF_002863925.1_EquCab3.0_genomic_VEP.gff.gz
+
+cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/
+
+vep -i ibio_intersect_gatk_bcftools_platypus.vcf.gz --fasta /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/NCBI_reference/GCF_002863925.1_EquCab3.0_genomic.fna --species GCF_002863925.1_EquCab3.0_genomic -o ibio_intersect.ensembl-vep.ann --check_existing -hgvs --gene_phenotype --regulatory --plugin SpliceRegion --custom ../variant_annotation/Ensembl-VEP/NCBI/GCF_002863925.1_EquCab3.0_genomic.modified.sorted.gff.gz,,gff,overlap,0
+

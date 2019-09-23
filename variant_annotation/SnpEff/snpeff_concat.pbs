@@ -1,0 +1,13 @@
+#!/bin/bash -l
+#PBS -l nodes=1:ppn=12,walltime=48:00:00,mem=12g
+#PBS -m abe
+#PBS -M durwa004@umn.edu
+#PBS -o $PBS_JOBID.snpeff_concat.out
+#PBS -e $PBS_JOBID.snpeff_concat.err
+#PBS -N snpeff_concat.pbs
+#PBS -q small
+module load bcftools
+
+cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_intersect/SnpEff
+
+bcftools concat NC_009156_3_snpeff_intersect.coding.ann.vcf.gz NC_009160_3_snpeff_intersect.coding.ann.vcf.gz NC_009174_3_snpeff_intersect.coding.ann.vcf.gz NC_009150_3_snpeff_intersect.coding.ann.vcf.gz NC_009161_3_snpeff_intersect.coding.ann.vcf.gz NC_009148_3_snpeff_intersect.coding.ann.vcf.gz NC_009144_3_snpeff_intersect.coding.ann.vcf.gz NC_009153_3_snpeff_intersect.coding.ann.vcf.gz NC_009175_3_snpeff_intersect.coding.ann.vcf.gz NC_009154_3_snpeff_intersect.coding.ann.vcf.gz NC_009158_3_snpeff_intersect.coding.ann.vcf.gz NC_009159_3_snpeff_intersect.coding.ann.vcf.gz unplaced_snpeff_intersect.coding.ann.vcf.gz NC_009167_3_snpeff_intersect.coding.ann.vcf.gz NC_009163_3_snpeff_intersect.coding.ann.vcf.gz NC_009166_3_snpeff_intersect.coding.ann.vcf.gz NC_009162_3_snpeff_intersect.coding.ann.vcf.gz NC_009157_3_snpeff_intersect.coding.ann.vcf.gz NC_009164_3_snpeff_intersect.coding.ann.vcf.gz NC_009172_3_snpeff_intersect.coding.ann.vcf.gz NC_009147_3_snpeff_intersect.coding.ann.vcf.gz NC_009169_3_snpeff_intersect.coding.ann.vcf.gz NC_009173_3_snpeff_intersect.coding.ann.vcf.gz NC_009152_3_snpeff_intersect.coding.ann.vcf.gz NC_009146_3_snpeff_intersect.coding.ann.vcf.gz NC_001640_1_snpeff_intersect.coding.ann.vcf.gz NC_009151_3_snpeff_intersect.coding.ann.vcf.gz NC_009155_3_snpeff_intersect.coding.ann.vcf.gz NC_009168_3_snpeff_intersect.coding.ann.vcf.gz NC_009165_3_snpeff_intersect.coding.ann.vcf.gz NC_009170_3_snpeff_intersect.coding.ann.vcf.gz NC_009171_3_snpeff_intersect.coding.ann.vcf.gz NC_009145_3_snpeff_intersect.coding.ann.vcf.gz NC_009149_3_snpeff_intersect.coding.ann.vcf.gz  -o SnpEff_coding.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip SnpEff_coding.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix SnpEff_coding.vcf.gz

@@ -1,0 +1,12 @@
+#!/bin/bash -l
+#PBS -l nodes=1:ppn=4,walltime=24:00:00,mem=4g
+#PBS -m abe
+#PBS -M durwa004@umn.edu
+#PBS -o $PBS_JOBID.Ensembl-VEP_intersect_NC_009159_3.out
+#PBS -e $PBS_JOBID.Ensembl-VEP_intersect_NC_009159_3.err
+#PBS -N Ensembl-VEP_intersect_NC_009159_3.pbs
+#PBS -q mcqueue
+source /home/mccuem/shared/.local/conda/bin/activate ensembl-vep
+cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_intersect
+
+vep -i NC_009159_3_intersect_joint.vcf.gz --fasta /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/GCF_002863925.1_EquCab3.0_genomic/GCF_002863925.1_EquCab3.0_genomic.fna --species GCF_002863925.1_EquCab3.0_genomic -o Ensembl-VEP/NC_009159_3_Ensembl-VEP_intersect.ann --check_existing -hgvs --gene_phenotype --regulatory --plugin SpliceRegion --custom /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/variant_annotation/Ensembl-VEP/NCBI/GCF_002863925.1_EquCab3.0_genomic.modified.sorted.gff.gz,,gff,overlap,0

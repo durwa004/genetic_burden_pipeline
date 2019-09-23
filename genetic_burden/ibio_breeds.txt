@@ -1,0 +1,552 @@
+IB_EC3 ID	Breed
+M10638	Arabian
+M10647	Quarter Horse
+M10648	Arabian
+M10649	Arabian
+M7572	Quarter Horse
+M8679	Standardbred
+M8738	Standardbred
+M6117	Standardbred
+M6138	Standardbred
+M6137	Standardbred
+M10639	Arabian
+M10652	Quarter Horse
+M10653	Quarter Horse
+M10656	Sports Horse
+M10657	Sports Horse
+M10658	Arabian
+M10659	Quarter Horse
+M10640	Arabian
+M10661	Arabian
+M10662	Warmblood
+M10663	Warmblood
+M10664	Standardbred
+M10665	Paint
+M10666	QH
+M10641	Arabian
+M10642	Arabian
+M10643	Quarter Horse
+M10644	Quarter Horse
+M10645	Quarter Horse
+M10646	QH
+A1543	Quarter Horse
+A2068	Quarter Horse
+A2071	Quarter Horse
+A2085	Quarter Horse
+A4416	Belgian
+A5659	Quarter Horse
+A5964	Quarter Horse
+ADM9	Thoroughbred
+ADR419	Thoroughbred
+ADR420	Thoroughbred
+ADR421	Thoroughbred
+ADR422	Thoroughbred
+ADR423	Thoroughbred
+ADR424	Thoroughbred
+ADR425	Thoroughbred
+ARAB0132A	Arabian
+ARAB0016A	Arabian
+ARAB0133A	Arabian
+ARAB0134A	Arabian
+ARAB0017A	Arabian
+ARAB0018A	Arabian
+ARAB0135A	Arabian
+ARAB0136A	Arabian
+ARAB0019A	Arabian
+ARAB0020A	Arabian
+ARAB0141A	Arabian
+ARAB0034A	Arabian
+ARAB0035A	Arabian
+ARAB0036A	Arabian
+BAVA0183A	British Warmblood
+BROOKS1032	Unknown
+BROOKS2174	Arabian
+BROOKS3147	Miniature Horse
+BROOKS3148	Percheron
+BW01	British Warmblood
+CLDB65664	ColdBlood
+CLDB65665	ColdBlood
+CLDB65666	ColdBlood
+CON15	Connemara
+CON26	Connemara
+CON3	Connemara
+CON40	Connemara
+CUTR0137A	Curly Trotter
+CUTR0138A	Curly Trotter
+M8457	Thoroughbred
+M8466	Thoroughbred
+M8461	Thoroughbred
+M8458	Thoroughbred
+M8465	Thoroughbred
+M8464	Thoroughbred
+M8463	Thoroughbred
+M8459	Thoroughbred
+M8467	Thoroughbred
+M8460	Thoroughbred
+M6337	Morgan
+M6449	Morgan
+M6462	Morgan
+M6468	Morgan
+M6482	Morgan
+M6536	Morgan
+M6539	Morgan
+M6558	Morgan
+M6572	Welsh Pony
+M6576	Welsh Pony
+M6577	Welsh Pony
+M6579	Welsh Pony
+M6598	Morgan
+M6682	Morgan
+M6252	Morgan
+M6253	Morgan
+M6798	Morgan
+M6807	Morgan
+M6813	Morgan
+M6212	Morgan
+M6294	Morgan
+M6296	Morgan
+FJOR0142A	Norwegian Fjord
+FRMO0041A	Franchese Montagne
+FRMO0042A	Franchese Montagne
+FRMO0043A	Franchese Montagne
+FRMO0044A	Franchese Montagne
+FRMO0045A	Franchese Montagne
+FRMO0046A	Franchese Montagne
+FRMO0047A	Franchese Montagne
+FRMO0048A	Franchese Montagne
+FRMO0049A	Franchese Montagne
+FRMO0050A	Franchese Montagne
+FRMO0051A	Franchese Montagne
+FRMO0052A	Franchese Montagne
+FRMO0053A	Franchese Montagne
+FRMO0054A	Franchese Montagne
+FRMO0055A	Franchese Montagne
+FRMO0056A	Franchese Montagne
+FRMO0057A	Franchese Montagne
+FRMO0058A	Franchese Montagne
+FRMO0059A	Franchese Montagne
+FRMO0060A	Franchese Montagne
+FRMO0061A	Franchese Montagne
+FRMO0062A	Franchese Montagne
+FRMO0063A	Franchese Montagne
+FRMO0064A	Franchese Montagne
+FRMO0065A	Franchese Montagne
+FRMO0066A	Franchese Montagne
+FRMO0067A	Franchese Montagne
+FRMO0068A	Franchese Montagne
+FRMO0037A	Franchese Montagne
+FRMO0069A	Franchese Montagne
+HAFL0015A	Halflinger
+HANO0172A	Hanovarian
+HF13B	Haflinger
+HF13C	Haflinger
+HF13D	Haflinger
+HF14A	Haflinger
+HF14C	Haflinger
+HF15A	Haflinger
+HOLS0173A	Holsteiner
+HOLS0174A	Holsteiner
+HOLS0175A	Holsteiner
+ICEL0143A	Icelandic
+ICEL0144A	Icelandic
+IT3	Aegidienberger. Paso x Icelandic horses
+IT4	Aegidienberger. Paso x Icelandic horses
+K743	Unknown
+K744	Arabian
+K745	Sorraia
+K746	Hanovarian
+K747	Hanovarian
+PRZE0150A	Przewalski
+PRZE0151A	Przewalski
+PRZE0152A	Przewalski
+PRZE0154A	Przewalski
+PRZE0155A	Przewalski
+LIPI0186A	Lipizzaner
+LIPI0187A	Lipizzaner
+LIPI0188A	Lipizzaner
+LIPI0189A	Lipizzaner
+M1433	Standardbred
+M1458	Standardbred
+M6115	StandardBred (TROTTER)
+M6122	StandardBred (TROTTER)
+M6130	StandardBred (TROTTER)
+M6163	StandardBred (TROTTER)
+M6166	StandardBred (TROTTER)
+M6182	StandardBred (TROTTER)
+M6184	Standardbred (PACER)
+M6187	StandardBred (TROTTER)
+M1005	StandardBred
+M1009	StandardBred
+M1012	StandardBred
+M1027	StandardBred
+M1048	StandardBred
+M10990	Quarter Horse
+M10991	Quarter Horse
+M10992	Quarter Horse
+M10993	QH (App)
+M10994	Quarter Horse
+M10995	Quarter Horse
+M10996	Standardbred
+M10997	Quarter Horse
+M10998	Arabian
+M10999	Morgan
+M11000	Arabian
+M11002	Arabian
+M11003	Tennessee Walking Horse
+M11004	Quarter Horse
+M11005	Tennessee Walking Horse
+M11006	Tennessee Walking Horse
+M11007	Quarter Horse
+M11008	Draft x
+M11010	Quarter Horse
+M11011	Other_horse
+M11012	Quarter Horse
+M11013	Arabian
+M11014	Missouri Fox Trotter x
+M11015	Quarter Horse
+M11016	Quarter Horse
+M11017	QH
+M11018	Quarter Horse
+M11019	Quarter Horse
+M11020	Morgan
+M11021	Quarter Horse
+M11022	Thoroughbred x
+M11023	Quarter Horse
+M11024	Quarter Horse
+M1503	Thoroughbred
+M1505	Thoroughbred
+M1506	Thoroughbred
+M1507	Thoroughbred
+M1510	Thoroughbred
+M1514	Thoroughbred
+M1516	Thoroughbred
+M1518	Thoroughbred
+M1519	Thoroughbred
+M1542	Percheron
+M1545	Percheron
+M1552	Belgian
+M1555	Thoroughbred
+M1557	Clydesdale
+M1559	Clydesdale
+M1561	Clydesdale
+M1568	Clydesdale
+M1570	Clydesdale
+M1571	Clydesdale
+M1579	Clydesdale
+M1581	Clydesdale
+M1583	Clydesdale
+M1930	Belgian
+M1931	Belgian
+M1932	Belgian
+M1937	Belgian
+M1939	Belgian
+M1942	Belgian
+M1944	Belgian
+M1946	Belgian
+M4409	QH
+M4410	QH
+M4411	QH
+M4418	QH
+M4435	QH
+M4437	QH
+M4438	QH
+M4440	QH
+M4467	Quarter Horse
+M4472	Quarter Horse
+M4475	Quarter Horse
+M4476	Quarter Horse
+M4486	QH
+M4487	QH
+M4488	QH
+M4493	QH
+M4513	Quarter Horse
+M4514	Quarter Horse
+M4515	Quarter Horse
+M4527	Quarter Horse
+M4537	QH
+M4540	QH
+M4541	QH
+M4546	QH
+M487	Icelandic
+M5256	StandardBred
+M5259	StandardBred
+M5260	StandardBred
+M5269	StandardBred
+M5271	StandardBred
+M5287	StandardBred
+M5300	StandardBred
+M5304	StandardBred
+M5306	StandardBred
+M6105	Standardbred (trotter)
+M6167	Standardbred (pacer)
+M6175	Standardbred (pacer)
+M6188	Standardbred (pacer)
+M6194	Standardbred (trotter)
+M6202	Standardbred (trotter)
+M6231	Welsh Pony
+M6566	Welsh Pony
+M6660	Welsh Pony
+M6850	Standardbred (pacer)
+M6911	Standardbred (pacer)
+M6991	Standardbred (pacer)
+M6993	Standardbred (pacer)
+M7645	Clydesdale
+M7681	Welsh Pony
+M7700	Welsh Pony
+M7721	Welsh Pony
+M7723	Welsh Pony
+M7761	Welsh Pony
+M7762	Welsh Pony
+M7763	Welsh Pony
+M7789	Welsh Pony
+M7814	Welsh Pony
+M7818	Welsh Pony
+M7836	Welsh Pony
+M7844	Welsh Pony
+M968	StandardBred
+M977	StandardBred
+M989	StandardBred
+M992	StandardBred
+M4814	Miniature Horse
+M4815	Miniature Horse
+M4826	Miniature Horse
+MONG0153A	Przewalski
+OLDE0176A	Oldenberg
+OLDE0177A	Oldenberg
+PRZE0159A	Przewalski
+PRZE0160A	Przewalski
+PRZE0161A	Przewalski
+PRZE0162A	Przewalski
+RAO310	Swiss Warmblood
+RAO441	Swiss Warmblood
+PRZE0156A	Przewalski
+PRZE0157A	Przewalski
+PRZE0158A	Przewalski
+SATR0021A	Saddle Trotter
+SATR0022A	Saddle Trotter
+STAN0149A	StandardBred
+FRTR0139A	French Trotter
+FRTR0023A	French Trotter
+FRTR0024A	French Trotter
+FRTR0025A	French Trotter
+FRTR0026A	French Trotter
+FRTR0027A	French Trotter
+FRTR0140A	French Trotter
+FRTR0028A	French Trotter
+FRTR0029A	French Trotter
+FRTR0030A	French Trotter
+TRAK0178A	Trakenher
+TRAK0179A	Trakenher
+UKH3	UK WarmBlood
+WEST180A	Westphalian
+WEST181A	Westphalian
+YAKU0163A	Yakut
+YAKU0164A	Yakut
+YAKU0165A	Yakut
+YAKU0166A	Yakut
+YAKU0167A	Yakut
+YAKU0168A	Yakut
+YAKU0169A	Yakut
+YAKU0170A	Yakut
+YAKU0171A	Yakut
+ERR1527951	Arabian
+SRR4054279	Arabian
+SRR4054242	Arabian
+SRR4054277	Arabian
+SRR3726219	Arabian
+SRR1046129	Arabian
+M1941	Belgian
+M1964	Belgian
+M1966	Belgian
+M1967	Belgian
+M1968	Belgian
+M1970	Belgian
+M315	Belgian
+M316	Belgian
+M367	Belgian
+M369	Belgian
+M1556	Clydesdale
+#suppressed	Clydesdale
+M1565	Clydesdale
+M1563	Clydesdale
+M2023	Clydesdale
+M2025	Clydesdale
+M2039	Clydesdale
+M2044	Clydesdale
+M2060	Clydesdale
+M2068	Clydesdale
+M466	Icelandic
+M467	Icelandic
+M468	Icelandic
+M469	Icelandic
+M470	Icelandic
+M472	Icelandic
+M473	Icelandic
+M475	Icelandic
+M476	Icelandic
+M477	Icelandic
+M478	Icelandic
+M479	Icelandic
+ERR863167	Icelandic
+ERR793393	Icelandic Horse
+SRR1167093	Mongolian
+SRR1167052	Mongolian
+SRR1167108	Mongolian
+SRR1167109	Mongolian
+SRR1167110	Mongolian
+SRR1167891	Mongolian
+SRR1167892	Mongolian
+SRR1167893	Mongolian
+SRR1167053	Mongolian
+ERR953413	TWH
+#excluded	Twilight
+ERR1397962	Friesian
+ERR1397965	Friesian
+ERR982794	Mangalarga Marchador Horse
+ERR982786	Native Mongolian Chakouyi Horse
+SRR2142313	Sorraia
+SRR1046135	Sorraia
+SRR1564422	Uknown
+SRR1564421	Uknown
+SRR1564419	Unknown
+SRR1564423	Unknown
+SRR1048526	duelmener
+ERR1527966	Haflinger
+SRR527804	Jeju pony
+SRR527528	Jeju pony
+SRR527799	Jeju pony
+SRR527803	Jeju pony
+SRR516104	Jeju pony
+SRR526907	Jeju pony
+SRR527520	Jeju pony
+SRR527521	Jeju pony
+SRR527806	Jeju pony
+SRR516118	Jeju pony
+SRR526908	Jeju pony
+SRR526909	Jeju pony
+SRR527805	Jeju pony
+SRR527527	Jeju pony
+SRR527807	Jeju pony
+SRR527825	Jeju pony
+SRR527519	Jeju pony
+SRR527809	Jeju pony
+SRR527802	Jeju pony
+SRR527801	Jeju pony
+SRR527800	Jeju pony
+M11009	Pony
+SRR388336	QH
+SRR388337	QH
+M11001	QH
+SRR6175111	QH
+SRR6175110	QH
+ERR1527969	QH
+SRR6175109	QH
+SRR6175108	QH
+SRR6175104	QH
+ERR1527968	QH
+SRR6175107	QH
+SRR6175106	QH
+SRR6175105	QH
+M11025	QHx
+SRR3900348	Shetland
+SRR3900349	Shetland
+SRR3900288	Shetland
+SRR3900289	Shetland
+SRR3900347	Shetland
+SRR3900336	Shetland
+SRR3900337	Shetland
+SRR3900338	Shetland
+SRR3900339	Shetland
+SRR3900340	Shetland
+SRR3900341	Shetland
+SRR3900342	Shetland
+SRR3900343	Shetland
+SRR3900285	Shetland
+SRR3900284	Shetland
+SRR3900287	Shetland
+SRR515218	Shetland
+ERR868003	Shetland
+ERR868004	Shetland
+SRR3900345	Shetland
+SRR3900346	Shetland
+SRR3900350	Shetland
+SRR3900351	Shetland
+SRR3900282	Shetland
+SRR3900298	Shetland
+SRR3900315	Shetland
+SRR3900279	Shetland
+SRR3900280	Shetland
+SRR3900352	Shetland
+SRR3900353	Shetland
+SRR3952018	Shetland
+M10667	Shetland
+M10668	Shetland
+M10672	Shetland
+M10673	Shetland
+M10675	Shetland
+M10676	Shetland
+M10677	Shetland
+M10678	Shetland
+M10679	Shetland
+M10681	Shetland
+M10682	Shetland
+M10683	Shetland
+M10684	Shetland
+M4809	Shetland
+M4869	Shetland
+M4990	Shetland
+M5005	Shetland
+M5112	Shetland
+M6287	Shetland
+M6304	Shetland
+SRR3900283	Shetland
+SRR3900290	Shetland
+SRR3900344	Shetland
+SRR3900286	Shetland
+SRR5755256	Italian trotter
+SRR4054238	Standardbred
+SRR4054239	Standardbred
+SRR2102500	Standardbred
+ERR1527970	STB
+ERR1545179	German WB
+ERR1545182	German WB
+ERR1545187	German WB
+ERR1545188	German WB
+ERR1545180	German WB
+ERR1545181	German WB
+ERR1545190	German WB
+ERR1545189	German WB
+ERR1545178	German WB
+SRR1046151	Hanoverian
+SRR2142163	Hanoverian
+SRR2142269	Hanoverian
+SRR1046147	Hanoverian
+ERR1527967	KWPN
+SRR2142311	Saxon-Thuringian Heavy Warmblood
+ERR1527972	Swiss WB
+SRR515206	Thoroughbred
+SRR515215	Thoroughbred
+SRR2103372	Thoroughbred
+SRR515203	Thoroughbred
+SRR3900281	Thoroughbred
+SRR4054241	Thoroughbred
+SRR641364	Thoroughbred
+SRR641365	Thoroughbred
+SRR641366	Thoroughbred
+SRR641367	Thoroughbred
+SRR505867	Thoroughbred
+SRR515202	Thoroughbred
+SRR515204	Thoroughbred
+SRR515205	Thoroughbred
+SRR515208	Thoroughbred
+SRR515209	Thoroughbred
+SRR515217	Thoroughbred
+SRR515211	Thoroughbred
+SRR515212	Thoroughbred
+SRR515213	Thoroughbred
+SRR515214	Thoroughbred
+SRR515216	Thoroughbred
+SRR6374293	Thoroughbred
+SRR2102896	Thoroughbred
+SRR4054240	Thoroughbred
+M7756	Welsh Pony

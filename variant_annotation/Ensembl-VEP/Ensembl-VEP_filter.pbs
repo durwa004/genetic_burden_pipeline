@@ -1,0 +1,15 @@
+#!/bin/bash -l
+#PBS -l nodes=1:ppn=6,walltime=48:00:00,mem=10g
+#PBS -m abe
+#PBS -M durwa004@umn.edu
+#PBS -q mcqueue
+
+
+source /home/mccuem/shared/.local/conda/bin/activate ensembl-vep
+
+cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/
+
+filter_vep -i ibio_union.ensembl-vep.ann --filter "(IMPACT = HIGH) or (IMPACT = MODERATE) or (IMPACT = LOW)" -o ibio_union.high_mod_low.ensembl-vep.txt --format tab
+
+filter_vep -i ibio_intersect.ensembl-vep.ann --filter "(IMPACT = HIGH) or (IMPACT = MODERATE) or (IMPACT = LOW)" -o ibio_intersect.high_mod_low.ensembl-vep.txt --format tab
+

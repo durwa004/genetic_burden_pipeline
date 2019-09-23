@@ -1,0 +1,16 @@
+#!/bin/bash -l
+#PBS -l nodes=1:ppn=8,walltime=06:00:00,mem=22g
+#PBS -m abe
+#PBS -M durwa004@umn.edu
+#PBS -q mcqueue
+
+cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files
+
+java -Djava.io.tmpdir=/home/mccuem/shared/Projects/HorseGenomeProject/Data/temp_files -Xmx12g -jar /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/variant_annotation/SnpEff/snpEff/snpEff.jar -C /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/variant_annotation/SnpEff/snpEff/snpEff.config EquCab3 ibio_intersect_gatk_bcftools_platypus.vcf.gz > ibio_intersect.snpeff.ann.vcf -csvstats ibio_intersect_snpeff_summary.csv -stats ibio_intersect_snpeff_summary.html
+
+source /home/mccuem/shared/.local/conda/bin/activate HorseGenomeProject
+
+bgzip ibio_intersect.snpeff.ann.vcf
+tabix ibio_intersect.snpeff.ann.vcf.gz
+
+
