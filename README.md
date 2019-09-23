@@ -42,3 +42,9 @@ $ python Get_chrom_pos_impact.py -d /home/mccuem/shared/Projects/HorseGenomeProj
 ```
 $ python Get_union_intersect_VEPs.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_intersect/
 ```
+
+# Miscellanous scripts
+- Script to convert breed to the 10 target breeds and then other for genetic burden analysis.
+```
+$ convert_breeds.py
+```
