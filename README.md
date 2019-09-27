@@ -43,7 +43,10 @@ $ Get_annovar_snpeff_coding_tidy.py
 ```
 $ Get_union_annovar_snpeff_tidy.py
 ```
-
+#Pull out exact intersect of coding variants for annovar/snpeff
+```
+$ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/bcftools_view.pbs 
+```
 
 
 
