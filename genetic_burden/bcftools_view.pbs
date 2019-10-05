@@ -1,0 +1,17 @@
+#!/bin/bash -l
+#PBS -l nodes=1:ppn=12,walltime=24:00:00,mem=12g
+#PBS -m abe
+#PBS -M durwa004@umn.edu
+#PBS -o $PBS_JOBID.bcftools_view.out
+#PBS -e $PBS_JOBID.bcftools_view.err
+#PBS -N bcftools_view.pbs
+#PBS -q small
+module load bcftools
+
+cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_intersect/GB_analysis/
+
+#bcftools view --regions-file snpeff_annovar_exact_intersect_chrom_pos.txt SnpEff_coding.vcf.gz -o snpeff_annovar_exact_intersect.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip snpeff_annovar_exact_intersect.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix snpeff_annovar_exact_intersect.vcf.gz
+
+bcftools view --regions-file snpeff_annovar_exact_intersect_high_mod_chrom_pos.txt SnpEff_coding.vcf.gz -o snpeff_annovar_exact_intersect_high_mod.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip snpeff_annovar_exact_intersect_high_mod.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix snpeff_annovar_exact_intersect_high_mod.vcf.gz
+
+bcftools view --regions-file snpeff_annovar_combined_intersect_high_mod_chrom_pos.txt SnpEff_coding.vcf.gz -o snpeff_annovar_combined_intersect_high_mod.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip snpeff_annovar_combined_intersect_high_mod.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix snpeff_annovar_combined_intersect_high_mod.vcf.gz
