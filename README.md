@@ -23,7 +23,7 @@ NB - will need to re-estimate for the individual calls as well.
 
 **All python scripts that run from command line need source activate snakemake to get the correct python version**
 
-# Annotate intersect using annovar
+# Annotate intersect using annovar by chromosome
 ```
 $ python ../python_generation_scripts/Generate_ANNOVAR_by_chr.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_intersect/
 $ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/thesis_workflow/VARIANT_ANNOTATION/ANNOVAR/ANNOVAR_intersect_NC_009149_3.pbs 
@@ -34,7 +34,7 @@ $ python ../python_generation_scripts/Generate_cat_annovar.py -d /home/mccuem/sh
 $ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/variant_annotation/ANNOVAR/annovar_cat.pbs
 ```
 
-# Annotate intersect using SnpEff
+# Annotate intersect using SnpEff by chromosome
 ```
 $ python ../python_generation_scripts/Generate_SnpEff_by_chr.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_intersect/
 $ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/thesis_workflow/VARIANT_ANNOTATION/SnpEff/SnpEff_intersect_NC_009149_3.pbs 
