@@ -17,7 +17,7 @@ $ bcftools stats thesis_intersect.vcf.gz > thesis_intersect.vcf.gz.stats
 ```
 - Move stats info back to my laptop
 ```
-$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersectthesis_intersect.vcf.gz.stats /Users/durwa004/Desktop
+$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/thesis_intersect.vcf.gz.stats /Users/durwa004/Desktop
 ```
 - Determine number of variants per individual
 ```
