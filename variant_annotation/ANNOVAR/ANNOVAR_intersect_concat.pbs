@@ -1,5 +1,5 @@
 #!/bin/bash -l
-#PBS -l nodes=1:ppn=8,walltime=96:00:00,mem=20g
+#PBS -l nodes=1:ppn=8,walltime=96:00:00,mem=60g
 #PBS -m abe
 #PBS -M durwa004@umn.edu
 #PBS -o $PBS_JOBID.ANNOVAR_intersect.out
@@ -9,5 +9,5 @@
 
 cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect
 
-perl /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/variant_annotation/annovar/convert2annovar.pl -format vcf4 -allsample -include -withfreq thesis_intersect.vcf.gz --out annovar/thesis_intersect_annovar.avinput
+#perl /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/variant_annotation/annovar/convert2annovar.pl -format vcf4 -allsample -include -withfreq thesis_intersect.vcf.gz --out annovar/thesis_intersect_annovar.avinput
 perl /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/variant_annotation/annovar/annotate_variation.pl -buildver GCF_002863925.1_EquCab3.0 annovar/thesis_intersect_annovar.avinput /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/variant_annotation/annovar/GCF_002863925.1_EquCab3.0_db --geneanno --hgvs --aamatrixfile /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/variant_annotation/annovar/example/grantham.matrix --out annovar/thesis_intersect_annovar
