@@ -57,5 +57,5 @@ if __name__ == '__main__':
         with open(pbs, "w") as f:
             print(header, file=f)
             print(f"cd {data}\n", file=f)
-            print(f"#perl {annovar_v}convert2annovar.pl -format vcf4 -allsample -include -withfreq " + i + "_intersect_joint.vcf.gz --out annovar/" + i + "_annovar_intersect.avinput\n"
+            print(f"perl {annovar_v}convert2annovar.pl -format vcf4 -allsample -include -withfreq " + i + "_intersect_joint.vcf.gz --out annovar/" + i + "_annovar_intersect.avinput\n"
                   + f"perl {annovar_v}annotate_variation.pl -buildver GCF_002863925.1_EquCab3.0 annovar/" + i + f"_annovar_intersect.avinput {annovar_v}{annovar_db} --geneanno --hgvs --aamatrixfile {annovar_v}example/grantham.matrix --out annovar/" + i + "_annovar_intersect", file = f, sep = "")
