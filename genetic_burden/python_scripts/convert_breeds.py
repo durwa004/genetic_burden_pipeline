@@ -1,9 +1,9 @@
 #Convert ibio breeds (from Samples spreadsheet) to breeds for GB analysis
 
-with open("ibio_breeds.txt", "r") as input_file, open("ibio_breeds_tidy.txt","w") as output_file:
-    print("horse_id", "breed",  file = output_file, sep = "\t")
+with open("horse_genomes_breeds.txt", "r") as input_file, open("horse_genomes_breeds_tidy.txt","w") as output_file:
+    print("horse_id", "breed",  file = output_file, sep = "\t")i
+    input_file.readline()
     for line in input_file:
-        input_file.readline()
         horse,breed = line.rstrip("\n").split("\t")
         if breed == "Arabian":
             print(horse, breed, file = output_file, sep = "\t")

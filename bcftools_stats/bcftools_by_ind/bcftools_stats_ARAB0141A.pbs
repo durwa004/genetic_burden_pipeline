@@ -10,4 +10,4 @@ module load bcftools
 
 cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect
 
-bcftools stats -s ARAB0141A thesis_intersect.vcf.gz > ARAB0141A_Arabian.stats
+bcftools stats -s ARAB0141A thesis_intersect.vcf.gz > ind_bcftools_stats_files/ARAB0141A_Arabian.stats

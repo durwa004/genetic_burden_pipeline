@@ -10,4 +10,4 @@ module load bcftools
 
 cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect
 
-bcftools stats -s ERR1545180 thesis_intersect.vcf.gz > ERR1545180_Other.stats
+bcftools stats -s ERR1545180 thesis_intersect.vcf.gz > ind_bcftools_stats_files/ERR1545180_Other.stats

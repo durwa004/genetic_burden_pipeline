@@ -10,4 +10,4 @@ module load bcftools
 
 cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect
 
-bcftools stats -s MONG0153A thesis_intersect.vcf.gz > MONG0153A_Other.stats
+bcftools stats -s MONG0153A thesis_intersect.vcf.gz > ind_bcftools_stats_files/MONG0153A_Other.stats
