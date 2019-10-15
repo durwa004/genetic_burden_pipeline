@@ -47,8 +47,7 @@ $ /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/genetic_burden_
 ```
 -- AF of observed variants
 ```
-$ /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/genetic_burden_pipeline/genetic_burden/python_scripts/merge_bcfstats_AF.py
-$ 
+$ /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/genetic_burden_pipeline/genetic_burden/python_scripts/merge_bcfstats_AF_191015.py
 ```
 
 **Input = Intersect of bcftools/gatk haplotype caller (group calling) on all chromosomes**
@@ -88,5 +87,10 @@ $ Get_union_annovar_snpeff_tidy.py
 $ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/bcftools_view.pbs 
 ```
 
-
+# Number of variants unique to populations
+--Number of variants with big differences in frequency between populations (<0.5% in one and >5% in another)
+--Fst of genes containing these variants - look for genes with strong differentiation between populations
+-Putatively functional variants (high/moderate) - number per individual genome
+-- breed differences
+-- Predicted consequence of variant
 
