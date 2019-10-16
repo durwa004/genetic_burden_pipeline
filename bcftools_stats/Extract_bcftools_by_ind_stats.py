@@ -38,29 +38,20 @@ if __name__ == '__main__':
                 a = file_name.split("_")
                 b = a[1].split(".stats")
                 breed = b[0]
+                sample = a[0]
                 print(f"Processing {file_name}")
                 AF = []
                 freq = []
-                with open(data + "/" + file_name,"r") as f:
+                with open(data + "/" + file_name,"r") as f, open(f"{data}/{sample}_{breed}_AF_freq.txt", "w") as output_file:
+                    print("AF\tfrequency",file=output_file)
                     for line in f:
                         line = line.rstrip("\n").split("\t")
                         if "#" in line[0]:
                             next
-                        else:
-                             if line[0] == "PSC":
-                                 sample = line[2]
-                                 nRefHom = line[3]
-                                 nNonRefHom = line[4]
-                                 nHets = line[5]
-                                 nTs = line[6]
-                                 nTv = line[7]
-                                 nIndels = line[8]
-                                 nSingletons = line[10]
-                             elif line[0] == "HWE":
-                                 AF.append(line[2])
-                                 freq.append(line[3])
-                print(sample,breed,nRefHom,nNonRefHom,nHets,nTs,nTv,nIndels,nSingletons, file = info_file, sep = "\t")
-                with open(f"{data}/{sample}_{breed}_AF_freq.txt", "w") as output_file:
-                    print("AF\tfrequency",file=output_file)
+                        elif line[0] == "PSC":
+                             print(line[2],breed,line[3],line[4],line[5],line[6],line[7],line[8],line[10],file=info_file,sep="\t")
+                        elif line[0] == "HWE":
+                             AF.append(line[2])
+                             freq.append(line[3])
                     for item in range(len(AF)):
                         print(AF[item], freq[item], file = output_file, sep = "\t") 
