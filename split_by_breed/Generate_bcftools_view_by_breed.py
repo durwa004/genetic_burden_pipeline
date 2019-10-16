@@ -69,5 +69,7 @@ if __name__ == '__main__':
     with open(pbs, "w") as f:
         print(header, file=f)
         print(f"cd {data}\n", file=f)
-        print(f"bcftools view -S {breed}_ids.list thesis_intersect.vcf.gz > thesis_intersect_{breed}.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_{breed}.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_{breed}.vcf.gz",file=f) 
+        print(f"#bcftools view -S {breed}_ids.list thesis_intersect.vcf.gz > thesis_intersect_{breed}.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_{breed}.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_{breed}.vcf.gz",file=f) 
+        print(f"bcftools view thesis_intersect_{breed}.vcf.gz --min-af 0.05 > thesis_intersect_{breed}_AF_over_0.05.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_{breed}_AF_over_0.05.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_{breed}_AF_over_0.05.vcf.gz", file=f)
+        print(f"bcftools view thesis_intersect_{breed}.vcf.gz --max-af 0.005 > thesis_intersect_{breed}_AF_less_than_0.005.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_{breed}_AF_less_than_0.005.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_{breed}_AF_less_than_0.005.vcf.gz", file=f)
         print(f"Creating .pbs script for {breed}\nNumber of horses: {count}")

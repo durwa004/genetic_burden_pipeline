@@ -10,4 +10,6 @@ module load bcftools
 
 cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect
 
-bcftools view -S Clydesdale_ids.list thesis_intersect.vcf.gz > thesis_intersect_Clydesdale.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_Clydesdale.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_Clydesdale.vcf.gz
+#bcftools view -S Clydesdale_ids.list thesis_intersect.vcf.gz > thesis_intersect_Clydesdale.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_Clydesdale.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_Clydesdale.vcf.gz
+bcftools view thesis_intersect_Clydesdale.vcf.gz --min-af 0.05 > thesis_intersect_Clydesdale_AF_over_0.05.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_Clydesdale_AF_over_0.05.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_Clydesdale_AF_over_0.05.vcf.gz
+bcftools view thesis_intersect_Clydesdale.vcf.gz --max-af 0.005 > thesis_intersect_Clydesdale_AF_less_than_0.005.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_Clydesdale_AF_less_than_0.005.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_Clydesdale_AF_less_than_0.005.vcf.gz

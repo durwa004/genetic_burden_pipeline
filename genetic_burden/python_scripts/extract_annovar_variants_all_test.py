@@ -77,3 +77,14 @@ with open("annovar_variant_type_all_NC_009144_3.txt", "w") as output_file, open(
                 else:
                     AF = "NA"
                 print("\t".join(line[11:18]), AC, AF, consequence, impact, gene, "NA", coding, protein, "\t".join(line[20:]), file = output_file, sep = "\t")
+
+#Simply get the variant consequence
+with open("thesis_intersect_annovar.variant_function", "r") as input_file, open("annovar_variant_type_all.txt", "w") as output_file:
+    print("#CHROM\tPOS\tAC\tAF\tConsequence\tImpact\tGene", file = output_file)
+    for line in input_file:
+        line = line.rstrip("\n").split("\t")
+        ab = line[17].split("AC=")
+        AC = ab[1]
+        bc = line[1].split(",")
+        gene = bc[0]
+        print(line[2], line[3],AC,line[7],line[8],"NA", gene, file = output_file, sep = "\t")
