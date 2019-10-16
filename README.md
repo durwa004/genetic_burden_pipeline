@@ -69,6 +69,19 @@ $ qsub -W depend=afterok:17671637 /home/mccuem/shared/Projects/HorseGenomeProjec
 $ qsub -W depend=afterok:17671645 /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/variant_annotation/SnpEff/SnpSift_filter_intersect_concat.pbs 
 ```
 
+# Pull out number of high/moderate/low impact variants from snpeff/annovar
+```
+$  Get_annovar_snpeff_no_variants.py
+```
+
+# Pull out type of variant
+```
+$ Get_type_of_variant_SnpEff.py 
+$ python python_scripts/Generate_get_annovar_variant_type.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/annovar/annovar_variant_function_by_chr/
+$ python ../../variant_calling/python_generation_scripts/Generate_pbs_submission_shell.py -d ../genetic_burden/
+$ sh /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/pbs_shell.sh
+```
+
 # Get union between annovar and snpeff
 - Script to convert breed to the 10 target breeds and then other for genetic burden analysis.
 ```
@@ -88,7 +101,12 @@ $ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_b
 ```
 
 # Number of variants unique to populations
+Plan to split the thesis intersect by breed group
+```
+$ python Generate_bcftools_view_by_breed.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/ -b QH -i ../../SV_calling_EC3/breed_groupings.txt 
+```
 --Number of variants with big differences in frequency between populations (<0.5% in one and >5% in another)
+
 --Fst of genes containing these variants - look for genes with strong differentiation between populations
 -Putatively functional variants (high/moderate) - number per individual genome
 -- breed differences
