@@ -1,0 +1,115 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Oct 13 14:35:43 2019
+
+@author: durwa004
+"""
+
+#Merge in bcfstats by AF column
+import pandas as pd
+import os
+
+path = "/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/bcftools_stats_output/AF_freq_files/"
+count = 0
+singleton = 0
+for filename in os.listdir(path):
+    a = filename.split("_AF_freq.txt")
+    b = a[0].split("_")
+    horse = b[0]
+    breed = b[1]
+    with open(path + filename, "r") as input_file:
+        count +=1
+        input_file.readline()
+        for line in input_file:
+            line = line.rstrip("\n").split("\t")
+            if '0.000000' in line[0]:
+                singleton += int(line[1])
+#Mean number of singletons
+print(singleton/count) #2,361,355        
+
+with open (path + "/../10_breeds_singletons.txt", "w") as output_file:    
+    for filename in os.listdir(path):
+        with open(path + filename, "r") as input_file:
+            input_file.readline()
+            a = filename.split("_AF_freq.txt")
+            b = a[0].split("_")
+            horse = b[0]
+            breed = b[1]
+            for line in input_file:
+                line = line.rstrip("\n").split("\t")
+                if breed == "Other":
+                    next
+                else:
+                    if line[0] == "0.000000":
+                        print(horse, breed, line[1], file = output_file)
+                    else:
+                        next
+                
+                
+                
+
+tmp_df = pd.DataFrame()
+AF = []
+variants = []
+with open(path + "/LIPI0187A_Other_AF_freq.txt") as tmp_file:
+    a = filename.split("_")
+    b = a[0] + "_" + a[1]
+    tmp_file.readline()
+    for line in tmp_file:
+        line = line.rstrip("\n").split("\t")
+        AF.append(line[0])
+        variants.append(line[1])
+    tmp_df[b] = variants
+        
+for filename in os.listdir(path):
+    a = filename.split("_")
+    b = a[0] + "_" + a[1]
+    freq = []
+    with open(path + "/" + filename, "r") as input_file:
+        input_file.readline()
+        for line in input_file:
+            line = line.rstrip("\n").split("\t")
+            freq.append(line[1])
+        tmp_df[b] = freq
+    
+tmp_df.to_csv(path + "/../all_horses_AF_freq_info.txt", sep='\t', index=False)
+
+#t_tmp_df.to_csv(path + "/../all_horses_AF_freq_info_transposed.txt", sep='\t', index=False)
+#Get number of singletons
+
+with open(path + "/../all_horses_AF_freq_info_transposed.txt", "r") as input_file, open(path + "/../10_breeds_singletons.txt","w") as output_file:
+    input_file.readline()
+    for line in input_file:
+        line = line.rstrip("\n").split("\t")
+        if "Other" in line[0]:
+            next
+        else:
+            print(line[0], file = output_file)
+#Then look at output file in R
+            
+
+
+with open(path + "/../all_horses_AF_freq_info.txt", "r") as input_file, open(path + "../all_horses_AF_categorized.txt", "w") as output_file:
+    header = input_file.readline()
+    header = header.rstrip("\n").split("\t")
+    print("\t".join(header),file = output_file)
+    for line in input_file:
+        line = line.rstrip("\n").split("\t")
+        AF = float(line[0])
+        if AF < 1:
+            print("<1%","\t", "\t".join(line[1:]), file = output_file, sep = "")
+        elif AF >=1 and AF < 5:
+            print("1-<5%","\t", "\t".join(line[1:]), file = output_file, sep = "")
+        elif AF >=5 and AF < 10:
+            print("5-<10%","\t", "\t".join(line[1:]), file = output_file, sep = "")
+        elif AF >=10 and AF < 25:
+            print("10-<25%","\t", "\t".join(line[1:]), file = output_file, sep = "")
+        elif AF >=25 and AF < 50:
+            print("25-<50%","\t", "\t".join(line[1:]), file = output_file, sep = "")
+        elif AF >=50 and AF < 75:
+            print("50-<75%","\t", "\t".join(line[1:]), file = output_file, sep = "")
+        elif AF >=75 and AF < 100:
+            print("75-<100%","\t", "\t".join(line[1:]), file = output_file, sep = "")
+            
+        
