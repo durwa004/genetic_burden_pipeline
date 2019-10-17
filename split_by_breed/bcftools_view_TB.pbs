@@ -10,6 +10,6 @@ module load bcftools
 
 cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect
 
-#bcftools view -S TB_ids.list thesis_intersect.vcf.gz > thesis_intersect_TB.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_TB.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_TB.vcf.gz
-bcftools view thesis_intersect_TB.vcf.gz --min-af 0.05 > thesis_intersect_TB_AF_over_0.05.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_TB_AF_over_0.05.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_TB_AF_over_0.05.vcf.gz
-bcftools view thesis_intersect_TB.vcf.gz --max-af 0.005 > thesis_intersect_TB_AF_less_than_0.005.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_TB_AF_less_than_0.005.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_TB_AF_less_than_0.005.vcf.gz
+bcftools view -S TB_ids.list --min-ac 1 thesis_intersect.vcf.gz > thesis_intersect_TB.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_TB.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_TB.vcf.gz
+bcftools view thesis_intersect_TB.vcf.gz --min-ac 1 --max-ac 3 > thesis_intersect_TB_rare.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_TB_rare.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_TB_rare.vcf.gz
+bcftools view thesis_intersect_TB.vcf.gz --min-ac 10 > thesis_intersect_TB_common.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_TB_common.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_TB_common.vcf.gz

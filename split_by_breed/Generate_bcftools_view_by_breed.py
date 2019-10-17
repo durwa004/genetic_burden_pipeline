@@ -31,6 +31,18 @@ def make_arg_parser():
             metavar="",
             required=True,
             help="Breed group to extract [required]")
+    parser.add_argument(
+            "-m", "--maxAC",
+            default=argparse.SUPPRESS,
+            metavar="",
+            required=True,
+            help="Maximum AC for rare variants [required]")
+    parser.add_argument(
+            "-c", "--com",
+            default=argparse.SUPPRESS,
+            metavar="",
+            required=True,
+            help="Minimum AC for common variants [required]")
     return parser
 
 
@@ -42,6 +54,8 @@ if __name__ == '__main__':
     data = os.path.abspath(args.data)
     horse_ids = os.path.abspath(args.ids)
     breed = args.breed
+    maxAC = args.maxAC
+    common = args.com
 
     header = (
               "#!/bin/bash -l\n"  
@@ -69,7 +83,7 @@ if __name__ == '__main__':
     with open(pbs, "w") as f:
         print(header, file=f)
         print(f"cd {data}\n", file=f)
-        print(f"#bcftools view -S {breed}_ids.list thesis_intersect.vcf.gz > thesis_intersect_{breed}.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_{breed}.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_{breed}.vcf.gz",file=f) 
-        print(f"bcftools view thesis_intersect_{breed}.vcf.gz --min-af 0.05 > thesis_intersect_{breed}_AF_over_0.05.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_{breed}_AF_over_0.05.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_{breed}_AF_over_0.05.vcf.gz", file=f)
-        print(f"bcftools view thesis_intersect_{breed}.vcf.gz --max-af 0.005 > thesis_intersect_{breed}_AF_less_than_0.005.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_{breed}_AF_less_than_0.005.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_{breed}_AF_less_than_0.005.vcf.gz", file=f)
+        print(f"bcftools view -S {breed}_ids.list --min-ac 1 thesis_intersect.vcf.gz > thesis_intersect_{breed}.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_{breed}.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_{breed}.vcf.gz",file=f) 
+        print(f"bcftools view thesis_intersect_{breed}.vcf.gz --min-ac 1 --max-ac {maxAC} > thesis_intersect_{breed}_rare.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_{breed}_rare.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_{breed}_rare.vcf.gz", file=f)
+        print(f"bcftools view thesis_intersect_{breed}.vcf.gz --min-ac {common} > thesis_intersect_{breed}_common.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_{breed}_common.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_{breed}_common.vcf.gz", file=f)
         print(f"Creating .pbs script for {breed}\nNumber of horses: {count}")

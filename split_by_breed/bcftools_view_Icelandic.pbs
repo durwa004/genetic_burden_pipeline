@@ -10,6 +10,6 @@ module load bcftools
 
 cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect
 
-#bcftools view -S Icelandic_ids.list thesis_intersect.vcf.gz > thesis_intersect_Icelandic.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_Icelandic.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_Icelandic.vcf.gz
-bcftools view thesis_intersect_Icelandic.vcf.gz --min-af 0.05 > thesis_intersect_Icelandic_AF_over_0.05.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_Icelandic_AF_over_0.05.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_Icelandic_AF_over_0.05.vcf.gz
-bcftools view thesis_intersect_Icelandic.vcf.gz --max-af 0.005 > thesis_intersect_Icelandic_AF_less_than_0.005.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_Icelandic_AF_less_than_0.005.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_Icelandic_AF_less_than_0.005.vcf.gz
+bcftools view -S Icelandic_ids.list --min-ac 1 thesis_intersect.vcf.gz > thesis_intersect_Icelandic.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_Icelandic.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_Icelandic.vcf.gz
+bcftools view thesis_intersect_Icelandic.vcf.gz --min-ac 1 --max-ac 1 > thesis_intersect_Icelandic_rare.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_Icelandic_rare.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_Icelandic_rare.vcf.gz
+bcftools view thesis_intersect_Icelandic.vcf.gz --min-ac 3 > thesis_intersect_Icelandic_common.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_Icelandic_common.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_Icelandic_common.vcf.gz
