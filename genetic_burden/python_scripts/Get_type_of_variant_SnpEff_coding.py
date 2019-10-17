@@ -1,7 +1,7 @@
 import gzip
 
 #Goal is to convert the snpeff output to a useable text file for analysis, so that we can get a union file of snpeff and annovar output.
-with gzip.open("thesis_intersect_snpeff.ann.vcf.gz", "rt") as input_file, open("SnpEff_variant_type_all.txt", "w") as output_file:
+with gzip.open("thesis_intersect_snpeff.coding.ann.vcf.gz", "rt") as input_file, open("SnpEff_variant_type_coding.txt", "w") as output_file:
     print("#CHROM\tPOS\tAC\tAF\tConsequence\tImpact\tGene", file = output_file)
     for line in input_file:
         line = line.rstrip("\n").split("\t")
