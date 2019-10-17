@@ -100,11 +100,14 @@ $ Get_annovar_snpeff_coding_tidy.py
 ```
 $ Get_union_annovar_snpeff_tidy.py
 ```
+- Get the union/intersect of annovar/snpeff (itasca)
+```
+$ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/pbs_submit_python.pbs 
+```
 #Pull out exact intersect of coding variants for annovar/snpeff
 ```
-$ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/bcftools_view.pbs 
+$ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/extract_annovar_snpeff_union_intersect.pbs
 ```
-
 # Number of variants unique to populations
 Plan to split the thesis intersect by breed group
 -Number of variants with big differences in frequency between populations (<0.5% in one and >5% in another)
