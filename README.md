@@ -81,6 +81,11 @@ $ python python_scripts/Generate_get_annovar_variant_type.py -d /home/mccuem/sha
 $ python ../../variant_calling/python_generation_scripts/Generate_pbs_submission_shell.py -d ../genetic_burden/
 $ sh /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/pbs_shell.sh
 ```
+Transfer to my laptop and analyze
+```
+$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/annovar/annovar_variant_type_all /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/variant_type_analysis/
+$ variant_type_analysis.R
+```
 
 # Get union between annovar and snpeff
 - Script to convert breed to the 10 target breeds and then other for genetic burden analysis.
@@ -95,17 +100,23 @@ $ Get_annovar_snpeff_coding_tidy.py
 ```
 $ Get_union_annovar_snpeff_tidy.py
 ```
+- Get the union/intersect of annovar/snpeff (itasca)
+```
+$ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/pbs_submit_python.pbs 
+```
 #Pull out exact intersect of coding variants for annovar/snpeff
 ```
-$ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/bcftools_view.pbs 
+$ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/extract_annovar_snpeff_union_intersect.pbs
 ```
-
 # Number of variants unique to populations
 Plan to split the thesis intersect by breed group
+-Number of variants with big differences in frequency between populations (<0.5% in one and >5% in another)
 ```
-$ python Generate_bcftools_view_by_breed.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/ -b QH -i ../../SV_calling_EC3/breed_groupings.txt 
+$ python Generate_bcftools_view_by_breed.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/ -i /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/horse_genomes_breeds_tidy.txt -b QH 
+$ python ../../variant_calling/python_generation_scripts/Generate_pbs_submission_shell.py -d ../split_by_breed/
+$ sh /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_shell.sh
 ```
---Number of variants with big differences in frequency between populations (<0.5% in one and >5% in another)
+
 
 --Fst of genes containing these variants - look for genes with strong differentiation between populations
 -Putatively functional variants (high/moderate) - number per individual genome
