@@ -77,27 +77,24 @@ $  Get_annovar_snpeff_no_variants.py
 # Pull out type of variant - all
 ```
 $ Get_type_of_variant_SnpEff.py 
-$ python python_scripts/Generate_get_annovar_variant_type.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/annovar/annovar_variant_function_by_chr/
-$ python ../../variant_calling/python_generation_scripts/Generate_pbs_submission_shell.py -d ../genetic_burden/
-$ sh /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/pbs_shell.sh
+$ Get_type_of_variant_annovar.py 
 ```
 Transfer to my laptop and analyze
 ```
-$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/annovar/annovar_variant_type_all /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/variant_type_analysis/
+$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/annovar/annovar_variant_type_all.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/variant_type_analysis/
+$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/annovar/SnpEff_variant_type_all.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/variant_type_analysis/
 $ variant_type_analysis.R
 ```
 
 # Pull out type of variant - coding
 ```
 $ Get_type_of_variant_SnpEff_coding.py 
-$ python python_scripts/Generate_get_annovar_variant_type.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/annovar/annovar_variant_function_by_chr/
-$ python ../../variant_calling/python_generation_scripts/Generate_pbs_submission_shell.py -d ../genetic_burden/
-$ sh /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/pbs_shell.sh
-$ Get_type_of_variant_SnpEff.py
+$ Get_type_of_variant_annovar_coding.py
 ```
 Transfer to my laptop and analyze
 ```
-$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/annovar/annovar_variant_type_all /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/variant_type_analysis/
+$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/SnpEff/SnpEff_variant_type_coding.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/variant_type_analysis//Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/variant_type_analysis/
+$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/annovar/annovar_variant_type_coding.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/variant_type_analysis/
 $ variant_type_analysis.R
 ```
 # Get union between annovar and snpeff
