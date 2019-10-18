@@ -16,6 +16,6 @@ with open("thesis_intersect_annovar.variant_function", "r") as input_file, open(
                 impact = "LOW"
             else:
                 impact = "UNKNOWN"
-            print(line[2], line[3],AC,line[7],line[0],"NA", gene, file = output_file, sep  = "\t")
+            print(line[2], line[3],AC,line[7],line[0],impact, gene, file = output_file, sep  = "\t")
         else:
             next
