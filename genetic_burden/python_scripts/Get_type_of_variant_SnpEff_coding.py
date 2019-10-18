@@ -19,6 +19,20 @@ with gzip.open("thesis_intersect_snpeff.coding.ann.vcf.gz", "rt") as input_file,
                 consequence = bc[1]
                 impact = bc[2]
                 gene = bc[4]
+                if "splice" in consequence:
+                    consequence = "splice_region_variant"
+                elif "5_prime" in consequence:
+                    consequence = "5_prime_UTR_variant"
+                elif "frameshift" in consequence:
+                    consequence = "frameshift_variant"
+                elif "start_lost" in consequence:
+                    consequence = "start_lost"
+                elif "stop_gained" in consequence:
+                    consequence = "stop_gained"
+                elif "stop_lost" in consequence:
+                    consequence = "stop_lost"
+                elif "gene_fusion" in consequence:
+                    consequence = "gene_fusion"
                 print(line[0], line[1], AC, AF, consequence, impact, gene, file = output_file, sep = "\t")
             else:
                 next
