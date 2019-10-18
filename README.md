@@ -120,11 +120,12 @@ $ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_b
 ```
 # Number of variants unique to populations
 Plan to split the thesis intersect by breed group
--Number of variants with big differences in frequency between populations (<0.5% in one and >5% in another)
+-Number of variants with big differences in frequency between populations (<3% in one and >10% in another)
 ```
 $ python Generate_bcftools_view_by_breed.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/ -i /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/horse_genomes_breeds_tidy.txt -b QH 
 $ python ../../variant_calling/python_generation_scripts/Generate_pbs_submission_shell.py -d ../split_by_breed/
 $ sh /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_shell.sh
+$ python Generate_bcftools_isec_for_rare_common_variants_by_breed.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/ -b Arabian
 ```
 
 
