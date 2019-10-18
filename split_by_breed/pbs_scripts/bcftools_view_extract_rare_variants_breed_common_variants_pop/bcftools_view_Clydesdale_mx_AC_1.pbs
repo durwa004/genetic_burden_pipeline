@@ -1,0 +1,14 @@
+#!/bin/bash -l
+#PBS -l nodes=1:ppn=8,walltime=12:00:00,mem=4g
+#PBS -m abe
+#PBS -M durwa004@umn.edu
+#PBS -o $PBS_JOBID.bcftools_view_Clydesdale_mx_AC_1.out
+#PBS -e $PBS_JOBID.bcftools_view_Clydesdale_mx_AC_1.err
+#PBS -N bcftools_view_Clydesdale_mx_AC_1.pbs
+#PBS -q batch
+module load bcftools
+
+cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect
+
+bcftools view --max-ac 1 --min-af 0.05 thesis_intersect_Clydesdale.vcf.gz > rare_Clydesdale_common_population.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip rare_Clydesdale_common_population.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix rare_Clydesdale_common_population.vcf.gz
+bcftools view --min-ac 2 --max-af 0.005 thesis_intersect_Clydesdale.vcf.gz > common_Clydesdale_rare_population.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip common_Clydesdale_rare_population.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix common_Clydesdale_rare_population.vcf.gz
