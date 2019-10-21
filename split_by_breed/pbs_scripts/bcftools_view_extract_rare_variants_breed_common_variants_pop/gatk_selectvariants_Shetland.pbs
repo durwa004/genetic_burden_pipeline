@@ -8,7 +8,7 @@
 #PBS -q batch
 source /home/mccuem/shared/.local/conda/bin/activate gatk4_4.1.0
 
-cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect
+cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/thesis_intersect_by_breed
 
-gatk SelectVariants -R ../../GCF_002863925.1_EquCab3.0_genomic/GCF_002863925.1_EquCab3.0_genomic.fna -select "AF.0 > 0.05" -V thesis_intersect_Shetland_rare.vcf.gz -O rare_Shetland_common_pop.vcf.gz
-gatk SelectVariants -R ../../GCF_002863925.1_EquCab3.0_genomic/GCF_002863925.1_EquCab3.0_genomic.fna -select "AF.0 <0.005" -V thesis_intersect_Shetland_common.vcf.gz -O common_Shetland_rare_pop.vcf.gz
+gatk SelectVariants -R ../../../GCF_002863925.1_EquCab3.0_genomic/GCF_002863925.1_EquCab3.0_genomic.fna -select "AF.0 > 0.10" -V thesis_intersect_Shetland_rare.vcf.gz -O rare_Shetland_common_pop.vcf.gz
+#gatk SelectVariants -R ../../GCF_002863925.1_EquCab3.0_genomic/GCF_002863925.1_EquCab3.0_genomic.fna -select "AF.0 <0.005" -V thesis_intersect_Shetland_common.vcf.gz -O common_Shetland_rare_pop.vcf.gz

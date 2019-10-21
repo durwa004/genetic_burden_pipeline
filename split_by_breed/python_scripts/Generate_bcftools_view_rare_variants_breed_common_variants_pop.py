@@ -26,12 +26,6 @@ def make_arg_parser():
             required=True,
             help="Breed group to extract [required]")
     parser.add_argument(
-            "-m3", "--mx3",
-            default=argparse.SUPPRESS,
-            metavar="",
-            required=True,
-            help="3% AF AC cut off (unique for each breed) [required]")
-    parser.add_argument(
             "-m5", "--mn5",
             default=argparse.SUPPRESS,
             metavar="",
@@ -47,7 +41,6 @@ if __name__ == '__main__':
 
     data = os.path.abspath(args.data)
     breed = args.breed
-    mx = args.mx3
     mn = args.mn5
 
     header = (
@@ -55,17 +48,16 @@ if __name__ == '__main__':
               "#PBS -l nodes=1:ppn=8,walltime=12:00:00,mem=4g\n"
               "#PBS -m abe\n"
               "#PBS -M durwa004@umn.edu\n"
-              f"#PBS -o $PBS_JOBID.bcftools_view_{breed}_mx_AC_{mx}.out\n"
-              f"#PBS -e $PBS_JOBID.bcftools_view_{breed}_mx_AC_{mx}.err\n"
-              f"#PBS -N bcftools_view_{breed}_mx_AC_{mx}.pbs\n"
+              f"#PBS -o $PBS_JOBID.bcftools_view_{breed}.out\n"
+              f"#PBS -e $PBS_JOBID.bcftools_view_{breed}.err\n"
+              f"#PBS -N bcftools_view_{breed}.pbs\n"
               "#PBS -q batch\n"
               "module load bcftools\n"
              )
     
-    pbs = os.path.join(os.getcwd(),f"bcftools_view_{breed}_mx_AC_{mx}.pbs")
+    pbs = os.path.join(os.getcwd(),f"bcftools_view_{breed}.pbs")
     
     with open(pbs, "w") as f:
         print(header, file=f)
         print(f"cd {data}\n", file=f)
-        print(f'bcftools view --max-ac {mx} --exclude MAF[0]"<0.05" thesis_intersect_{breed}.vcf.gz > rare_{breed}_common_population.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip rare_{breed}_common_population.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix rare_{breed}_common_population.vcf.gz', file = f, sep = "")
-        print(f'bcftools view --min-ac {mn} --exclude MAF[0]">0.0005" thesis_intersect_{breed}.vcf.gz > common_{breed}_rare_population.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip common_{breed}_rare_population.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix common_{breed}_rare_population.vcf.gz', file = f, sep = "")
+        print(f'bcftools view --min-ac {mn} thesis_intersect_{breed}.vcf.gz > common_{breed}_over_AF_0.05.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip common_{breed}_over_AF_0.05.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix common_{breed}_over_AF_0.05.vcf.gz', file = f, sep = "")

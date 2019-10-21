@@ -49,5 +49,5 @@ if __name__ == '__main__':
         with open(pbs, "w") as f:
             print(header, file=f)
             print(f"cd {data}\n", file=f)
-            print(f'gatk SelectVariants -R ../../GCF_002863925.1_EquCab3.0_genomic/GCF_002863925.1_EquCab3.0_genomic.fna -select "AF.0 > 0.05" -V thesis_intersect_{breed}_rare.vcf.gz -O rare_{breed}_common_pop.vcf.gz', file=f)
-            print(f'gatk SelectVariants -R ../../GCF_002863925.1_EquCab3.0_genomic/GCF_002863925.1_EquCab3.0_genomic.fna -select "AF.0 <0.005" -V thesis_intersect_{breed}_common.vcf.gz -O common_{breed}_rare_pop.vcf.gz', file = f)
+            print(f'gatk SelectVariants -R ../../../GCF_002863925.1_EquCab3.0_genomic/GCF_002863925.1_EquCab3.0_genomic.fna -select "AF.0 > 0.10" -V thesis_intersect_{breed}_rare.vcf.gz -O rare_{breed}_common_pop.vcf.gz', file=f)
+            print(f'#gatk SelectVariants -R ../../GCF_002863925.1_EquCab3.0_genomic/GCF_002863925.1_EquCab3.0_genomic.fna -select "AF.0 <0.005" -V thesis_intersect_{breed}_common.vcf.gz -O common_{breed}_rare_pop.vcf.gz', file = f)

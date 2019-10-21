@@ -65,4 +65,4 @@ with open("rare_breed_common_breed.txt", "w") as output_file:
             for i in range(len(chrom_r)):
                 for item in range(len(chrom_c)):
                     if chrom_r[i] == chrom_c[item] and pos_r[i] == pos_c[item]:
-                        print(breed_r,breed_c,chrom_r,pos_r,ref,alt,AC_r,AC_c,AF,ma, file = output_file)
+                        print(breed_r[i],breed_c[item],chrom_r[i],pos_r[i],ref[i],alt[i],AC_r[i],AC_c[item],AF[i],ma[i], file = output_file)
