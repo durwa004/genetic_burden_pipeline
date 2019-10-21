@@ -67,5 +67,5 @@ if __name__ == '__main__':
     with open(pbs, "w") as f:
         print(header, file=f)
         print(f"cd {data}\n", file=f)
-        print(f"bcftools view --max-ac {mx} --min-af 0.1 thesis_intersect_{breed}.vcf.gz > rare_{breed}_common_population.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip rare_{breed}_common_population.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix rare_{breed}_common_population.vcf.gz", file = f, sep = "")
-        print(f"#bcftools view --min-ac {mn} --max-af 0.005 thesis_intersect_{breed}.vcf.gz > common_{breed}_rare_population.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip common_{breed}_rare_population.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix common_{breed}_rare_population.vcf.gz", file = f, sep = "")
+        print(f'bcftools view --max-ac {mx} --exclude MAF[0]"<0.05" thesis_intersect_{breed}.vcf.gz > rare_{breed}_common_population.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip rare_{breed}_common_population.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix rare_{breed}_common_population.vcf.gz', file = f, sep = "")
+        print(f'bcftools view --min-ac {mn} --exclude MAF[0]">0.0005" thesis_intersect_{breed}.vcf.gz > common_{breed}_rare_population.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip common_{breed}_rare_population.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix common_{breed}_rare_population.vcf.gz', file = f, sep = "")
