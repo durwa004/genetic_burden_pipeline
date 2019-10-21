@@ -134,13 +134,18 @@ $ delete_unnecessary_files.py
 $ sh breed_common_rare_variants_tidy.sh 
 ```
 
-- Number of variants that are rare in one breed and common in the general population and variants that are common in that breed and rare in the general population #Tried AF cut off for rare population of 0.05% and 1% - got no variants, so increased to 2%
+- Number of variants that are rare in one breed and common in the general population and variants that are common in that breed and rare in the general population #Tried AF cut off for rare population of 0.05% and common population 5%
 ```
-$ python ../../Generate_bcftools_view_rare_variants_breed_common_variants_pop.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/ -b Arabian -m3 2 -m5 4
+$ python ../../Generate_bcftools_view_rare_variants_breed_common_variants_pop.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/ -b Arabian -m5 4
 $ python ../../../../variant_calling/python_generation_scripts/Generate_pbs_submission_shell.py -d /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_view_extract_rare_variants_breed_common_variants_pop/
 $  sh /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_view_extract_rare_variants_breed_common_variants_pop/pbs_shell.sh
 ```
-
+Then need to pull out the population allele frequencies using GATK
+```
+$ python ../../python_scripts/Generate_gatk_extract_by_pop_AF.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/
+$ python ../../../../variant_calling/python_generation_scripts/Generate_pbs_submission_shell.py -d /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_view_extract_rare_variants_breed_common_variants_pop/
+$ sh /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_view_extract_rare_variants_breed_common_variants_pop/pbs_shell.sh
+```
 --Fst of genes containing these variants - look for genes with strong differentiation between populations
 -Putatively functional variants (high/moderate) - number per individual genome
 -- breed differences
