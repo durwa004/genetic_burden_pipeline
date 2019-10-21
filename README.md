@@ -145,6 +145,7 @@ Then need to pull out the population allele frequencies using GATK
 $ python ../../python_scripts/Generate_gatk_extract_by_pop_AF.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/
 $ python ../../../../variant_calling/python_generation_scripts/Generate_pbs_submission_shell.py -d /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_view_extract_rare_variants_breed_common_variants_pop/
 $ sh /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_view_extract_rare_variants_breed_common_variants_pop/pbs_shell.sh
+$ Get_rare_breed_common_pop_info.py 
 ```
 --Fst of genes containing these variants - look for genes with strong differentiation between populations
 -Putatively functional variants (high/moderate) - number per individual genome
