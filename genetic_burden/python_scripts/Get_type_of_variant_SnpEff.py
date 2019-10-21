@@ -14,6 +14,11 @@ with gzip.open("thesis_intersect_snpeff.ann.vcf.gz", "rt") as input_file, open("
                 AC = bc[1]
                 cd = ab[1].split("AF=")
                 AF = cd[1]
+                if "," in AF:
+                    ef = AF.split(",")
+                    AF = ef[0]
+                else:
+                    next
                 de = line[7].split("ANN=")
                 bc = de[1].split("|")
                 consequence = bc[1]
@@ -25,6 +30,8 @@ with gzip.open("thesis_intersect_snpeff.ann.vcf.gz", "rt") as input_file, open("
                     consequence = "exonic"
                 elif "gene_fusion" in consequence:
                     consequence = "gene_fusion"
+                elif "non_coding" in consequence:
+                    consequence = "non_coding"
                 print(line[0], line[1], AC, AF, consequence, impact, gene, file = output_file, sep = "\t")
             else:
                 next

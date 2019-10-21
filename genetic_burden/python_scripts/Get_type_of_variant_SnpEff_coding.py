@@ -14,6 +14,11 @@ with gzip.open("thesis_intersect_snpeff.coding.ann.vcf.gz", "rt") as input_file,
                 AC = bc[1]
                 cd = ab[1].split("AF=")
                 AF = cd[1]
+                if "," in AF:
+                    ef = AF.split(",")
+                    AF = ef[0]
+                else:
+                    next
                 de = line[7].split("ANN=")
                 bc = de[1].split("|")
                 consequence = bc[1]
