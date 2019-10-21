@@ -128,6 +128,12 @@ $ sh /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_bur
 $ python Generate_bcftools_isec_for_rare_common_variants_by_breed.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/ -b Arabian
 $ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/bcftools_isec_Arabian.pbs 
 ```
+Creates a lot of spare files and lots of GB! So tidy up files
+```
+$ delete_unnecessary_files.py 
+$ sh breed_common_rare_variants_tidy.sh 
+```
+
 - Number of variants that are rare in one breed and common in the general population and variants that are common in that breed and rare in the general population
 ```
 $ python ../../Generate_bcftools_view_rare_variants_breed_common_variants_pop.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/ -b Arabian -m3 2 -m5 4
