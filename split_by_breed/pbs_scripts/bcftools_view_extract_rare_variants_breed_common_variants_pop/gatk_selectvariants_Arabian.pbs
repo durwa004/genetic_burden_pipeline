@@ -1,0 +1,14 @@
+#!/bin/bash -l
+#PBS -l nodes=1:ppn=8,walltime=12:00:00,mem=4g
+#PBS -m abe
+#PBS -M durwa004@umn.edu
+#PBS -o $PBS_JOBID.gatk_selectvariants_Arabian.out
+#PBS -e $PBS_JOBID.gatk_selectvariants_Arabian.err
+#PBS -N bcftools_view_Arabian.pbs
+#PBS -q batch
+source /home/mccuem/shared/.local/conda/bin/activate gatk4_4.1.0
+
+cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/thesis_intersect_by_breed
+
+gatk SelectVariants -R ../../../GCF_002863925.1_EquCab3.0_genomic/GCF_002863925.1_EquCab3.0_genomic.fna -select "AF.0 > 0.10" -V thesis_intersect_Arabian_rare.vcf.gz -O rare_Arabian_common_pop.vcf.gz
+#gatk SelectVariants -R ../../GCF_002863925.1_EquCab3.0_genomic/GCF_002863925.1_EquCab3.0_genomic.fna -select "AF.0 <0.005" -V thesis_intersect_Arabian_common.vcf.gz -O common_Arabian_rare_pop.vcf.gz

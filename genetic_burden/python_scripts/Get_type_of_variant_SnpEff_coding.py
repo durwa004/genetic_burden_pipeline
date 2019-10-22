@@ -1,7 +1,7 @@
 import gzip
 
 #Goal is to convert the snpeff output to a useable text file for analysis, so that we can get a union file of snpeff and annovar output.
-with gzip.open("thesis_intersect_snpeff.ann.vcf.gz", "rt") as input_file, open("SnpEff_variant_type_all.txt", "w") as output_file:
+with gzip.open("thesis_intersect_snpeff.coding.ann.vcf.gz", "rt") as input_file, open("SnpEff_variant_type_coding.txt", "w") as output_file:
     print("#CHROM\tPOS\tAC\tAF\tConsequence\tImpact\tGene", file = output_file)
     for line in input_file:
         line = line.rstrip("\n").split("\t")
@@ -26,12 +26,18 @@ with gzip.open("thesis_intersect_snpeff.ann.vcf.gz", "rt") as input_file, open("
                 gene = bc[4]
                 if "splice" in consequence:
                     consequence = "splice_region_variant"
-                elif "synonymous" in consequence or "stop" in consequence or "start" in consequence or "missense" in consequence or "initiator" in consequence or "frameshift" in consequence or "inframe" in consequence:
-                    consequence = "exonic"
+                elif "5_prime" in consequence:
+                    consequence = "5_prime_UTR_variant"
+                elif "frameshift" in consequence:
+                    consequence = "frameshift_variant"
+                elif "start_lost" in consequence:
+                    consequence = "start_lost"
+                elif "stop_gained" in consequence:
+                    consequence = "stop_gained"
+                elif "stop_lost" in consequence:
+                    consequence = "stop_lost"
                 elif "gene_fusion" in consequence:
                     consequence = "gene_fusion"
-                elif "non_coding" in consequence:
-                    consequence = "non_coding"
                 print(line[0], line[1], AC, AF, consequence, impact, gene, file = output_file, sep = "\t")
             else:
                 next

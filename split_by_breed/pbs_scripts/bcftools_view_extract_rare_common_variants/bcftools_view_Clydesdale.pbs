@@ -1,0 +1,15 @@
+#!/bin/bash -l
+#PBS -l nodes=1:ppn=12,walltime=48:00:00,mem=4g
+#PBS -m abe
+#PBS -M durwa004@umn.edu
+#PBS -o $PBS_JOBID.bcftools_view_Clydesdale.out
+#PBS -e $PBS_JOBID.bcftools_view_Clydesdale.err
+#PBS -N bcftools_view_Clydesdale.pbs
+#PBS -q small
+module load bcftools
+
+cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect
+
+bcftools view -S Clydesdale_ids.list --min-ac 1 thesis_intersect.vcf.gz > thesis_intersect_Clydesdale.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_Clydesdale.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_Clydesdale.vcf.gz
+bcftools view thesis_intersect_Clydesdale.vcf.gz --min-ac 1 --max-ac 1 > thesis_intersect_Clydesdale_rare.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_Clydesdale_rare.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_Clydesdale_rare.vcf.gz
+bcftools view thesis_intersect_Clydesdale.vcf.gz --min-ac 4 > thesis_intersect_Clydesdale_common.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_Clydesdale_common.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_Clydesdale_common.vcf.gz

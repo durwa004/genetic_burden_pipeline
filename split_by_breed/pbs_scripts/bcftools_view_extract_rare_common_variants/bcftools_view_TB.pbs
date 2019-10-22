@@ -1,0 +1,15 @@
+#!/bin/bash -l
+#PBS -l nodes=1:ppn=12,walltime=48:00:00,mem=4g
+#PBS -m abe
+#PBS -M durwa004@umn.edu
+#PBS -o $PBS_JOBID.bcftools_view_TB.out
+#PBS -e $PBS_JOBID.bcftools_view_TB.err
+#PBS -N bcftools_view_TB.pbs
+#PBS -q small
+module load bcftools
+
+cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect
+
+bcftools view -S TB_ids.list --min-ac 1 thesis_intersect.vcf.gz > thesis_intersect_TB.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_TB.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_TB.vcf.gz
+bcftools view thesis_intersect_TB.vcf.gz --min-ac 1 --max-ac 3 > thesis_intersect_TB_rare.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_TB_rare.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_TB_rare.vcf.gz
+bcftools view thesis_intersect_TB.vcf.gz --min-ac 10 > thesis_intersect_TB_common.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_TB_common.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_TB_common.vcf.gz

@@ -1,0 +1,12 @@
+#!/bin/bash -l
+#PBS -l nodes=1:ppn=8,walltime=96:00:00,mem=12g
+#PBS -m abe
+#PBS -M durwa004@umn.edu
+#PBS -o $PBS_JOBID.Get_union_annovar_snpeff.out
+#PBS -e $PBS_JOBID.Get_union_annovar_snpeff.err
+#PBS -N Get_union_annovar_snpeff.pbs
+#PBS -q lab-long
+
+cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/SnpEff/
+
+python /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/Get_union_annovar_snpeff_tidy.py 
