@@ -56,25 +56,21 @@ NB - will need to re-estimate for the individual calls as well.
 
 **All python scripts that run from command line need source activate snakemake to get the correct python version**
 
-# Annotate intersect using annovar by chromosome (won't work on concatenated file)
+# SnpEff/Annovar analysis
+#Annotate intersect using annovar by chromosome (won't work on concatenated file)
 ```
 $ python ../python_generation_scripts/Generate_ANNOVAR_by_chr.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/
 $ python ../../../variant_calling/python_generation_scripts/Generate_pbs_submission_shell.py -d /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/variant_annotation/ANNOVAR/
 $ sh /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/variant_annotation/ANNOVAR/pbs_shell.sh 
 ```
 
-# Annotate concatenated intersect using SnpEff
+#Annotate concatenated intersect using SnpEff
 ```
 $ qsub -W depend=afterok:17671637 /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/variant_annotation/SnpEff/SnpEff_intersect_concat.pbs 
 $ qsub -W depend=afterok:17671645 /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/variant_annotation/SnpEff/SnpSift_filter_intersect_concat.pbs 
 ```
 
-# Pull out number of high/moderate/low impact variants from snpeff/annovar
-```
-$  Get_annovar_snpeff_no_variants.py
-```
-
-# Pull out type of variant - all
+#Pull out type of variant - all
 ```
 $ Get_type_of_variant_SnpEff.py 
 $ Get_type_of_variant_annovar.py 
@@ -86,7 +82,7 @@ $ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject
 $ variant_type_analysis.R
 ```
 
-# Pull out type of variant - coding
+#Pull out type of variant - coding
 ```
 $ Get_type_of_variant_SnpEff_coding.py 
 $ Get_type_of_variant_annovar_coding.py
@@ -97,7 +93,7 @@ $ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject
 $ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/annovar/annovar_variant_type_coding.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/variant_type_analysis/
 $ variant_type_analysis.R
 ```
-# Get union between annovar and snpeff
+#Get union between annovar and snpeff
 - Script to convert breed to the 10 target breeds and then other for genetic burden analysis.
 ```
 $ convert_breeds.py
@@ -110,14 +106,14 @@ $ Get_annovar_snpeff_coding_tidy.py
 ```
 $ Get_union_annovar_snpeff_tidy.py
 ```
-- Get the union/intersect of annovar/snpeff (itasca)
+#Pull out combined intersect of high/moderate variants for annovar/snpeff
 ```
-$ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/pbs_submit_python.pbs 
+$ python ../python_scripts/Generate_extract_variants.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/SnpEff/annovar_snpeff_high_mod_combined_intersect/ -v /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/SnpEff/ -l /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/SnpEff/snpeff_annovar_combined_intersect_high_mod_chrom_pos.txt 
+$ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/pbs_scripts/Extract_variants.pbs 
+$ cat * > ann_se_high_mod_combined_intersect.txt
 ```
-#Pull out exact intersect of coding variants for annovar/snpeff
-```
-$ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/extract_annovar_snpeff_union_intersect.pbs
-```
+#Figure out genetic burden per individual/breed
+
 # Number of variants unique to populations
 Plan to split the thesis intersect by breed group
 - Number of variants with big differences in frequency between populations (<3% in one and >10% in another)
@@ -158,11 +154,26 @@ Then transfer list of chrom/pos for the variants to be extracted from SnpEff out
 ```
 $ scp /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/breed_pop_variants/rare_breed_common_pop_shared_variants.txt durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/breed_pop_differences/
 $ scp /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/breed_pop_variants/common_breed_rare_pop_shared_variants.txt durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/breed_pop_differences/
-$ Extract_breed_pop_shared_variants.py
+```
+Extract information about breed/pop difference variant type
+```
+$ python ../python_scripts/Generate_extract_variants.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/breed_pop_differences/rare_breed_common_pop -v /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/SnpEff/thesis_intersect_snpeff.ann.vcf.gz -l /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/breed_pop_differences/rare_breed_common_pop_shared_variants.txt 
+$ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/Extract_variants.pbs 
+$ cat * > rare_breed_common_pop_snpeff_variants.txt
+$ python ../python_scripts/Generate_extract_variants.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/breed_pop_differences/common_breed_rare_pop -v /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/SnpEff/thesis_intersect_snpeff.ann.vcf.gz -l /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/breed_pop_differences/common_breed_rare_pop_shared_variants.txt 
+$ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/Extract_variants.pbs
+$ cat * > common_breed_rare_pop_snpeff_variants.txt
+$ cat * > rare_breed_common_pop_snpeff_variants.txt
 $ Extract_breed_pop_shared_variant_information.py
+```
+Download back to my laptop for analysis!
+```
+$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/breed_pop_differences/common_breed_rare_pop/common_breed_rare_pop_snpeff_info.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/breed_pop_variants/
+$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/breed_pop_differences/rare_breed_common_pop/rare_breed_common_pop_snpeff_info.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/breed_pop_variants/
 ```
 --Fst of genes containing these variants - look for genes with strong differentiation between populations
 -Putatively functional variants (high/moderate) - number per individual genome
 -- breed differences
--- Predicted consequence of variant
+- Predicted consequence of variant
+
 
