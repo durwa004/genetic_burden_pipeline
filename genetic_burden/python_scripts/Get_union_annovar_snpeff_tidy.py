@@ -9,7 +9,7 @@ snpeff_chrom = []
 snpeff_pos = []
 snpeff_impact = []
 snpeff_chrom_pos = []
-
+snpeff_dict = {}
 with open("SnpEff_coding_tidy.txt","r") as input_file:
     input_file.readline()
     for line in input_file:
@@ -19,10 +19,13 @@ with open("SnpEff_coding_tidy.txt","r") as input_file:
         snpeff_impact.append(line[10])
         a = line[0] + ":" + line[1]
         snpeff_chrom_pos.append(a)
+        snpeff_dict[a] = line[10]
 
 len(set(snpeff_chrom_pos))
 #Number high/mod/low
 snpeff_impact.count("HIGH")
+snpeff_impact.count("MODERATE")
+snpeff_impact.count("LOW")
 
 annovar_chrom = []
 annovar_pos = []
@@ -66,12 +69,13 @@ with open("snpeff_annovar_exact_intersect_high_mod_chrom_pos.txt", "w") as outpu
             continue
 
 len(set(annovar_chrom_pos))
+snpeff_annovar_chrom_pos = annovar_chrom_pos + snpeff_chrom_pos
 len(set(snpeff_annovar_chrom_pos))
 
 #Get union/intersect of snpeff and annovar coding variants:
 union = list(set(snpeff_chrom_pos + annovar_chrom_pos))
 intersect = list(set(snpeff_chrom_pos) & set(annovar_chrom_pos))
-
+len(intersect)
 #Get union/intersect if the variant is called high/moderate by both programs (do not have to agree on high/moderate
 snpeff_high_mod_chrom_pos = []
 snpeff_high_mod_impact = []
