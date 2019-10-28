@@ -1,4 +1,6 @@
 import gzip
+#Will need to figure out the exact paths for this script
+path = ""
 #Get list of horse ids in order of vcf.
 with gzip.open("../thesis_intersect.vcf.gz", "rt") as input_file, open("horse_ids_vcf.txt", "w") as output_file:
     for line in input_file:
@@ -17,15 +19,17 @@ with open("../../../../horse_genomes_breeds_tidy.txt", "r") as input_file:
         horse[line[0]] = line[1]
 horse['TWILIGHT'] = "TB"
 
-#Get  
-phenotype = {}
-with open(path + "causal_variants_with_chrom_pos.txt", "r") as input_file:
-    input_file.readline()
+#Get  chrom:pos (key) and impact:impact (value)
+variant = {}
+with open(path + "snpeff_annovar_combined_intersect_high_mod_chrom_pos.txt", "r") as input_file:
     for line in input_file:
         line = line.rstrip("\n").split("\t")
-        a = line[2] + ":" + line[1]
-        phenotype[line[3]] = a
-        
+        a = line[0] + ":" + line[1]
+        b = line[2] + ":" + line[3]
+        phenotype[a] = b
+
+
+#Keep working on this       
 with open(path + "known_variants_AFs.txt", "r"
           ) as input_file, open(path + "known_CC_with_breeds.txt", "w"
           ) as output_file, open(path + "known_dz_with_breeds.txt", "w") as output2:
