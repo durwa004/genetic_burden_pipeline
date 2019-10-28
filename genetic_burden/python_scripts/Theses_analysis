@@ -41,8 +41,7 @@ with open(directory + "/" + "common_breed_rare_pop_shared_variants.txt", "w") as
 
 
 
-chrom_pos = list("chrom_pos")
-breed_etc = list("breed_etc")
+rare_breed = {}
 for filename in os.listdir(directory):
     if filename.endswith("_common_pop.txt"):
         print(filename)
@@ -54,56 +53,18 @@ for filename in os.listdir(directory):
                 if "NC_" in line[2]:
                     ab = line[2] + ":" + line[3]
                     cd = line[1] + ":" + line[4] + ":" + line[5] + ":" + line[6]
-                    ac = line[1] + ":" + line[4] 
-                    for i,v in enumerate(chrom_pos):
-                        if ab == v:
-                            bd = breed_etc[i] + ":" + ac
-                            breed_etc[i] = bd
-                        else:
-                            chrom_pos.append(ab)
-                            breed_etc.append(cd)
+                    ac = line[1] + ":" + line[4]
+                    if ab in rare_breed.keys():
+                        ef = rare_breed[ab]
+                        rare_breed[ab] = ef + ":" + ac
+                    else:
+                        rare_breed[ab] = cd
 
+len(set(rare_breed)) #119,586
 
-len(chrom_pos) #194,903
-len(set(chrom_pos)) #119,586
-
-#Get unique list:
-rare_breed = list(set(chrom_pos))
-for i,v in enumerate(breed_etc):
-    a = v.split(":")
-    ab = a[0] + ":" + a[1]
-    for item, value in enumerate(rare_breed):
-        if ab == 
-        
 
 with open(directory + "/" + "rare_breed_common_pop_shared_variants.txt", "w") as output_file:
-    for i in range(len(rare_breed)):
-        a = rare_breed[i].split(":")
-        print(a[0], a[1], sep = "\t", file = output_file)
-
-#Add in breed        
-chrom_pos = []
-for filename in os.listdir(directory):
-    if filename.endswith("_common_pop.txt"):
-        print(filename)
-        with open(directory + "/" + filename, "r") as input_file:
-            a = filename.split("_")
-            input_file.readline()
-            for line in input_file:
-                line = line.rstrip("\n").split()
-                if "NC_" in line[2]:
-                    ab = line[2] + ":" + line[3]
-                    for i,v in enumerate(rare_breed):
-                        if ab == v:
-                            bc = ab + ":" + line[1] 
-                            chrom_pos.append(bc)
-
-len(chrom_pos) #194,903
-len(set(chrom_pos)) #119,586
-
-rare_breed = list(set(chrom_pos))
-
-with open(directory + "/" + "rare_breed_common_pop_shared_variants_with_breed.txt", "w") as output_file:
-    for i in range(len(rare_breed)):
-        a = rare_breed[i].split(":")
-        print(a[0], a[1], sep = "\t", file = output_file)
+    for key,value in rare_breed.items():
+        a = key.split(":")
+        b = value.split(":")
+        print("\t".join(a),"\t".join(b), sep = "\t", file = output_file)
