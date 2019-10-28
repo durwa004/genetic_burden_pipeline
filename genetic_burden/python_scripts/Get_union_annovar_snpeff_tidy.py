@@ -4,9 +4,10 @@ import os
 #Goal: get union/intersect just based on whether annovar/snpeff called them coding
 ##Also get union/intersect based on whether annovar/snpeff called them high/moderate exactly
 ##Also get union/intersect based on whether annovar/snpeff called them high/moderate/low exactly
+path = "/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/SnpEff/"
 
 snpeff_dict = {}
-with open("SnpEff_coding_tidy.txt","r") as input_file:
+with open(path + "SnpEff_coding_tidy.txt","r") as input_file:
     input_file.readline()
     for line in input_file:
         line = line.rstrip("\n").split("\t")
@@ -25,7 +26,7 @@ print(snpeff_impact.count("LOW"))
 
 annovar_dict = {}
 se_ann_exact = {}
-with open("annovar_coding_tidy.txt","r") as input_file, open("snpeff_annovar_exact_intersect.txt","w") as output_file:
+with open(path + "annovar_coding_tidy.txt","r") as input_file, open(path + "snpeff_annovar_exact_intersect.txt","w") as output_file:
     input_file.readline()
     input_file.readline()
     for line in input_file:
@@ -72,17 +73,39 @@ for key in annovar_dict.keys():
         ann_high_mod[key] = annovar_dict[key]
 print(len(ann_high_mod))
 
-union = se_high_mod
-union.update(ann_high_mod)
-print(len(union))
-union_impact = list(union.values())
-print(union_impact.count("HIGH"))
-print(union_impact.count("MODERATE"))
+se_ann_high_mod_union = {}
+se_ann_high_mod_intersect = {}
 
-with open("snpeff_annovar_combined_intersect_high_mod_chrom_pos.txt", "w") as output_file:
-    for key in union.keys():
+for key in se_high_mod.keys():
+    if key in ann_high_mod.keys():
+        a = se_high_mod[key] + ":" + ann_high_mod[key]
+        se_ann_high_mod_intersect[key] = a
+    else:
+        a = se_high_mod[key] + ":snpeff_only"
+        se_ann_high_mod_union[key] = a
+print(len(se_ann_high_mod_intersect))
+print(len(se_ann_high_mod_union))
+
+for key in ann_high_mod.keys():
+    if key in se_high_mod.keys():
+        next
+    else:
+        a = ann_high_mod[key] + ":annovar_only"
+        se_ann_high_mod_union[key] = a
+print(len(se_ann_high_mod_union))
+
+se_ann_high_mod = list(se_ann_high_mod_intersect.values())
+print(len(se_ann_high_mod))
+print(se_ann_high_mod.count("HIGH:HIGH"))
+print(se_ann_high_mod.count("HIGH:MODERATE"))
+print(se_ann_high_mod.count("MODERATE:HIGH"))
+print(se_ann_high_mod.count("MODERATE:MODERATE"))
+
+with open(path + "snpeff_annovar_combined_intersect_high_mod_chrom_pos.txt", "w") as output_file:
+    for key in se_ann_high_mod_intersect.keys():
         a = key.split(":")
-        print(a[0], a[1], union[key], sep = "\t", file = output_file)
+        b = se_ann_high_mod_intersect[key].split(":")
+        print(a[0], a[1], b[0], b[1], sep = "\t", file = output_file)
             
 #Get union and intersect of snpeff and annovar on position alone
 intersect_pos = {}
