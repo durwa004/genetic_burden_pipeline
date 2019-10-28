@@ -113,7 +113,9 @@ $ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_b
 $ cat * > ann_se_high_mod_combined_intersect.txt
 ```
 #Figure out genetic burden per individual/breed
-
+```
+$ Get_genetic_burden_by_individual.py
+```
 # Number of variants unique to populations
 Plan to split the thesis intersect by breed group
 - Number of variants with big differences in frequency between populations (<3% in one and >10% in another)
