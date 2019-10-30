@@ -1,11 +1,11 @@
 #!/bin/bash -l
-#PBS -l nodes=1:ppn=12,walltime=48:00:00,mem=4g
+#PBS -l nodes=1:ppn=8,walltime=12:00:00,mem=2g
 #PBS -m abe
 #PBS -M durwa004@umn.edu
 #PBS -o $PBS_JOBID.bcftools_view_Arabian.out
 #PBS -e $PBS_JOBID.bcftools_view_Arabian.err
 #PBS -N bcftools_view_Arabian.pbs
-#PBS -q small
+#PBS -q batch
 module load bcftools
 
 cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect

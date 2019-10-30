@@ -1,0 +1,13 @@
+#!/bin/bash -l
+#PBS -l nodes=1:ppn=12,walltime=48:00:00,mem=12g
+#PBS -m abe
+#PBS -M durwa004@umn.edu
+#PBS -o $PBS_JOBID.bcftools_stats_intersect_joint.vcf.gz.out
+#PBS -e $PBS_JOBID.bcftools_stats_intersect_joint.vcf.gz.err
+#PBS -N bcftools_stats_intersect_joint.vcf.gz.pbs
+#PBS -q small
+module load bcftools
+
+cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect
+
+for i in  NC_001640.1 NC_009144.3 NC_009145.3 NC_009146.3 NC_009147.3 NC_009148.3 NC_009149.3 NC_009150.3 NC_009151.3 NC_009152.3 NC_009153.3 NC_009155.3 NC_009154.3 NC_009157.3 NC_009158.3 NC_009161.3 NC_009160.3 NC_009159.3 NC_009162.3 NC_009164.3 NC_009165.3 NC_009166.3 NC_009167.3 NC_009169.3 NC_009168.3 NC_009170.3 NC_009173.3 NC_009172.3 NC_009171.3 NC_009175.3 NC_009174.3 unplaced NC_009163.3 NC_009156.3 ; do bcftools view -r ${i} thesis_intersect.vcf.gz > thesis_intersect_${i}.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_${i}.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_${i}.vcf.gz; done

@@ -9,6 +9,6 @@
 
 cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/
 
-#java -Djava.io.tmpdir=/home/mccuem/shared/Projects/HorseGenomeProject/Data/temp_files -Xmx4g -jar /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/variant_annotation/SnpEff/snpEff/snpEff.jar -C /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/variant_annotation/SnpEff/snpEff/snpEff.config EquCab3 thesis_intersect.vcf.gz > SnpEff/thesis_intersect_snpeff.ann.vcf -csvstats SnpEff/thesis_intersect_snpeff.csv -stats SnpEff/thesis_intersect_snpeff.html
+java -Djava.io.tmpdir=/home/mccuem/shared/Projects/HorseGenomeProject/Data/temp_files -Xmx4g -jar /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/variant_annotation/SnpEff/snpEff/snpEff.jar -C /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/variant_annotation/SnpEff/snpEff/snpEff.config EquCab3 thesis_intersect.vcf.gz > SnpEff/thesis_intersect_snpeff.ann.vcf -csvstats SnpEff/thesis_intersect_snpeff.csv -stats SnpEff/thesis_intersect_snpeff.html
 /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip SnpEff/thesis_intersect_snpeff.ann.vcf
 /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix SnpEff/thesis_intersect_snpeff.ann.vcf.gz

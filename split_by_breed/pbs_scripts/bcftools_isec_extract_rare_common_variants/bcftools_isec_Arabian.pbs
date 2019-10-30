@@ -10,7 +10,6 @@ module load bcftools
 
 cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect
 
-bcftools isec -p Arabian_rare_Arabian_common thesis_intersect_Arabian_rare.vcf.gz thesis_intersect_Arabian_common.vcf.gz
 bcftools isec -p Arabian_rare_Belgian_common thesis_intersect_Arabian_rare.vcf.gz thesis_intersect_Belgian_common.vcf.gz
 bcftools isec -p Arabian_rare_Clydesdale_common thesis_intersect_Arabian_rare.vcf.gz thesis_intersect_Clydesdale_common.vcf.gz
 bcftools isec -p Arabian_rare_Icelandic_common thesis_intersect_Arabian_rare.vcf.gz thesis_intersect_Icelandic_common.vcf.gz

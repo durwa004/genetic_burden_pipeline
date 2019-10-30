@@ -38,7 +38,7 @@ if __name__ == '__main__':
 
     header = (
               "#!/bin/bash -l\n"  
-              "#PBS -l nodes=1:ppn=8,walltime=12:00:00,mem=4g\n"
+              "#PBS -l nodes=1:ppn=8,walltime=04:00:00,mem=4g\n"
               "#PBS -m abe\n"
               "#PBS -M durwa004@umn.edu\n"
               f"#PBS -o $PBS_JOBID.bcftools_isex_{breed}.out\n"
@@ -56,5 +56,5 @@ if __name__ == '__main__':
         print(f"cd {data}\n", file=f)
         for i in range(len(breed_list)):
             if breed == breed_list[i]:
-                next
+                continue
             print(f"bcftools isec -p {breed}_rare_",breed_list[i],f"_common thesis_intersect_{breed}_rare.vcf.gz thesis_intersect_",breed_list[i],"_common.vcf.gz", file = f, sep = "")

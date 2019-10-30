@@ -4,10 +4,10 @@ import os
 #Goal: get union/intersect just based on whether annovar/snpeff called them coding
 ##Also get union/intersect based on whether annovar/snpeff called them high/moderate exactly
 ##Also get union/intersect based on whether annovar/snpeff called them high/moderate/low exactly
-path = "/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/SnpEff/"
+path = "/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/"
 
 snpeff_dict = {}
-with open(path + "SnpEff_coding_tidy.txt","r") as input_file:
+with open(path + "SnpEff/SnpEff_coding_tidy.txt","r") as input_file:
     input_file.readline()
     for line in input_file:
         line = line.rstrip("\n").split("\t")
@@ -17,7 +17,7 @@ with open(path + "SnpEff_coding_tidy.txt","r") as input_file:
             a = line[0] + ":" + line[1]
             snpeff_dict[a] = line[10]
 
-len(set(snpeff_dict))
+print(len(set(snpeff_dict)))
 #Number high/mod/low
 snpeff_impact = list(snpeff_dict.values())
 print(snpeff_impact.count("HIGH"))
@@ -26,7 +26,7 @@ print(snpeff_impact.count("LOW"))
 
 annovar_dict = {}
 se_ann_exact = {}
-with open(path + "annovar_coding_tidy.txt","r") as input_file, open(path + "snpeff_annovar_exact_intersect.txt","w") as output_file:
+with open(path + "annovar/annovar_coding_tidy.txt","r") as input_file:
     input_file.readline()
     input_file.readline()
     for line in input_file:
@@ -36,16 +36,6 @@ with open(path + "annovar_coding_tidy.txt","r") as input_file, open(path + "snpe
         else:
             a = line[0] + ":" + line[1]
             annovar_dict[a] = line[10]
-#Try and build in getting intersect to this as well - get exact intersect (if match for the impact)
-            if a in snpeff_dict.keys():
-                if snpeff_dict[a] == line[10]:
-                    print(line[0], line[1], line[10], file = output_file)
-                    se_ann_exact[a] = line[10]
-se_ann_impact = list(se_ann_exact.values())
-print(len(se_ann_impact))
-print(se_ann_impact.count("HIGH"))
-print(se_ann_impact.count("MODERATE"))
-print(se_ann_impact.count("LOW"))
 
 annovar_impact = list(annovar_dict.values())
 print(len(annovar_impact))
@@ -53,68 +43,76 @@ print(annovar_impact.count("HIGH"))
 print(annovar_impact.count("MODERATE"))
 print(annovar_impact.count("LOW"))
 
-#Extract just chrom/pos of the high/moderate impact variants
-with open("snpeff_annovar_exact_intersect_high_mod_chrom_pos.txt", "w") as output_file:
-    for key in se_ann_exact.keys():
-        if se_ann_exact[key] == "HIGH" or se_ann_exact[key] == "MODERATE":
-            a = key.split(":")
-            print(a[0], a[1], se_ann_exact[key], sep = "\t", file = output_file)
 
 #Get number of variants in each category for intersect of combined high/mod (not necessarily an exact match)
-se_high_mod = {}
-for key in snpeff_dict.keys():
-    if snpeff_dict[key] == "HIGH" or snpeff_dict[key] == "MODERATE": 
-        se_high_mod[key] = snpeff_dict[key]
-print(len(se_high_mod))
+se_ann_union = {}
+se_ann_intersect = {}
 
-ann_high_mod = {}
-for key in annovar_dict.keys():
-    if annovar_dict[key] == "HIGH" or annovar_dict[key] == "MODERATE":
-        ann_high_mod[key] = annovar_dict[key]
-print(len(ann_high_mod))
-
-se_ann_high_mod_union = {}
-se_ann_high_mod_intersect = {}
-
-for key in se_high_mod.keys():
-    if key in ann_high_mod.keys():
-        a = se_high_mod[key] + ":" + ann_high_mod[key]
-        se_ann_high_mod_intersect[key] = a
-    else:
-        a = se_high_mod[key] + ":snpeff_only"
-        se_ann_high_mod_union[key] = a
-print(len(se_ann_high_mod_intersect))
-print(len(se_ann_high_mod_union))
-
-for key in ann_high_mod.keys():
-    if key in se_high_mod.keys():
-        next
-    else:
-        a = ann_high_mod[key] + ":annovar_only"
-        se_ann_high_mod_union[key] = a
-print(len(se_ann_high_mod_union))
-
-se_ann_high_mod = list(se_ann_high_mod_intersect.values())
-print(len(se_ann_high_mod))
-print(se_ann_high_mod.count("HIGH:HIGH"))
-print(se_ann_high_mod.count("HIGH:MODERATE"))
-print(se_ann_high_mod.count("MODERATE:HIGH"))
-print(se_ann_high_mod.count("MODERATE:MODERATE"))
-
-with open(path + "snpeff_annovar_combined_intersect_high_mod_chrom_pos.txt", "w") as output_file:
-    for key in se_ann_high_mod_intersect.keys():
-        a = key.split(":")
-        b = se_ann_high_mod_intersect[key].split(":")
-        print(a[0], a[1], b[0], b[1], sep = "\t", file = output_file)
-            
-#Get union and intersect of snpeff and annovar on position alone
-intersect_pos = {}
 for key in snpeff_dict.keys():
     if key in annovar_dict.keys():
-        intersect_pos[key] = snpeff_dict[key]
-print(len(intersect_pos))
+        a = snpeff_dict[key] + ":" + annovar_dict[key]
+        se_ann_intersect[key] = a
+        se_ann_union[key] = a
+    else:
+        a = snpeff_dict[key] + ":snpeff_only"
+        se_ann_union[key] = a
+print(len(se_ann_intersect))
+print(len(se_ann_union))
 
-union_dict = snpeff_dict
-union_dict.update(annovar_dict)
-print(len(union_dict))
+for key in annovar_dict.keys():
+    if key in snpeff_dict.keys():
+        continue
+    else:
+        a = annovar_dict[key] + ":annovar_only"
+        se_ann_union[key] = a
+print(len(se_ann_union))
 
+se_ann_int= list(se_ann_intersect.values())
+print(se_ann_int.count("HIGH:HIGH"))
+print(se_ann_int.count("HIGH:MODERATE"))
+print(se_ann_int.count("MODERATE:HIGH"))
+print(se_ann_int.count("MODERATE:MODERATE"))
+print(se_ann_int.count("HIGH:LOW"))
+print(se_ann_int.count("MODERATE:LOW"))
+print(se_ann_int.count("LOW:LOW"))
+print(se_ann_int.count("LOW:HIGH"))
+print(se_ann_int.count("LOW:MODERATE"))
+
+se_ann_un= list(se_ann_union.values())
+print(se_ann_un.count("HIGH:HIGH"))
+print(se_ann_un.count("HIGH:MODERATE"))
+print(se_ann_un.count("MODERATE:HIGH"))
+print(se_ann_un.count("MODERATE:MODERATE"))
+print(se_ann_un.count("HIGH:LOW"))
+print(se_ann_un.count("MODERATE:LOW"))
+print(se_ann_un.count("LOW:LOW"))
+print(se_ann_un.count("LOW:HIGH"))
+print(se_ann_un.count("LOW:MODERATE"))
+print(se_ann_un.count("HIGH:snpeff_only"))
+print(se_ann_un.count("MODERATE:snpeff_only"))
+print(se_ann_un.count("LOW:snpeff_only"))
+print(se_ann_un.count("HIGH:annovar_only"))
+print(se_ann_un.count("MODERATE:annovar_only"))
+print(se_ann_un.count("LOW:annovar_only"))
+
+#Extract just chrom/pos of the high/moderate impact variants
+with open(path + "SnpEff/snpeff_annovar_combined_intersect_high_mod_chrom_pos.txt", "w") as output_file:
+    for key in se_ann_intersect.keys():
+        if se_ann_intersect[key] == "HIGH:HIGH" or se_ann_intersect[key] == "HIGH:MODERATE" or se_ann_intersect[key] == "MODERATE:HIGH":
+            a = key.split(":")
+            b = se_ann_intersect[key].split(":")
+            print(a[0], a[1], b[0], b[1], sep = "\t", file = output_file)
+
+#Intersect of variants
+with open(path + "SnpEff/snpeff_annovar_intersect.txt", "w") as output_file:
+    for key in se_ann_intersect.keys():
+        a = key.split(":")
+        b = se_ann_intersect[key].split(":")
+        print(a[0], a[1], b[0], b[1], sep = "\t", file = output_file)
+
+#Union of variants
+with open(path + "SnpEff/snpeff_annovar_union.txt", "w") as output_file:
+    for key in se_ann_union.keys():
+        a = key.split(":")
+        b = se_ann_union[key].split(":")
+        print(a[0], a[1], b[0], b[1], sep = "\t", file = output_file)

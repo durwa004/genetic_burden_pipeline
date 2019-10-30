@@ -45,7 +45,7 @@ if __name__ == '__main__':
 
     header = (
               "#!/bin/bash -l\n"  
-              "#PBS -l nodes=1:ppn=8,walltime=12:00:00,mem=4g\n"
+              "#PBS -l nodes=1:ppn=8,walltime=04:00:00,mem=4g\n"
               "#PBS -m abe\n"
               "#PBS -M durwa004@umn.edu\n"
               f"#PBS -o $PBS_JOBID.bcftools_view_{breed}.out\n"
