@@ -1,23 +1,51 @@
 import gzip
+import os
+
 #Will need to figure out the exact paths for this script
 path = ""
 #Get list of horse ids in order of vcf.
-with gzip.open("../thesis_intersect.vcf.gz", "rt") as input_file, open("horse_ids_vcf.txt", "w") as output_file:
+horse = {}
+header = []
+with gzip.open("../thesis_intersect_snpeff.ann.vcf.gz", "rt") as input_file:
     for line in input_file:
         line = line.rstrip("\n").split("\t")
         if "#CHROM" in line[0]:
             for i in range(len(line)):
-                print(line[i], file = output_file)
+                horse[line[i]] = "0,0"
+                header.append(line[i])
             break
 
 #Get breed info
-horse = {}
+horse_breed = {}
 with open("../../../../horse_genomes_breeds_tidy.txt", "r") as input_file:
     input_file.readline()
     for line in input_file:
         line = line.rstrip("\n").split("\t")
-        horse[line[0]] = line[1]
-horse['TWILIGHT'] = "TB"
+        horse_breed[line[0]] = line[1]
+horse_breed['TWILIGHT'] = "TB"
+            
+#Get genetic burden per indidivual
+with open("ann_se_high_mod_combined_intersect.txt", "r") as input_file, open("ann_se_gb_by_individual.txt", "w") as output_file:
+    for line in input_file:
+        line = line.rstrip("\n").split("\t")
+        for i in range(len(line)):
+            if "0/1" in line[i]:
+                a = horse[header[i]].split(",")
+                b = int(a[0]) + 1
+                c = str(b) + "," + a[1]
+                horse[header[i]] = c
+            elif "1/1" in line[i]:
+                a = horse[header[i]].split(",")
+                b = int(a[1]) + 1
+                c = a[0] + "," + str(b)
+                horse[header[i]] = c
+    for key in horse.keys():
+        if key in horse_breed.keys():
+            a = horse[key].split(",")
+            print(key, horse_breed[key], a[0], a[1], sep = "\t", file = output_file)
+
+
+
 
 #Get  chrom:pos (key) and impact:impact (value)
 variant = {}
