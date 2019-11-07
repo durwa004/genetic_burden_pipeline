@@ -5,7 +5,6 @@ Created on Fri Oct 25 13:42:13 2019
 
 @author: durwa004
 """
-import pandas as pd
 
 path = "/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/"
 
@@ -51,7 +50,7 @@ with open(path + "known_variants_AFs.txt", "r"
         for i in range(len(line)):
             a = phenotype[line[1]]
             a = a.split(":")
-            if "CC" in a[1] or "Gait" in a[1]:
+            if "CC_" in a[1] or "Gait" in a[1]:
                 if "0/1" in line[i]:
                     print(1,a[1],"\t".join(line[:7]),horse[vcf[i]], sep = "\t",file = output_file)
                 elif "1/1" in line[i]:
@@ -76,7 +75,7 @@ with open(path + "known_variants_AFs.txt", "r"
         for i in range(len(line)):
             a = phenotype[line[1]]
             a = a.split(":")
-            if "CC" in a[1] or "Gait" in a[1]:
+            if "CC_" in a[1] or "Gait" in a[1]:
                 if "0/1" in line[i]:
                     het_C +=1
                 elif "1/1" in line[i]:

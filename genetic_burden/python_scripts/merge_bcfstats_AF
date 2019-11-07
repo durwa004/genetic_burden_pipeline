@@ -10,6 +10,7 @@ Created on Sun Oct 13 14:35:43 2019
 import pandas as pd
 import os
 
+#Had to remove this horse: ERR1527968 as no variants
 path = "/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/bcftools_stats_output/AF_freq_files/"
 tmp_df = pd.DataFrame()
 AF = []
@@ -47,7 +48,7 @@ with open(path + "/../all_horses_AF_freq_info_transposed.txt", "r") as input_fil
         if "Other" in line[0]:
             next
         else:
-            breed = 
+            breed = line[0]
             print(line[0], file = output_file)
 #Then look at output file in R
             

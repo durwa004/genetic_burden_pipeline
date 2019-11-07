@@ -4,6 +4,7 @@ library(dplyr)
 library(forcats)
 library(devtools)
 library(ggpubr)
+library(emmeans)
 
 #Only include autosomes and chr X (not MT and unplaced contigs)
 setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/genetic_burden_pipeline/R_analysis/")
@@ -26,18 +27,45 @@ union_indel <- sum(union$no_indels)
 union_tstv <- mean(union$tstv)
 
 ###intersect
-intersect <- read.table("intersect_number_of_variants.txt", header=T)
+intersect <- read.table("../all_variants/intersect_number_of_variants.txt", header=T)
 sum(intersect$no_records)
 intersect_snp <- sum(intersect$no_SNPs)
 intersect_indel <- sum(intersect$no_indels)
 intersect_tstv <- mean(intersect$tstv)
 intersect$variant_ratio <- intersect$no_records/intersect$chrom_length
+intersect$snp_ratio <- intersect$no_SNPs/intersect$chrom_length
+intersect$indel_ratio <- intersect$no_indels/intersect$chrom_length
+
+#Number of variants by chromosome length
+x = ggplot(intersect, aes(x=CHROM, y=variant_ratio)) + theme_bw() + ylab("Variant:chr length") + 
+  xlab("Chromosome") + geom_boxplot(fill=rgb(122/255,0/255,25/255,1)) + 
+  scale_x_discrete(labels = c(1:31, "X")) + 
+  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
+        axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
+save_plot("intersect_variants.tiff", x, base_height = 3.5, base_width = 6)
+x = ggplot(intersect, aes(x=CHROM, y=snp_ratio)) + theme_bw() + ylab("SNP:chr length") + 
+  xlab("Chromosome") + geom_boxplot(fill=rgb(122/255,0/255,25/255,1)) +
+  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
+        axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
+save_plot("intersect_SNPs.tiff", x, base_height = 3.5, base_width = 6)
+
+x = ggplot(intersect, aes(x=CHROM, y=indel_ratio)) + theme_bw() + ylab("indel:chr length") + 
+  xlab("Chromosome") + geom_boxplot(fill=rgb(122/255,0/255,25/255,1)) +
+  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
+        axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
+save_plot("intersect_indels.tiff", x, base_height = 3.5, base_width = 6)
 
 #Create venn diagram
 source("http://bioconductor.org/biocLite.R"); biocLite(c("RBGL","graph"))
 library(devtools)
 install_github("js229/Vennerable")
 library(Vennerable)
+
+#Get plot for genetic burden
+vcombo <- Venn(SetNames=c("ANNOVAR", "SnpEff"),Weight = c(0,2999,735,4993))
+jpeg("ANNOVAR_SnpEff_venn.jpeg",width=6,height=6,units="in",res=1350)
+plot(vcombo,show=list(SetLabels=FALSE,FaceText=FALSE, Faces=FALSE))
+dev.off()
 
 #SNPs
 vcombo <- Venn(SetNames=c("gatk","bcftools"),Weight=c(0,gatk_snp-intersect_snp,bcf_snp-intersect_snp,intersect_snp))
@@ -58,52 +86,78 @@ jpeg("HC_bcftools_intersect_indel_venn.jpeg",width=6,height=6,units="in",res=135
 plot(vcombo,show=list(SetLabels=FALSE,FaceText=FALSE,Faces=FALSE))
 dev.off()
 
-#Number of variants by chromosome length
-x = ggplot(intersect, aes(x=CHROM, y=variant_ratio)) + theme_bw() + ylab("Variant:chr length") + 
-  xlab("Chromosome") + geom_boxplot(fill=rgb(122/255,0/255,25/255,1)) +
-  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
-        axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("intersect_variants.tiff", x, base_height = 3.5, base_width = 6)
 
 ####Figure out number of variants per individual
-intersect_stats <- read.table("../../bcftools_stats_output/intersect_by_ind_number_of_variants.txt",header=T)
+intersect_stats <- read.table("../bcftools_stats_output/intersect_by_ind_number_of_variants.txt",header=T)
 intersect_stats$nvariants <- intersect_stats$nNonRefHom + intersect_stats$nHets
 mean(intersect_stats$nvariants)
 intersect_stats$tstv <- intersect_stats$Ts/intersect_stats$Tv
 #Add in DOC info
-DOC <- read.table("../../bcftools_stats_output/DOC_by_horse.txt", header=T)
+DOC <- read.table("../bcftools_stats_output/DOC_by_horse.txt", header=T)
 
 intersect_doc <- merge(intersect_stats,DOC, by="Sample")
-
+summary(intersect_doc$nuclear_placed_DOC)
 #Plot DOC histogram
 x = ggplot(intersect_doc, aes(x=nuclear_placed_DOC)) + theme_bw() + ylab("Frequency") + 
-  xlab("Depth of coverage") + geom_histogram(fill=rgb(122/255,0/255,25/255,1)) +scale_y_continuous(labels=comma) + 
+  xlab("Depth of coverage") + geom_histogram() +scale_y_continuous(labels=comma) + 
   theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
         axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("548_individuals_DOC.tiff", x, base_height = 3.5, base_width = 6)
+save_plot("../bcftools_stats_output/535_individuals_DOC.tiff", x, base_height = 3.5, base_width = 6)
 
-#Look for correlation between number of variants and DOC
+#Look for correlation between number of variants and DOC with line of best fit 
 x = ggplot(intersect_doc, aes(x=nuclear_placed_DOC,y=nvariants)) + theme_bw() + ylab("Number of variants") + 
-  xlab("Depth of coverage") + geom_point(fill=rgb(122/255,0/255,25/255,1)) +scale_y_continuous(labels=comma) + 
+  xlab("Depth of coverage") + geom_point(fill=rgb(122/255,0/255,25/255,1)) +
+  scale_y_continuous(labels=comma, limits = c(0,8000000)) + geom_smooth() +
   theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
         axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("548_individuals_DOC_nvariants.tiff", x, base_height = 3.5, base_width = 6)
-cor(intersect_doc$nuclear_placed_DOC,intersect_doc$nvariants, method = "pearson")
-cor.test(intersect_doc$nuclear_placed_DOC,intersect_doc$nvariants, method = "pearson")
+save_plot("../bcftools_stats_output/535_individuals_DOC_nvariants.tiff", x, base_height = 3.5, base_width = 6)
+
+#Non linear association therefore pearson's correlation isn't useful
+library(tidyverse)
+library(caret)
+#Figure out how many orders to use (change the number to max that are signifianct)
+model <- lm(nvariants ~ poly(nuclear_placed_DOC,5,raw=TRUE), data = intersect_doc)
+predictions <- model %/% predict(test.data)
+
+#cor.test(intersect_doc$nuclear_placed_DOC,intersect_doc$nvariants, method = "pearson")
+library(devtools)
+#install_github("ProcessMiner/nlcor")
+library(nlcor)
+c <- nlcor(intersect_doc$nuclear_placed_DOC,intersect_doc$nvariants, plt=T)
+c$cor.estimate # 0.62
+c$adjusted.p.value # 0.009
+print(c$cor.plot)
+
+#Calculate threshold for cut off (cost/benefit type analysis for DOC vs nvariants)
+
+xy = ggplot(intersect_doc, aes(x=nuclear_placed_DOC,y=nvariants)) + theme_bw() + ylab("Number of variants") + 
+  xlab("Depth of coverage") + geom_point(fill=rgb(122/255,0/255,25/255,1)) + geom_smooth()
+  scale_y_continuous(labels=comma, limits = c(0,8000000)) +
+  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
+        axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
 
 ####Figure out differences in the number of variants per breed
 intersect_stats_br <- intersect_doc %>% 
   filter(!grepl('Other', breed))
-fit1 <- (lm(nvariants ~ breed + nuclear_placed_DOC, data=intersect_stats_br))
-fit2 <- (lm(nvariants ~ breed, data=intersect_stats_br))
+fit1 <- (lm(nvariants ~ breed, data=intersect_stats_br))
+fit2 <- (lm(nvariants ~ breed + log10(nuclear_placed_DOC), data=intersect_stats_br))
 anova(fit1,fit2)
+
+nvariants_m <- (lm(nvariants ~ breed + log10(nuclear_placed_DOC),data=intersect_stats_br))
+summary(nvariants_m)
+test(emmeans(nvariants_m, ~breed, "breed",weights = "proportional", type = "response"))
+confint(emmeans(nvariants_m, ~breed, "breed",weights = "proportional", type = "response"))
+
+emmip(noise.lm, type ~ size | side)
+nvariants_lm_plot <- plotemms(nvariants_m, digits=2, color = "Fat_g") + ylab("Estimated Marginal Mean of log10 TEQ")
+
 
 kruskal.test(intersect_stats_br$nvariants, intersect_stats_br$breed)
 x = ggplot(intersect_stats_br, aes(x=breed, y=nvariants)) + theme_bw() + ylab("Number of variants") + 
   xlab("Breed") + geom_boxplot(fill=rgb(122/255,0/255,25/255,1)) +scale_y_continuous(labels=comma) + 
   theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
         axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("10_breeds_nvariants.tiff", x, base_height = 3.5, base_width = 6)
+save_plot("../bcftools_stats_output/10_breeds_nvariants.tiff", x, base_height = 3.5, base_width = 6)
 
 #DOC
 kruskal.test(intersect_stats_br$nuclear_placed_DOC, intersect_stats_br$breed)
@@ -111,7 +165,7 @@ x = ggplot(intersect_stats_br, aes(x=breed, y=nuclear_placed_DOC)) + theme_bw() 
   xlab("Breed") + geom_boxplot(fill=rgb(122/255,0/255,25/255,1)) +scale_y_continuous(labels=comma) + 
   theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
         axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("10_breeds_DOC.tiff", x, base_height = 3.5, base_width = 6)
+save_plot("../bcftools_stats_output/10_breeds_DOC.tiff", x, base_height = 3.5, base_width = 6)
 
 #### Number of indels per individual
 mean(intersect_stats$nIndels)
@@ -124,7 +178,7 @@ x = ggplot(intersect_stats_br, aes(x=breed, y=nIndels)) + theme_bw() + ylab("Num
   xlab("Breed") + geom_boxplot(fill=rgb(122/255,0/255,25/255,1)) +scale_y_continuous(labels=comma) + 
   theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
         axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("10_breeds_nindels.tiff", x, base_height = 3.5, base_width = 6)
+save_plot("../bcftools_stats_output/10_breeds_nindels.tiff", x, base_height = 3.5, base_width = 6)
 
 ###TsTv
 kruskal.test(intersect_stats_br$tstv, intersect_stats_br$breed)
@@ -133,7 +187,7 @@ x = ggplot(intersect_stats_br, aes(x=breed, y=tstv)) + theme_bw() + ylab("Number
   xlab("Breed") + geom_boxplot(fill=rgb(122/255,0/255,25/255,1)) +
   theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
         axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("10_breeds_tstv.tiff", x, base_height = 3.5, base_width = 6)
+save_plot("../bcftools_stats_output/10_breeds_tstv.tiff", x, base_height = 3.5, base_width = 6)
 
 
 
@@ -151,7 +205,7 @@ x = ggplot(AF_data, aes(x=AF, y=means)) + theme_bw() + ylab("Number of variants"
   xlab("Allele frequency") + geom_point(fill=rgb(122/255,0/255,25/255,1)) + scale_y_continuous(labels=comma) + 
   theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
         axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("548_horses_AF.tiff", x, base_height = 3.5, base_width = 6)
+save_plot("535_horses_AF.tiff", x, base_height = 3.5, base_width = 6)
 
 #AF categories
 categories <- read.table("all_horses_AF_categorized.txt", header= T)
@@ -161,13 +215,13 @@ x = ggplot(categories, aes(x = AF, y = means)) + theme_bw() + ylab("Number of va
   xlab("AF category") + geom_boxplot(fill=rgb(122/255,0/255,25/255,1)) + scale_y_continuous(labels=comma) + 
   theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
         axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("548_horses_AF_categories.tiff", x, base_height = 3.5, base_width = 6)
+save_plot("535_horses_AF_categories.tiff", x, base_height = 3.5, base_width = 6)
 
 
 #Mean number of singletons
-singleton <- AF_data[1,2:548]
+singleton <- AF_data[1,2:53]
 singleton <- as.numeric(singleton)
-mean(singleton[1:547])
+mean(singleton)
 
 singleton_data <- read.table("10_breeds_singletons.txt",header=F)
 kruskal.test(singleton_data$V3, singleton_data$V2)
@@ -176,6 +230,3 @@ x = ggplot(singleton_data, aes(x=V2, y=V3)) + theme_bw() + ylab("Number of singl
   theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
         axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
 save_plot("10_breeds_singletons.tiff", x, base_height = 3.5, base_width = 6)
-
-#Add in DOC info
-DOC <- read.table("../../bcftools_stats_output/DOC_by_horse.txt", header=T)

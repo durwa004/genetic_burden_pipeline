@@ -21,12 +21,6 @@ def make_arg_parser():
             required=True,
             help="Path to dir containing the ibio output files of interest [required]")
     parser.add_argument(
-            "-dz", "--disease",
-            default=argparse.SUPPRESS,
-            metavar="",
-            required=True,
-            help="Disease that you want to get bcftools stats for [required]")
-    parser.add_argument(
             "-id", "--idlist",
             default=argparse.SUPPRESS,
             metavar="",
@@ -41,7 +35,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     data = os.path.abspath(args.data)
-    dz = args.disease 
     ids = os.path.abspath(args.idlist)
 
     header = (
@@ -65,3 +58,22 @@ if __name__ == '__main__':
                 print(header, file=f)
                 print(f"cd {data}\n", file=f)
                 print(f"bcftools stats -s {horse} thesis_intersect.vcf.gz > ind_bcftools_stats_files/{horse}_{breed}.stats", file=f) 
+    dz = {}
+    with open(ids) as input_file:
+        input_file.readline()
+        for line in input_file:
+            line = line.rstrip("\n").split("\t")
+            if line[1] in dz.keys():
+                dz[line[1]][line[0]] = 0
+            else:
+                dz[line[1]]= {}
+                dz[line[1]][line[0]] = 0
+    dz["hypertrophy"]["M10643"] = 0    
+    
+    for disease in dz.keys():
+        pbs = os.path.join(os.getcwd(),f"bcftools_stats_{disease}.pbs")
+        with open(pbs, "w") as f:
+            print(header, file = f)
+            print(f"(cd {data}\n)", file = f)
+            horses = list(dz[disease].keys())
+            print(f"bcftools stats -s ", " -s ".join(horses), f"thesis_intersect_snpeff.ann.vcf.gz > {disease}.stats", file = f, sep = "")
