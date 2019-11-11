@@ -192,4 +192,11 @@ $ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject
 -- breed differences
 - Predicted consequence of variant
 
+# known causal variants - this got lost so not complete
+On my laptop
+```
+$ /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/genetic_burden_pipeline/genetic_burden/python_scripts/Get_known_causal_variants_by_breed.py
+$ known_causal_variants.R
+```
+
 
