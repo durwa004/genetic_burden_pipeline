@@ -36,6 +36,7 @@ $ python Extract_coverage.py -d /home/mccuem/shared/Projects/HorseGenomeProject/
 Move DOC and no. reads back to my laptop
 ```
 $ scp durwa004@login02.msi.umn.edu://home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/doc/coverage/summary_files/* ../DOC
+$ bcftools_stats_analysis.R
 ```
 
 # Number of variants called ST/GATK and intersect/union
