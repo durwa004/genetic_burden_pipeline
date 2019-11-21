@@ -1,0 +1,12 @@
+qsub /panfs/roc/groups/3/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/bcftools_stats/pbs_scripts/bcftools_stats_IRH.pbs
+qsub /panfs/roc/groups/3/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/bcftools_stats/pbs_scripts/bcftools_stats_CBAVD.pbs
+qsub /panfs/roc/groups/3/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/bcftools_stats/pbs_scripts/bcftools_stats_hypertrophy.pbs
+qsub /panfs/roc/groups/3/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/bcftools_stats/pbs_scripts/bcftools_stats_MH.pbs
+qsub /panfs/roc/groups/3/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/bcftools_stats/pbs_scripts/bcftools_stats_DM.pbs
+qsub /panfs/roc/groups/3/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/bcftools_stats/pbs_scripts/bcftools_stats_HE.pbs
+qsub /panfs/roc/groups/3/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/bcftools_stats/pbs_scripts/bcftools_stats_micro.pbs
+qsub /panfs/roc/groups/3/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/bcftools_stats/pbs_scripts/bcftools_stats_NDM.pbs
+qsub /panfs/roc/groups/3/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/bcftools_stats/pbs_scripts/bcftools_stats_AA.pbs
+qsub /panfs/roc/groups/3/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/bcftools_stats/pbs_scripts/bcftools_stats_AFIB.pbs
+qsub /panfs/roc/groups/3/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/bcftools_stats/pbs_scripts/bcftools_stats_EM.pbs
+qsub /panfs/roc/groups/3/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/bcftools_stats/pbs_scripts/bcftools_stats_HYPP.pbs

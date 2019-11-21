@@ -29,7 +29,7 @@ if __name__ == '__main__':
 
     data = os.path.abspath(args.data)
 
-    DOC = "/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/metrics/DOC_totals/DOC_by_horse.txt"
+    DOC = f"{data}/DOC_totals/DOC_by_horse.txt"
 
     with open(DOC, "w") as DOC_file:
         count =0

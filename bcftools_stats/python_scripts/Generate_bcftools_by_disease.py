@@ -49,15 +49,6 @@ if __name__ == '__main__':
               "module load bcftools\n"
              )
     
-    with open(ids) as input_file:
-        for line in input_file:
-            horse,breed = line.rstrip("\n").split("\t")
-            pbs = os.path.join(os.getcwd(), f"bcftools_stats_{horse}.pbs")
-            #create job script for each individual horse
-            with open(pbs, "w") as f:
-                print(header, file=f)
-                print(f"cd {data}\n", file=f)
-                print(f"bcftools stats -s {horse} thesis_intersect.vcf.gz > ind_bcftools_stats_files/{horse}_{breed}.stats", file=f) 
     dz = {}
     with open(ids) as input_file:
         input_file.readline()
@@ -74,6 +65,6 @@ if __name__ == '__main__':
         pbs = os.path.join(os.getcwd(),f"bcftools_stats_{disease}.pbs")
         with open(pbs, "w") as f:
             print(header, file = f)
-            print(f"(cd {data}\n)", file = f)
+            print(f"cd {data}\n", file = f)
             horses = list(dz[disease].keys())
-            print(f"bcftools stats -s ", " -s ".join(horses), f"thesis_intersect_snpeff.ann.vcf.gz > {disease}.stats", file = f, sep = "")
+            print(f"bcftools stats -s ", ",".join(horses), f" thesis_intersect_snpeff.ann.vcf.gz > {disease}.stats", file = f, sep = "")
