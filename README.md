@@ -2,22 +2,6 @@
 Scripts and tools to estimate the genetic burden as part of my first aim of my thesis.
 
 To do for paper: 
-- Compare intersect to dbsnp and 2 million array
-```
-$ wget ftp://ftp.ensembl.org/pub/release-98/variation/vcf/equus_caballus/equus_caballus.vcf.gz
-$ wget ftp://ftp.ensembl.org/pub/release-98/variation/vcf/equus_caballus/equus_caballus.vcf.gz.csi
-$ wget ftp://ftp.ensembl.org/pub/release-98/variation/vcf/equus_caballus/equus_caballus_incl_consequences.vcf.gz
-$ wget ftp://ftp.ensembl.org/pub/release-98/variation/vcf/equus_caballus/equus_caballus_incl_consequences.vcf.gz.csi
-$ wget ftp://ftp.ensembl.org/pub/release-98/variation/vcf/equus_caballus/equus_caballus_structural_variations.vcf.gz
-$ wget ftp://ftp.ensembl.org/pub/release-98/variation/vcf/equus_caballus/equus_caballus_structural_variations.vcf.gz.csi
-$ wget ftp://ftp.ensembl.org/pub/release-98/variation/vcf/equus_caballus/README
-$ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/variant_calling/concordance/bcftools_isec_dbsnp.pbs 
-```
-Output:
-0000.vcf just variants in vcf1
-0001.vcf just variants in vcf2
-0002 variants from vcf1 shared by both
-0003 variants from bcf2 shared by both
 - Each variant caller, across population, breed, variant location (exon, intron, intergenic, splice site, or within 5kb of a gene), SNP consequence (high/moderate/low/modifier).
   - TsTv
   - HetNRhom ratio
