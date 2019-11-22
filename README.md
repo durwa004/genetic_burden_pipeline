@@ -2,22 +2,6 @@
 Scripts and tools to estimate the genetic burden as part of my first aim of my thesis.
 
 To do for paper: 
-- Compare intersect to dbsnp and 2 million array
-```
-$ wget ftp://ftp.ensembl.org/pub/release-98/variation/vcf/equus_caballus/equus_caballus.vcf.gz
-$ wget ftp://ftp.ensembl.org/pub/release-98/variation/vcf/equus_caballus/equus_caballus.vcf.gz.csi
-$ wget ftp://ftp.ensembl.org/pub/release-98/variation/vcf/equus_caballus/equus_caballus_incl_consequences.vcf.gz
-$ wget ftp://ftp.ensembl.org/pub/release-98/variation/vcf/equus_caballus/equus_caballus_incl_consequences.vcf.gz.csi
-$ wget ftp://ftp.ensembl.org/pub/release-98/variation/vcf/equus_caballus/equus_caballus_structural_variations.vcf.gz
-$ wget ftp://ftp.ensembl.org/pub/release-98/variation/vcf/equus_caballus/equus_caballus_structural_variations.vcf.gz.csi
-$ wget ftp://ftp.ensembl.org/pub/release-98/variation/vcf/equus_caballus/README
-$ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/variant_calling/concordance/bcftools_isec_dbsnp.pbs 
-```
-Output:
-0000.vcf just variants in vcf1
-0001.vcf just variants in vcf2
-0002 variants from vcf1 shared by both
-0003 variants from bcf2 shared by both
 - Each variant caller, across population, breed, variant location (exon, intron, intergenic, splice site, or within 5kb of a gene), SNP consequence (high/moderate/low/modifier).
   - TsTv
   - HetNRhom ratio
@@ -27,11 +11,16 @@ Output:
 $ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/convert_breeds.py
 ```
 
-# Get DOC
+# Get DOC and number of reads
 ```
 $ python python_scripts/Generate_unfreeze_coverage.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/doc/ -i /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/horse_genomes_breeds_tidy.txt -c get -ft coverage.tsv
 $ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/s3_scripts/s3cmd_sync_coverage.tsv.pbs 
-$ python Extract_coverage.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/doc/
+$ python Extract_coverage.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/doc/coverage/
+```
+Move DOC and no. reads back to my laptop
+```
+$ scp durwa004@login02.msi.umn.edu://home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/doc/coverage/summary_files/* ../DOC
+$ bcftools_stats_analysis.R
 ```
 
 # Number of variants called ST/GATK and intersect/union
