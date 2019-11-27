@@ -37,19 +37,32 @@ with open("known_disease_locations/No_variants_present.txt", "w") as output_file
                 if os.stat(filename) !=0:
                     for line in input_file:
                         genotype = []
+                        count = 0
                         line = line.rstrip("\n").split("\t")
                         for i in range(len(line)):
                             if "0/1" in line[i]:
                                 genotype.append("1")
+                                count +=1
                             elif "1/1" in line[i]:
                                 genotype.append("2")
+                                count +=1
                             elif "./." in line[i]:
                                 genotype.append("Missing")
-		    	    elif "0/0" in line[i]:
+                            elif "0/0" in line[i]:
                                 genotype.append("0")
-                        print(filename, line[0], line[1],line[3], line[4], "\t".join(genotype),sep = "\t", file = output2)
+                        AC = 0
+                        for i in range(len(genotype)):
+                            if genotype[i] == 1 or genotype[i] == 2:
+                                AC += genotype[i]
+                        AF = AC/count
+                        print(filename, line[0], line[1],line[3], line[4],AC,AF, "\t".join(genotype),sep = "\t", file = output2)
                 elif os.stat(filename) == 0:
                     print(filename, file = output_file)
 
 #Then need to double check that the variants are the exact position that they are supposed to be
-
+#Did this by hand
+with open("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/known_variants_present_exact.txt", "r") as input_file, open("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/known_variants_table.txt", "w") as output_file:
+    for line in input_file:
+        line = line.rstrip("\n").split("\t")
+        
+                         
