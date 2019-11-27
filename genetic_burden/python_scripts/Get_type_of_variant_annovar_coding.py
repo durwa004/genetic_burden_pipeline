@@ -1,4 +1,4 @@
-with open("annovar/thesis_intersect.exonic_variant_function", "r") as input_file, open("annovar/annovar_variant_type_coding.txt", "w") as output_file:
+with open("thesis_intersect.exonic_variant_function", "r") as input_file, open("../annovar_variant_type_coding.txt", "w") as output_file:
     print("#CHROM\tPOS\tAC\tAF\tConsequence\tImpact\tGene", file = output_file)
     for line in input_file:
         line = line.rstrip("\n").split("\t")

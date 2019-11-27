@@ -5,9 +5,9 @@
 #PBS -o $PBS_JOBID.extract_prze_NC_009175_3.out
 #PBS -e $PBS_JOBID.extract_prze_NC_009175_3.err
 #PBS -N extract_prze_NC_009175_3.pbs
-#PBS -q batch
+#PBS -q lab
 
-cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_bcftools/without_Prze
+cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_gatk_without_Prze
 
 module load bcftools
-bcftools view -S ../../horse_genomes_IDs.txt --min-ac 1 ../NC_009175_3.genotyped.vcf.gz > NC_009175_3.genotyped.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip NC_009175_3.genotyped.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix NC_009175_3.genotyped.vcf.gz
+bcftools view -S ../horse_genomes_IDs.txt --min-ac 1 ../NC_009175_3.genotyped.vcf.gz > NC_009175_3.genotyped.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip NC_009175_3.genotyped.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix NC_009175_3.genotyped.vcf.gz

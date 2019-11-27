@@ -1,52 +1,55 @@
-known = {}
-with open("known_SNVs.txt", "r") as input_file:
+import os
+
+#Get details of frequency of known variants
+
+#Get breed info
+horse_breed = {}
+with open("../../horse_genomes_breeds_tidy.txt", "r") as input_file:
+    input_file.readline()
     for line in input_file:
         line = line.rstrip("\n").split("\t")
-        known[line[3]] = line[2]
-
-known_checked = {}
-with open("known_dz_variants.txt", "r") as input_file, open("known_variants_AFs.txt", "w") as output_file:
-    for line in input_file:
-        line = line.rstrip("\n").split("\t")
-        if line[1] in known.keys():
-            if known[line[1]] == line[0]:
-                known_checked[line[1]] = line[0]
-                ab = line[7].split(";")
-                bc = ab[0].split("AC=")
-                AC = bc[1]
-                cd = ab[1].split("AF=")
-                AF = cd[1]
-                if "," in AF:
-                    ef = AF.split(",")
-                    AF = ef[0]
-                else:
-                    next
-                print("\t".join(line[:5]), AC, AF, "\t".join(line[9:]), file = output_file, sep = "\t")
-
-with open("known_dz_variants.txt", "r") as input_file, open("known_variants_AFs.txt", "w") as output_file:
-    for line in input_file:
-        line = line.rstrip("\n").split("\t")
-        if line[1] in known_checked.keys():
-            if known_checked[line[1]] == line[0]:
-                ab = line[7].split(";")
-                bc = ab[0].split("AC=")
-                AC = bc[1]
-                cd = ab[1].split("AF=")
-                AF = cd[1]
-                if "," in AF:
-                    ef = AF.split(",")
-                    AF = ef[0]
-                else:
-                    AF = cd[1]
-                print("\t".join(line[:5]), AC, AF, "\t".join(line[9:]), file = output_file, sep = "\t")
-
+        horse_breed[line[0]] = line[1]
+horse_breed['TWILIGHT'] = "TB"
+                    
 #Get list of horse ids in order of vcf.
-import gzip
-with gzip.open("../thesis_intersect.vcf.gz", "rt") as input_file, open("horse_ids_vcf.txt", "w") as output_file:
+header = []
+with gzip.open("../SnpEff/thesis_intersect_snpeff.ann.vcf.gz", "rt") as input_file:
     for line in input_file:
         line = line.rstrip("\n").split("\t")
         if "#CHROM" in line[0]:
             for i in range(len(line)):
-                print(line[i], file = output_file)
+                header.append(line[i])
+            break
 
+#Get breed in same order as header
+breed = []
+for i in range(len(header)):
+    if header[i] in horse_breed.keys():
+        breed.append(horse_breed[header[i]])
+
+#Get variant details for each horse
+with open("known_disease_locations/No_variants_present.txt", "w") as output_file, open("known_disease_locations/known_variants_present.txt", "w") as output2:
+    print("Phenotype", "chrom", "pos", "ref", "alt", "\t".join(header[9:]), sep = "\t", file = output2)
+    print("NA", "NA", "NA", "NA", "NA", "\t".join(breed), sep = "\t", file = output2)
+    for filename in os.listdir():
+        if not os.path.isdir(filename):
+            with open(filename, "r") as input_file:
+                if os.stat(filename) !=0:
+                    for line in input_file:
+                        genotype = []
+                        line = line.rstrip("\n").split("\t")
+                        for i in range(len(line)):
+                            if "0/1" in line[i]:
+                                genotype.append("1")
+                            elif "1/1" in line[i]:
+                                genotype.append("2")
+                            elif "./." in line[i]:
+                                genotype.append("Missing")
+		    	    elif "0/0" in line[i]:
+                                genotype.append("0")
+                        print(filename, line[0], line[1],line[3], line[4], "\t".join(genotype),sep = "\t", file = output2)
+                elif os.stat(filename) == 0:
+                    print(filename, file = output_file)
+
+#Then need to double check that the variants are the exact position that they are supposed to be
 

@@ -4,7 +4,7 @@ import os
 #Goal: get union/intersect just based on whether annovar/snpeff called them coding
 ##Also get union/intersect based on whether annovar/snpeff called them high/moderate exactly
 ##Also get union/intersect based on whether annovar/snpeff called them high/moderate/low exactly
-path = "/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/"
+path = "/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/"
 
 snpeff_dict = {}
 with open(path + "SnpEff/SnpEff_coding_tidy.txt","r") as input_file:
@@ -96,7 +96,7 @@ print(se_ann_un.count("MODERATE:annovar_only"))
 print(se_ann_un.count("LOW:annovar_only"))
 
 #Extract just chrom/pos of the high/moderate impact variants
-with open(path + "SnpEff/snpeff_annovar_combined_intersect_high_mod_chrom_pos.txt", "w") as output_file:
+with open("snpeff_annovar_combined_intersect_high_mod_chrom_pos.txt", "w") as output_file:
     for key in se_ann_intersect.keys():
         if se_ann_intersect[key] == "HIGH:HIGH" or se_ann_intersect[key] == "HIGH:MODERATE" or se_ann_intersect[key] == "MODERATE:HIGH":
             a = key.split(":")
@@ -104,14 +104,14 @@ with open(path + "SnpEff/snpeff_annovar_combined_intersect_high_mod_chrom_pos.tx
             print(a[0], a[1], b[0], b[1], sep = "\t", file = output_file)
 
 #Intersect of variants
-with open(path + "SnpEff/snpeff_annovar_intersect.txt", "w") as output_file:
+with open("snpeff_annovar_intersect.txt", "w") as output_file:
     for key in se_ann_intersect.keys():
         a = key.split(":")
         b = se_ann_intersect[key].split(":")
         print(a[0], a[1], b[0], b[1], sep = "\t", file = output_file)
 
 #Union of variants
-with open(path + "SnpEff/snpeff_annovar_union.txt", "w") as output_file:
+with open("snpeff_annovar_union.txt", "w") as output_file:
     for key in se_ann_union.keys():
         a = key.split(":")
         b = se_ann_union[key].split(":")

@@ -2,7 +2,7 @@ import gzip
 import os
 
 #Goal is to convert the snpeff output to a useable text file for analysis, so that we can get a union file of snpeff and annovar output.
-with gzip.open("SnpEff/thesis_intersect_snpeff.coding.ann.vcf.gz", "rt") as input_file, open("SnpEff/SnpEff_coding_tidy.txt", "w") as output_file:
+with gzip.open("../SnpEff/thesis_intersect_snpeff.coding.ann.vcf.gz", "rt") as input_file, open("../SnpEff/SnpEff_coding_tidy.txt", "w") as output_file:
     for line in input_file:
         line = line.rstrip("\n").split("\t")
         if "#CHROM" in line:
@@ -49,7 +49,7 @@ with gzip.open("SnpEff/thesis_intersect_snpeff.coding.ann.vcf.gz", "rt") as inpu
             print("\t".join(line[0:7]), AC, AF, consequence, impact, gene, where, coding, protein, "\t".join(line[9:]), file = output_file, sep = "\t")
 
 #Extract annovar variants into same format as snpeff variants
-with open("annovar/thesis_intersect.exonic_variant_function", "r") as input_file, open("SnpEff/SnpEff_coding_tidy.txt", "r") as header, open("annovar/annovar_coding_tidy.txt", "w") as output_file:
+with open("../annovar/annovar_exonic_variant_function/thesis_intersect.exonic_variant_function", "r") as input_file, open("../SnpEff/SnpEff_coding_tidy.txt", "r") as header, open("../annovar/annovar_coding_tidy.txt", "w") as output_file:
     info = header.readline()
     print(info, file = output_file)
     for line in input_file:

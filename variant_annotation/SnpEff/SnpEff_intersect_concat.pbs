@@ -1,14 +1,15 @@
 #!/bin/bash -l
-#PBS -l nodes=1:ppn=4,walltime=48:00:00,mem=10g
+#PBS -l nodes=1:ppn=4,walltime=21:00:00,mem=10g
 #PBS -m abe
 #PBS -M durwa004@umn.edu
 #PBS -o $PBS_JOBID.SnpEff_intersect.out
 #PBS -e $PBS_JOBID.SnpEff_intersect.err
 #PBS -N SnpEff_intersect.pbs
-#PBS -q small
+#PBS -q lab
 
-cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/
+cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect_without_Prze/
 
-java -Djava.io.tmpdir=/home/mccuem/shared/Projects/HorseGenomeProject/Data/temp_files -Xmx4g -jar /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/variant_annotation/SnpEff/snpEff/snpEff.jar -C /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/variant_annotation/SnpEff/snpEff/snpEff.config EquCab3 thesis_intersect.vcf.gz > SnpEff/thesis_intersect_snpeff.ann.vcf -csvstats SnpEff/thesis_intersect_snpeff.csv -stats SnpEff/thesis_intersect_snpeff.html
-/home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip SnpEff/thesis_intersect_snpeff.ann.vcf
-/home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix SnpEff/thesis_intersect_snpeff.ann.vcf.gz
+java -Djava.io.tmpdir=/home/mccuem/shared/Projects/HorseGenomeProject/Data/temp_files -Xmx4g -jar /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/variant_annotation/SnpEff/snpEff/snpEff.jar -C /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/variant_annotation/SnpEff/snpEff/snpEff.config EquCab3 thesis_intersect.vcf.gz > ../SnpEff/thesis_intersect_snpeff.ann.vcf -csvstats ../SnpEff/thesis_intersect_snpeff.csv -stats ../SnpEff/thesis_intersect_snpeff.html
+cd ../SnpEff/
+/home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_snpeff.ann.vcf
+/home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_snpeff.ann.vcf.gz
