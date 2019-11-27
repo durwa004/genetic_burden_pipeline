@@ -51,6 +51,7 @@ with open("known_disease_locations/No_variants_present.txt", "w") as output_file
                                 genotype.append("Missing")
                             elif "0/0" in line[i]:
                                 genotype.append("0")
+                                count +=1
                         AC = 0
                         for i in range(len(genotype)):
                             if genotype[i] == "1" or genotype[i] == "2":
