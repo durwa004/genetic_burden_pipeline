@@ -1,4 +1,5 @@
 import os
+import gzip
 
 #Get details of frequency of known variants
 
@@ -29,8 +30,8 @@ for i in range(len(header)):
 
 #Get variant details for each horse
 with open("known_disease_locations/No_variants_present.txt", "w") as output_file, open("known_disease_locations/known_variants_present.txt", "w") as output2:
-    print("Phenotype", "chrom", "pos", "ref", "alt", "\t".join(header[9:]), sep = "\t", file = output2)
-    print("NA", "NA", "NA", "NA", "NA", "\t".join(breed), sep = "\t", file = output2)
+    print("Phenotype", "chrom", "pos", "ref", "alt", "AC", "AF", "\t".join(header[9:]), sep = "\t", file = output2)
+    print("NA", "NA", "NA", "NA", "NA", "NA", "NA", "\t".join(breed), sep = "\t", file = output2)
     for filename in os.listdir():
         if not os.path.isdir(filename):
             with open(filename, "r") as input_file:
@@ -52,9 +53,9 @@ with open("known_disease_locations/No_variants_present.txt", "w") as output_file
                                 genotype.append("0")
                         AC = 0
                         for i in range(len(genotype)):
-                            if genotype[i] == 1 or genotype[i] == 2:
-                                AC += genotype[i]
-                        AF = AC/count
+                            if genotype[i] == "1" or genotype[i] == "2":
+                                AC += int(genotype[i])
+                        AF = AC/(count*2)
                         print(filename, line[0], line[1],line[3], line[4],AC,AF, "\t".join(genotype),sep = "\t", file = output2)
                 elif os.stat(filename) == 0:
                     print(filename, file = output_file)
