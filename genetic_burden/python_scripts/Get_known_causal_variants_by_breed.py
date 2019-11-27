@@ -50,11 +50,21 @@ with open(path + "known_variants_AFs.txt", "r"
         for i in range(len(line)):
             a = phenotype[line[1]]
             a = a.split(":")
-            if "CC_" in a[1] or "Gait" in a[1]:
+            if "CC_" in a[1] or "Gait" in a[1] or "Curly" in a[1]:
                 if "0/1" in line[i]:
                     print(1,a[1],"\t".join(line[:7]),horse[vcf[i]], sep = "\t",file = output_file)
                 elif "1/1" in line[i]:
                     print(2,a[1],"\t".join(line[:7]),horse[vcf[i]], sep = "\t", file = output_file)
+            elif a[1] == "ED":
+                if "0/1" in line[i]:
+                    print(1,"HERDA","\t".join(line[:7]),horse[vcf[i]], sep = "\t",file = output2)
+                elif "1/1" in line[i]:
+                    print(2,"HERDA","\t".join(line[:7]),horse[vcf[i]], sep = "\t", file = output2)
+            elif a[1] == "ED_4":
+                if "0/1" in line[i]:
+                    print(1,"WFFS","\t".join(line[:7]),horse[vcf[i]], sep = "\t",file = output2)
+                elif "1/1" in line[i]:
+                    print(2,"WFFS","\t".join(line[:7]),horse[vcf[i]], sep = "\t", file = output2)
             else:
                 if "0/1" in line[i]:
                     print(1,a[1],"\t".join(line[:7]),horse[vcf[i]], sep = "\t",file = output2)
@@ -87,3 +97,37 @@ with open(path + "known_variants_AFs.txt", "r"
                     hom_D+=1
         print(a[1],het_D,hom_D, sep = "\t", file = output2)
         print(a[1],het_C,hom_C, sep = "\t", file = output_file)
+
+#Get number of known disease variants for each indidivual horse
+with open(path + "known_variants_AFs.txt", "r"
+          ) as input_file, open(path + "known_dz_genotypes_.txt", "w") as output2:
+    for line in input_file:
+        line = line.rstrip("\n").split("\t")
+        for i in range(len(line)):
+            a = phenotype[line[1]]
+            a = a.split(":")
+            if "CC_" in a[1] or "Gait" in a[1] or "Curly" in a[1]:
+                next
+            else:
+                line1 = []
+                for i in range(len(line)):
+                    if "0/0" in line[i]:
+                        line1.append("0")
+                    elif "0/1" in line[i]:
+                        line1.append("1")
+                    elif "1/1" in line[i]:
+                        line1.append("2")
+        print("\t".join(line1), file = output2)
+        
+        
+with open(path + "known_variants_AFs.txt", "r") as input_file:
+    for line in input_file:
+        line = line.rstrip("\n").split("\t")
+        for i in range(len(line)):
+            a = phenotype[line[1]]
+            a = a.split(":")
+            if "IMM" in a[1]:
+                if "0/1" in line[i]:
+                    print("het:", vcf[i], ":", horse[vcf[i]])
+                elif "1/1" in line[i]:
+                    print("hom:", vcf[i], ":", horse[vcf[i]])

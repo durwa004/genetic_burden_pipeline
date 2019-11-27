@@ -7,17 +7,25 @@ library(ggpubr)
 library(emmeans)
 
 #Only include autosomes and chr X (not MT and unplaced contigs)
-setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/genetic_burden_pipeline/R_analysis/")
+setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/bcftools_stats_output//")
 ###bcftools
 bcftools <- read.table("bcftools_number_of_variants.txt", header=T)
+bcf_v <- sum(bcftools$no_records)
 bcf_snp <- sum(bcftools$no_SNPs)
+bcf_mnp <- sum(bcftools$no_MNPs)
 bcf_indel <- sum(bcftools$no_indels)
+bcf_ma <- sum(bcftools$no_multiallelic_sites)
+bcf_ma_snp <- sum(bcftools$no_nultiallelic_SNPs)
 bcf_tstv <- mean(bcftools$tstv)
 
 ###gatk
 gatk <- read.table("gatk_number_of_variants.txt", header=T)
+gatk_v <- sum(gatk$no_records)
 gatk_snp <- sum(gatk$no_SNPs)
+gatk_mnp <- sum(gatk$no_MNPs)
 gatk_indel <- sum(gatk$no_indels)
+gatk_ma <- sum(gatk$no_multiallelic_sites)
+gatk_ma_snp <- sum(gatk$no_nultiallelic_SNPs)
 gatk_tstv <- mean(gatk$tstv)
 
 ###union
@@ -27,7 +35,7 @@ union_indel <- sum(union$no_indels)
 union_tstv <- mean(union$tstv)
 
 ###intersect
-intersect <- read.table("../all_variants/intersect_number_of_variants.txt", header=T)
+intersect <- read.table("intersect_number_of_variants.txt", header=T)
 sum(intersect$no_records)
 intersect_snp <- sum(intersect$no_SNPs)
 intersect_indel <- sum(intersect$no_indels)
@@ -41,7 +49,7 @@ x = ggplot(intersect, aes(x=CHROM, y=variant_ratio)) + theme_bw() + ylab("Varian
   xlab("Chromosome") + geom_boxplot(fill=rgb(122/255,0/255,25/255,1)) + 
   scale_x_discrete(labels = c(1:31, "X")) + 
   theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
-        axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
+        axis.line.y = element_line(), axis.text.x = element_text(), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
 save_plot("intersect_variants.tiff", x, base_height = 3.5, base_width = 6)
 x = ggplot(intersect, aes(x=CHROM, y=snp_ratio)) + theme_bw() + ylab("SNP:chr length") + 
   xlab("Chromosome") + geom_boxplot(fill=rgb(122/255,0/255,25/255,1)) +
@@ -88,15 +96,63 @@ dev.off()
 
 
 ####Figure out number of variants per individual
-intersect_stats <- read.table("../bcftools_stats_output/intersect_by_ind_number_of_variants.txt",header=T)
+intersect_stats <- read.table("../with_prze/bcftools_stats_output_with_prze/intersect_by_ind_number_of_variants.txt",header=T)
 intersect_stats$nvariants <- intersect_stats$nNonRefHom + intersect_stats$nHets
 mean(intersect_stats$nvariants)
 intersect_stats$tstv <- intersect_stats$Ts/intersect_stats$Tv
-#Add in DOC info
-DOC <- read.table("../bcftools_stats_output/DOC_by_horse.txt", header=T)
 
+#Add in DOC info
+DOC <- read.table("../DOC/DOC_by_horse.txt", header=T)
+colnames(DOC) = c("Sample", "total_DOC","nuclear_placed_DOC")
 intersect_doc <- merge(intersect_stats,DOC, by="Sample")
 summary(intersect_doc$nuclear_placed_DOC)
+intersect_doc$HetNRHomratio <- intersect_doc$nHets/intersect_doc$nNonRefHom
+
+table(intersect_doc$breed)
+#Details by breed
+sum(intersect_doc[intersect_doc$breed == "Arabian",]$nvariants)
+mean(intersect_doc[intersect_doc$breed == "Arabian",]$nvariants)
+mean(intersect_doc[intersect_doc$breed == "Arabian",]$HetNRHomratio)
+mean(intersect_doc[intersect_doc$breed == "Arabian",]$tstv)
+
+mean(intersect_doc[intersect_doc$breed == "Belgian",]$nvariants)
+mean(intersect_doc[intersect_doc$breed == "Belgian",]$HetNRHomratio)
+mean(intersect_doc[intersect_doc$breed == "Belgian",]$tstv)
+
+mean(intersect_doc[intersect_doc$breed == "Clydesdale",]$nvariants)
+mean(intersect_doc[intersect_doc$breed == "Clydesdale",]$HetNRHomratio)
+mean(intersect_doc[intersect_doc$breed == "Clydesdale",]$tstv)
+
+mean(intersect_doc[intersect_doc$breed == "Icelandic",]$nvariants)
+mean(intersect_doc[intersect_doc$breed == "Icelandic",]$HetNRHomratio)
+mean(intersect_doc[intersect_doc$breed == "Icelandic",]$tstv)
+
+mean(intersect_doc[intersect_doc$breed == "Morgan",]$nvariants)
+mean(intersect_doc[intersect_doc$breed == "Morgan",]$HetNRHomratio)
+mean(intersect_doc[intersect_doc$breed == "Morgan",]$tstv)
+
+mean(intersect_doc[intersect_doc$breed == "QH",]$nvariants)
+mean(intersect_doc[intersect_doc$breed == "QH",]$HetNRHomratio)
+mean(intersect_doc[intersect_doc$breed == "QH",]$tstv)
+
+mean(intersect_doc[intersect_doc$breed == "Shetland",]$nvariants)
+mean(intersect_doc[intersect_doc$breed == "Shetland",]$HetNRHomratio)
+mean(intersect_doc[intersect_doc$breed == "Shetland",]$tstv)
+
+mean(intersect_doc[intersect_doc$breed == "STB",]$nvariants)
+mean(intersect_doc[intersect_doc$breed == "STB",]$HetNRHomratio)
+mean(intersect_doc[intersect_doc$breed == "STB",]$tstv)
+
+mean(intersect_doc[intersect_doc$breed == "TB",]$nvariants)
+mean(intersect_doc[intersect_doc$breed == "TB",]$HetNRHomratio)
+mean(intersect_doc[intersect_doc$breed == "TB",]$tstv)
+
+mean(intersect_doc[intersect_doc$breed == "WP",]$nvariants)
+mean(intersect_doc[intersect_doc$breed == "WP",]$HetNRHomratio)
+mean(intersect_doc[intersect_doc$breed == "WP",]$tstv)
+
+kruskal.test(intersect_doc$HetNRHomratio, intersect_doc$breed)
+
 #Plot DOC histogram
 x = ggplot(intersect_doc, aes(x=nuclear_placed_DOC)) + theme_bw() + ylab("Frequency") + 
   xlab("Depth of coverage") + geom_histogram() +scale_y_continuous(labels=comma) + 
@@ -230,3 +286,10 @@ x = ggplot(singleton_data, aes(x=V2, y=V3)) + theme_bw() + ylab("Number of singl
   theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
         axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
 save_plot("10_breeds_singletons.tiff", x, base_height = 3.5, base_width = 6)
+
+#Mean number of reads
+read <- read.table("../DOC/reads_by_horse.txt")
+#Mean read length
+summary(read$V2)
+#Mean number of pairs that mapped
+summary(read$V3)
