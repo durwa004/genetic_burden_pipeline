@@ -57,4 +57,4 @@ if __name__ == '__main__':
             with open(pbs, "w") as f:
                 print(header, file=f)
                 print(f"cd {data}\n", file=f)
-                print(f"bcftools stats -s {horse} thesis_intersect.vcf.gz > ind_bcftools_stats_files/{horse}_{breed}.stats", file=f) 
+                print(f"bcftools stats -s {horse} thesis_union.vcf.gz > ind_bcftools_stats_files/{horse}_{breed}.stats", file=f) 

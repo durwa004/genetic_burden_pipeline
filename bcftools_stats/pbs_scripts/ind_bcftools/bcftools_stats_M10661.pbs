@@ -1,0 +1,13 @@
+#!/bin/bash -l
+#PBS -l nodes=1:ppn=4,walltime=06:00:00,mem=2g
+#PBS -m abe
+#PBS -M durwa004@umn.edu
+#PBS -o $PBS_JOBID.bcftools_stats_by_ind.out
+#PBS -e $PBS_JOBID.bcftools_stats_by_ind.err
+#PBS -N bcftools_stats_by_ind.pbs
+#PBS -q small
+module load bcftools
+
+cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_union
+
+bcftools stats -s M10661 thesis_union.vcf.gz > ind_bcftools_stats_files/M10661_Arabian.stats
