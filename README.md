@@ -63,7 +63,7 @@ $ sh /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_bur
 ```
 NEED TO WORK ON
 ```
-$ python Extract_bcftools_by_ind_stats.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/ind_bcftools_stats_files/
+$ python ../python_scripts/Extract_bcftools_by_ind_by_chrom.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/ind_bcftools_stats_files/
 ```
 Transfer to my laptop
 ```
@@ -164,12 +164,12 @@ $ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject
 $ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/gb_analysis/high_moderate_variants/genetic_burden_535_horses.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/gb_analysis/
 $ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/gb_analysis/high_moderate_variants/genetic_burden_details.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/gb_analysis/
 $ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/gb_analysis/high_moderate_variants/lof_variants.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/gb_analysis/
+$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/gb_analysis/high_moderate_variants/unique_gb.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/gb_analysis/
 $ GB_by_individual.R
+$ Extract_GB_details.py
 ```
-# Get GB unique to populations
-```
-$ Get_breed_unique_gb.py
-```
+
+# Need to find possible DCVs (probably falls in lof analysis)  
 # Number of variants unique to populations
 Plan to split the thesis intersect by breed group
 - Number of variants with big differences in frequency between populations (<3% in one and >10% in another)
