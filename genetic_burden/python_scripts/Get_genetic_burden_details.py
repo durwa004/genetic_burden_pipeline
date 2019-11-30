@@ -44,8 +44,8 @@ header1 = header[9:]
 
 gb = {}
 with open(path + "/genetic_burden_535_horses.txt", "r") as input_file, open(path + "/genetic_burden_details.txt", "w") as output_file, open(path + "/lof_variants.txt", "w") as lof_file:
-    print("Breed\tCHROM\tPOS\tREF\tALT\tAC\tAF\tconsequence\timpact\tgene\tcoding\tprotein\tlof", "\t".join(header[9:]), sep = "\t", file = output_file)
-    print("Breed\tCHROM\tPOS\tREF\tALT\tAC\tAF\tconsequence\timpact\tgene\tcoding\tprotein\tlof", "\t".join(header[9:]), sep = "\t", file = lof_file)
+    print("CHROM\tPOS\tREF\tALT\tAC\tAF\tconsequence\timpact\tgene\tcoding\tprotein\tlof", "\t".join(header[9:]), sep = "\t", file = output_file)
+    print("CHROM\tPOS\tREF\tALT\tAC\tAF\tconsequence\timpact\tgene\tcoding\tprotein\tlof", "\t".join(header[9:]), sep = "\t", file = lof_file)
     for line in input_file:
         line = line.rstrip("\n").split("\t")
         c_p = line[0] + ":" + line[1]
@@ -57,14 +57,14 @@ with open(path + "/genetic_burden_535_horses.txt", "r") as input_file, open(path
             AF = ef[0]
             MA = "y"
         else:
-           continue
+            pass 
         bc = ab[0].split("AC=")
         AC = bc[1]
         if "," in AC:
             gh = AC.split(",")
             AC = gh[0]
         else:
-            continue
+            pass
         gb[c_p] = AC
         de = line[7].split("ANN=")
         bc = de[1].split("|")
@@ -107,6 +107,7 @@ for item in gb.keys():
 
 with open(path + "/genetic_burden_details.txt", "r") as input_file, open(path + "/unique_gb.txt", "w") as output_file:
     print("Breed\tCHROM\tPOS\tREF\tALT\tAC\tAF\tconsequence\timpact\tgene\tcoding\tprotein\tlof", "\t".join(header[9:]), sep = "\t", file = output_file)
+    input_file.readline()
     for line in input_file:
         line = line.rstrip("\n").split("\t")
         a = line[0] + ":" + line[1]
