@@ -49,13 +49,13 @@ if __name__ == '__main__':
 
     header = (
               "#!/bin/bash -l\n"  
-              "#PBS -l nodes=1:ppn=1,walltime=24:00:00,mem=2g\n"
+              "#PBS -l nodes=1:ppn=1,walltime=04:00:00,mem=2g\n"
               "#PBS -m abe\n"
               "#PBS -M durwa004@umn.edu\n"
               f"#PBS -o $PBS_JOBID.bcftools_stats{end}.out\n"
               f"#PBS -e $PBS_JOBID.bcftools_stats{end}.err\n"
               f"#PBS -N bcftools_stats{end}.pbs\n"
-              "#PBS -q small\n"
+              "#PBS -q lab\n"
               "module load bcftools\n"
              )
     

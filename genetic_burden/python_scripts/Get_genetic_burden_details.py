@@ -8,7 +8,6 @@ Created on Wed Oct 30 13:11:06 2019
 
 import os
 import gzip
-from itertools import islice
 
 #Get details about the type of variant,  etc.
             #Goals: Genes affected by GB
@@ -45,6 +44,8 @@ header1 = header[9:]
 
 gb = {}
 with open(path + "/genetic_burden_535_horses.txt", "r") as input_file, open(path + "/genetic_burden_details.txt", "w") as output_file, open(path + "/lof_variants.txt", "w") as lof_file:
+    print("Breed\tCHROM\tPOS\tREF\tALT\tAC\tAF\tconsequence\timpact\tgene\tcoding\tprotein\tlof", "\t".join(header[9:]), sep = "\t", file = output_file)
+    print("Breed\tCHROM\tPOS\tREF\tALT\tAC\tAF\tconsequence\timpact\tgene\tcoding\tprotein\tlof", "\t".join(header[9:]), sep = "\t", file = lof_file)
     for line in input_file:
         line = line.rstrip("\n").split("\t")
         c_p = line[0] + ":" + line[1]
@@ -68,7 +69,6 @@ with open(path + "/genetic_burden_535_horses.txt", "r") as input_file, open(path
         de = line[7].split("ANN=")
         bc = de[1].split("|")
         consequence = bc[1]
-        conc.append(consequence)
         coding = bc[9]
         protein = bc[10]
         impact = bc[2]
@@ -106,6 +106,7 @@ for item in gb.keys():
         u_b.append(a[1])
 
 with open(path + "/genetic_burden_details.txt", "r") as input_file, open(path + "/unique_gb.txt", "w") as output_file:
+    print("Breed\tCHROM\tPOS\tREF\tALT\tAC\tAF\tconsequence\timpact\tgene\tcoding\tprotein\tlof", "\t".join(header[9:]), sep = "\t", file = output_file)
     for line in input_file:
         line = line.rstrip("\n").split("\t")
         a = line[0] + ":" + line[1]

@@ -1,13 +1,13 @@
 #!/bin/bash -l
-#PBS -l nodes=1:ppn=4,walltime=06:00:00,mem=2g
+#PBS -l nodes=1:ppn=1,walltime=04:00:00,mem=2g
 #PBS -m abe
 #PBS -M durwa004@umn.edu
-#PBS -o $PBS_JOBID.bcftools_stats_by_ind.out
-#PBS -e $PBS_JOBID.bcftools_stats_by_ind.err
-#PBS -N bcftools_stats_by_ind.pbs
-#PBS -q small
+#PBS -o $PBS_JOBID.bcftools_stats.genotyped.vcf.gz.out
+#PBS -e $PBS_JOBID.bcftools_stats.genotyped.vcf.gz.err
+#PBS -N bcftools_stats.genotyped.vcf.gz.pbs
+#PBS -q lab
 module load bcftools
 
-cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect
+cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_gatk_without_Prze/chrom_x
 
-bcftools stats -s ARAB0035A thesis_intersect.vcf.gz > ind_bcftools_stats_files/ARAB0035A_Arabian.stats
+for i in  NC_009175_3 ; do bcftools stats -s ARAB0035A ${i}.genotyped.vcf.gz > ind_bcftools_stats_files/ARAB0035A_Arabian_${i}.stats;done
