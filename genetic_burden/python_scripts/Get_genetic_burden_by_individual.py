@@ -49,29 +49,7 @@ with open(path + "/genetic_burden_535_horses.txt", "r") as input_file, open(path
         if key in horse_breed.keys():
             print(key, horse_breed[key], het[key], hom[key], missing[key],sep = "\t", file = output_file)
 
-#Get genetic burden per indidivual - with details about which variant caller it is called by
-for filename in os.listdir(path):
-    if filename.endswith("_high.txt") or filename.endswith("_moderate.txt"):
-        a = filename.split("se_")
-        b = a[1].split(".txt")
-        with open(path + filename, "r") as input_file, open(b[0] + "_gb_by_individual.txt", "w") as output_file:
-            for line in input_file:
-                line = line.rstrip("\n").split("\t")
-                for i in range(len(line)):
-                    if "0/1" in line[i]:
-                        a = horse[header[i]].split(",")
-                        b = int(a[0]) + 1
-                        c = str(b) + "," + a[1]
-                        horse[header[i]] = c
-                    elif "1/1" in line[i]:
-                        a = horse[header[i]].split(",")
-                        b = int(a[1]) + 1
-                        c = a[0] + "," + str(b)
-                        horse[header[i]] = c
-            for key in horse.keys():
-                if key in horse_breed.keys():
-                    a = horse[key].split(",")
-                    print(key, horse_breed[key], a[0], a[1], sep = "\t", file = output_file)
+        
 
 
 
