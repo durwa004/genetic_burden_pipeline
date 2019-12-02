@@ -63,8 +63,33 @@ with open("known_disease_locations/No_variants_present.txt", "w") as output_file
 
 #Then need to double check that the variants are the exact position that they are supposed to be
 #Did this by hand
-with open("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/known_variants_present_exact.txt", "r") as input_file, open("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/known_variants_table.txt", "w") as output_file:
+header = []
+breed = []
+with open("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/known_variants_present_exact.txt", 
+          "r") as input_file, open("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/dz_variants_table.txt", 
+             "w") as dz_file, open("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/non-dz_variants_table.txt",
+                "w") as non_dz_file:
+    print("Disease\thorse\tbreed\tgenotype", file = dz_file)
+    print("Disease\thorse\tbreed\tgenotype", file = non_dz_file)
     for line in input_file:
         line = line.rstrip("\n").split("\t")
-        
-                         
+        if "Phenotype" in line[0]:
+            for i in range(len(line)):
+                header.append(line[i])
+            next
+        elif "NA" in line[0]:
+            for i in range(len(line)):
+                breed.append(line[i])
+            next
+        else:
+            if line[2] == "n":
+                for i in range(len(line)):
+                    if i >8:
+                        if line[i] == "1" or line[i] == "2":
+                            print(line[1], header[i], breed[i], line[i], sep = "\t", file = non_dz_file)
+            else:
+                for i in range(len(line)):
+                    if i >8:
+                        if line[i] == "1" or line[i] == "2":
+                            print(line[1], header[i], breed[i], line[i], sep = "\t", file = dz_file)
+            

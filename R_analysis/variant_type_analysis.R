@@ -126,3 +126,4 @@ x = ggplot(se_e, aes(x = V5, y = se_e)) + theme_bw() + ylab("Mean allele frequen
   theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
         axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
 save_plot("SnpEff_coding_variant_effect_by_AF.tiff", x, base_height = 3.5, base_width = 6)
+

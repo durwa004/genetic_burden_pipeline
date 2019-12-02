@@ -94,11 +94,38 @@ jpeg("HC_bcftools_intersect_indel_venn.jpeg",width=6,height=6,units="in",res=135
 plot(vcombo,show=list(SetLabels=FALSE,FaceText=FALSE,Faces=FALSE))
 dev.off()
 
+####Figure out number of variants per individual for bcftools/gatk
+bcftools_stats <- read.table("bcftools_ind_number_of_variants.txt",header=T)
+bcftools_stats$nvariants <- bcftools_stats$nNonRefHom + bcftools_stats$nHets
+mean(bcftools_stats$nvariants)
+mean(bcftools_stats$nIndels)
+mean(bcftools_stats$nNonRefHom)
+mean(bcftools_stats$nHets)
+bcftools_stats$tstv <- bcftools_stats$Ts/bcftools_stats$Tv
+mean(bcftools_stats$tstv)
+mean(bcftools_stats$nHets/bcftools_stats$nNonRefHom)
+
+gatk_stats <- read.table("gatk_ind_number_of_variants.txt",header=T)
+gatk_stats$nvariants <- gatk_stats$nNonRefHom + gatk_stats$nHets
+mean(gatk_stats$nvariants)
+mean(gatk_stats$nIndels)
+mean(gatk_stats$nNonRefHom)
+mean(gatk_stats$nHets)
+gatk_stats$tstv <- gatk_stats$Ts/gatk_stats$Tv
+mean(gatk_stats$tstv)
+mean(gatk_stats$nHets/gatk_stats$nNonRefHom)
+
+####Union
+union_stats <- read.table("union_by_ind_number_of_variants.txt",header=T)
+mean(union_stats$nHets/union_stats$nNonRefHom)
 
 ####Figure out number of variants per individual
 intersect_stats <- read.table("../with_prze/bcftools_stats_output_with_prze/intersect_by_ind_number_of_variants.txt",header=T)
 intersect_stats$nvariants <- intersect_stats$nNonRefHom + intersect_stats$nHets
 mean(intersect_stats$nvariants)
+mean(intersect_stats$nIndels)
+mean(intersect_stats$nNonRefHom)
+mean(intersect_stats$nHets)
 intersect_stats$tstv <- intersect_stats$Ts/intersect_stats$Tv
 
 #Add in DOC info
@@ -158,23 +185,17 @@ x = ggplot(intersect_doc, aes(x=nuclear_placed_DOC)) + theme_bw() + ylab("Freque
   xlab("Depth of coverage") + geom_histogram() +scale_y_continuous(labels=comma) + 
   theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
         axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("../bcftools_stats_output/535_individuals_DOC.tiff", x, base_height = 3.5, base_width = 6)
+save_plot("535_individuals_DOC.tiff", x, base_height = 3.5, base_width = 6)
 
 #Look for correlation between number of variants and DOC with line of best fit 
 x = ggplot(intersect_doc, aes(x=nuclear_placed_DOC,y=nvariants)) + theme_bw() + ylab("Number of variants") + 
-  xlab("Depth of coverage") + geom_point(fill=rgb(122/255,0/255,25/255,1)) +
+  xlab("Depth of coverage") + geom_point() + scale_x_continuous(limits = c(0,50))+
   scale_y_continuous(labels=comma, limits = c(0,8000000)) + geom_smooth() +
   theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
         axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("../bcftools_stats_output/535_individuals_DOC_nvariants.tiff", x, base_height = 3.5, base_width = 6)
+save_plot("535_individuals_DOC_nvariants.tiff", x, base_height = 3.5, base_width = 6)
 
 #Non linear association therefore pearson's correlation isn't useful
-library(tidyverse)
-library(caret)
-#Figure out how many orders to use (change the number to max that are signifianct)
-model <- lm(nvariants ~ poly(nuclear_placed_DOC,5,raw=TRUE), data = intersect_doc)
-predictions <- model %/% predict(test.data)
-
 #cor.test(intersect_doc$nuclear_placed_DOC,intersect_doc$nvariants, method = "pearson")
 library(devtools)
 #install_github("ProcessMiner/nlcor")
@@ -251,18 +272,21 @@ save_plot("../bcftools_stats_output/10_breeds_tstv.tiff", x, base_height = 3.5, 
 setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/bcftools_stats_output/")
 #Categorize AF: Using python
 AF_data <- read.table("all_horses_AF_freq_info.txt",header=T)
-AF_data$means <- rowMeans(AF_data)
-
-af <- read.table("AF_freq_files/M1005_STB_AF_freq.txt", header = T)
-AF_data$AF <- af$AF
+AF_data$means <- rowMeans(AF_data[,2:536])
 
 #AF
 x = ggplot(AF_data, aes(x=AF, y=means)) + theme_bw() + ylab("Number of variants") + 
-  xlab("Allele frequency") + geom_point(fill=rgb(122/255,0/255,25/255,1)) + scale_y_continuous(labels=comma) + 
-  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
-        axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
+  xlab("Allele frequency (%)") + geom_point() + scale_y_continuous(labels=comma, limits= c(0,3000000)) + 
+  theme(panel.grid = element_blank(), panel.border = element_blank(), 
+        axis.line.x = element_line(), axis.line.y = element_line(), 
+        axis.text.x = element_text(angle=90), axis.text = element_text(size=10), 
+        axis.title = element_text(size=12,face="bold"))
 save_plot("535_horses_AF.tiff", x, base_height = 3.5, base_width = 6)
 
+sum(AF_data$means[AF_data$AF < 5]) # 18108154
+sum(AF_data$means[AF_data$AF >= 5]) # 13530513
+sum(AF_data$means[AF_data$AF < 5]) + sum(AF_data$means[AF_data$AF >= 5]) # 31638667
+18108154/31638667
 #AF categories
 categories <- read.table("all_horses_AF_categorized.txt", header= T)
 categories$means <- AF_data$means

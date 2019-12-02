@@ -48,6 +48,7 @@ with open(path + "/genetic_burden_535_horses.txt", "r") as input_file, open(path
     for key in het.keys():
         if key in horse_breed.keys():
             print(key, horse_breed[key], het[key], hom[key], missing[key],sep = "\t", file = output_file)
+<<<<<<< HEAD
 
 #Get number of lof variants per individual
 header1 = ["NA", "NA"] + header
@@ -71,3 +72,13 @@ with open(path + "/lof_variants.txt", "r") as input_file, open(path + "/ann_se_l
     for key in het.keys():
         if key in horse_breed.keys():
             print(key, horse_breed[key], het[key], hom[key], missing[key],sep = "\t", file = output_file)
+=======
+<<<<<<< HEAD
+
+        
+
+
+
+=======
+>>>>>>> bd79e80b2d2ddb753ca8b6799fce79e77fcbf9c7
+>>>>>>> 704448ef000bb6c9095c683a8b8aa8c9db5c6108
