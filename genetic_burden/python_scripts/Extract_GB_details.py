@@ -69,150 +69,310 @@ with open(path + "/unique_gb.txt", "r") as input_file, open(path + "/unique_gb_i
 
 #               
 #Do for all GB variants
-genes = {}
-lof_genes = {}
 with open(path + "/genetic_burden_details.txt", "r") as input_file, open(path + "/gb_genes.txt", "w") as output_file:
     input_file.readline()
     for line in input_file:
         line = line.rstrip("\n").split("\t")
-        genes[line[8]] = "A"
         print(line[8], file = output_file)
-        if line[11] == "y":
-            lof_genes[line[8]] = "A"
-print(len(set(genes.keys())))
-print(len(set(lof_genes.keys())))
 #Use https://biodbnet-abcc.ncifcrf.gov/db/db2db.php to convert ids
         #RefSeq mRNA accession to gene symbol
 
 #Create accession/gene symbol dictionary
+genes = {}
 with open(path + "/gb_genes_symbols.txt", "r") as genes_file:
+   genes_file.readline()
    for line1 in genes_file:
        line1 = line1.rstrip("\n").split("\t")
-       for key in genes.keys():
-           a = key.split(".")
-           if a[0] == line1[0]:
-               if line1[1] == "-":
-                    genes[key] = key
-               else:
-                   genes[key] = line1[1]
-       for key in lof_genes.keys():
-           a = key.split(".")
-           if a[0] == line1[0]:
-               if line1[1] == "-":
-                    lof_genes[key] = key
-               else:
-                   lof_genes[key] = line1[1]
+       a = line1[0].split(".")
+       if "-" in line1[1]:
+           if line1[0] in genes.keys():
+               genes[line1[0]][line1[0]] = {}
+           else:
+               genes[line1[0]] = {}
+               genes[line1[0]][line1[0]] = {}
+       else:
+           if line1[1] in genes.keys():
+               genes[line1[1]][line1[0]] = {}
+           else:
+               genes[line1[1]] = {}
+               genes[line1[1]][line1[0]] = {}
+print(len(genes))
 
-print(len(set(genes.values())))
-print(len(set(lof_genes.values())))
-
-#Check if any missing
-for key in genes.keys():
-    if genes[key] == "A":
-        print(key)
-        
-# number of genes affected by lof and GB variants
-#Get number of variants per transcript
-# number of lof variants per transcript
 count = 0
-AC = 0
-AF = 0
-lof_count = 0
-lof_AC = 0
-lof_AF = 0
+for key in genes.keys():
+    for key1 in genes[key].keys():
+        count +=1
+print(count)
+
+#Add in AC and AF to gene/transcript dictionary
 with open(path + "/genetic_burden_details.txt", "r") as input_file:
-    header = input_file.readline()
-    header = header.split("\t")
+    input_file.readline()
     for line in input_file:
         line = line.rstrip("\n").split("\t")
-        count +=1
-        AC += int(line[4])
-        AF += float(line[5]) 
-        if "," in genes[line[8]]:
-            a = genes[line[8]] + "," + line[4]
-            genes[line[8]] = a
-        else:
-            a = genes[line[8]]
-            genes[line[8]] = a + "*" + line[4]            
-        if line[11] == "y":
-            lof_count +=1
-            lof_AC += int(line[4])
-            lof_AF += float(line[5])
-            if "," in lof_genes[line[8]]:
-                a = lof_genes[line[8]] + "," + line[4]
-                lof_genes[line[8]] = a
-            else:
-                a = lof_genes[line[8]]
-                lof_genes[line[8]] = a + "*" + line[4]              
-                    
-print(AC/count)
-print(AF/count)
-print(lof_AC/lof_count)
-print(lof_AF/lof_count)
-
-
-count_single = 0
-count_multiple = 0
-length = 0
+        a = line[8].split(".")
+        for gene in genes.keys():
+            for transcript in genes[gene].keys():
+                if transcript == a[0]:
+                    if "," in genes[gene][a[0]]:
+                        b = genes[gene][a[0]] + line[0] + ":" + line[1] + ":" + line[4] + ":" + line[5] + ":" + line[11] + ","
+                        genes[gene][a[0]] = b
+                    else:
+                        b = line[0] + ":" + line[1] + ":" + line[4] + ":" + line[5] + ":" + line[11] + ","
+                        genes[gene][a[0]] = b
+                        
+# number of genes affected by GB variants
 n_variants = []
-single_gene = {}
-multiple_gene = {}
-with open(path + "/multiple_variants_genes.txt", "w") as output_file:
-    for key, value in genes.items():
-        a = value.split(",")
-        b = value.split("*")
-        n_variants.append(len(a))
-        if len(a) <2:
-            count_single +=1
-            if genes[key] in single_gene.keys():
-                if genes[key] in multiple_gene.keys():
-                    b = multiple_gene[genes[key]] + ":" + "1"
-                    multiple_gene[genes[key]] = b
+single = 0
+multiple = 0
+lots = 0
+AC_list = []
+AF_list = []
+with open(path + "/exploring_GB.txt", "w") as output_file, open(path + "/multiple_variants_genes.txt", "w") as output2:
+    print("gene\ttranscript\tlocation\tAC\tAF\tLOF", file = output_file)
+    for key,value in genes.items():
+        variants = 0
+        location = []
+        AC_n = 0
+        AF_n = 0
+        AC = []
+        AF = []
+        LOF = []
+        transcripts = []
+        count = 0
+        for item,value1 in genes[key].items():
+            a = value1.split(",")
+            count +=1
+            for i in range(len(a)):
+                if a[i] == "":
+                    next
                 else:
-                    multiple_gene[genes[key]] = "1"
-            else:
-                single_gene[genes[key]] = "1"
+                    count +=1
+                    transcripts.append(item)
+                    ab = a[i].split(":")
+                    b = ab[0] + ":" +ab[1]
+                    variants +=1
+                    location.append(b)
+                    AC_n += int(ab[2])
+                    AF_n += float(ab[3])
+                    AC.append(ab[2])
+                    AF.append(ab[3])
+                    LOF.append(ab[4])
+        if (count-1) == 1:
+            single +=1
         else:
-            count_multiple +=1
-            if genes[key] in multiple_gene.keys():
-                b = multiple_gene[genes[key]] + ":" + "1"
-                multiple_gene[genes[key]] = b
-            else:
-                multiple_gene[genes[key]] = "1"
-            if len(a) > length:
-                length = len(a)
-            if len(a) > 5:
-                print(genes[key], file = output_file)
-            
-print(len(single_gene))
-print(len(multiple_gene))
+            multiple +=1
+        if (count-1) > 5:
+            lots +=1
+            print(key, file = output2)
+        n_variants.append(variants)
+        cd = int(AC_n)/len(location)
+        AC_list.append(cd)
+        ef = float(AF_n)/len(location)
+        AF_list.append(ef)
+        for i in range(len(location)):
+            print(key, transcripts[i], location[i], AC[i], AF[i], LOF[i], sep = "\t", file = output_file)
 
-len(n_variants) #5,821  
-mean(n_variants) #1.52
+print(single)
+print(multiple)
+print(lots)
+
 n_variants_sort = sorted(n_variants)
-print(n_variants_sort[0]) #1
-print(n_variants_sort[-1]) #26
-count_single
-count_multiple
+n_variants_sort[0]
+n_variants_sort[-1]
 
-with open(path + "/gb_genes_symbols.txt", "r") as genes_file:
-   for line1 in genes_file:
-       line1 = line1.rstrip("\n").split("\t")
-       for key in genes.keys():
-           if key == line1[0]:
-               if line1[1] == "-":
-                    genes[key] = key
-               else:
-                   genes[key] = line1[1]
-       for key in lof_genes.keys():
-           if key == line1[0]:
-               if line1[1] == "-":
-                    lof_genes[key] = key
-               else:
-                   lof_genes[key] = line1[1]
-                   
-len(genes)
-len(set(genes.values()))
-len(lof_genes)
-len(set(lof_genes.values()))
-#Do for LOF variants
+AC_list_sort = sorted(AC_list)
+AC_list_sort[0]
+AC_list_sort[-1]
+
+AF_list_sort = sorted(AF_list)
+AF_list_sort[0]
+AF_list_sort[-1]
+
+#Get number of variants per transcript
+n_variants = []
+AC_list = []
+AF_list = []
+single = 0
+multiple = 0
+lots = 0
+for key,value in genes.items():
+    for item,value1 in genes[key].items():
+        variants = 0
+        AC_n = 0
+        AF_n = 0
+        a = value1.split(",")
+        for i in range(len(a)):
+            if a[i] == "":
+                next
+            else:
+                ab = a[i].split(":")
+                b = ab[0] + ":" +ab[1]
+                variants +=1
+                AC_n += int(ab[2])
+                AF_n += float(ab[3])
+            n_variants.append(variants)
+            cd = int(AC_n)/(len(a)-1)
+            AC_list.append(cd)
+            ef = float(AF_n)/(len(a)-1)
+            AF_list.append(ef)
+        if len(a) <3:
+            single +=1
+        else:
+            multiple +=1
+        if len(a) >5:
+            lots +=1
+print(single)
+print(multiple)
+print(lots)
+
+n_variants_sort = sorted(n_variants)
+print(mean(n_variants))
+print(n_variants_sort[0])
+print(n_variants_sort[-1])
+
+AC_list_sort = sorted(AC_list)
+print(mean(AC_list))
+print(AC_list_sort[0])
+print(AC_list_sort[-1])
+
+AF_list_sort = sorted(AF_list)
+print(mean(AF_list))
+print(AF_list_sort[0])
+print(AF_list_sort[-1])
+
+#############################################################################
+# Get number of genes affected by lof 
+# number of lof variants per transcript
+
+n_variants = []
+single = 0
+multiple = 0
+lots = 0
+AC_list = []
+AF_list = []
+with open(path + "/exploring_LOF.txt", "w") as output_file, open(path + "/multiple_variants_lof_genes.txt", "w") as output2:
+    print("gene\ttranscript\tlocation\tAC\tAF\tLOF", file = output_file)
+    for key,value in genes.items():
+        variants = 0
+        location = []
+        AC_n = 0
+        AF_n = 0
+        AC = []
+        AF = []
+        LOF = []
+        transcripts = []
+        count = 0
+        for item,value1 in genes[key].items():
+            a = value1.split(",")
+            for i in range(len(a)):
+                if a[i] == "":
+                    next
+                else:
+                    ab = a[i].split(":")
+                    if ab[4] == "y":
+                        count +=1
+                        transcripts.append(item)
+                        b = ab[0] + ":" +ab[1]
+                        variants +=1
+                        location.append(b)
+                        AC_n += int(ab[2])
+                        AF_n += float(ab[3])
+                        AC.append(ab[2])
+                        AF.append(ab[3])
+                        LOF.append(ab[4])
+        if count >0:
+            if (count) == 1:
+                single +=1
+            else:
+                multiple +=1
+            if (count) > 5:
+                lots +=1
+                print(key, file = output2)
+            n_variants.append(variants)
+            cd = int(AC_n)/len(location)
+            AC_list.append(cd)
+            ef = float(AF_n)/len(location)
+            AF_list.append(ef)
+            for i in range(len(location)):
+                print(key, transcripts[i], location[i], AC[i], AF[i], LOF[i], sep = "\t", file = output_file)
+
+print(single)
+print(multiple)
+print(lots)
+
+n_variants_sort = sorted(n_variants)
+print(mean(n_variants_sort))
+print(n_variants_sort[0])
+print(n_variants_sort[-1])
+
+AC_list_sort = sorted(AC_list)
+print(mean(AC_list))
+print(AC_list_sort[0])
+print(AC_list_sort[-1])
+
+AF_list_sort = sorted(AF_list)
+print(mean(AF_list))
+print(AF_list_sort[0])
+print(AF_list_sort[-1])
+
+#Get number of variants per transcript
+n_variants = []
+AC_list = []
+AF_list = []
+single = 0
+multiple = 0
+lots = 0
+for key,value in genes.items():
+    count = 0
+    for item,value1 in genes[key].items():
+        variants = 0
+        AC_n = 0
+        AF_n = 0
+        a = value1.split(",")
+        for i in range(len(a)):
+            if a[i] == "":
+                next
+            else:
+                ab = a[i].split(":")
+                if ab[4] == "y":
+                    count +=1
+                    transcripts.append(item)
+                    b = ab[0] + ":" +ab[1]
+                    variants +=1
+                    location.append(b)
+                    variants +=1
+                    AC_n += int(ab[2])
+                    AF_n += float(ab[3])
+            n_variants.append(variants)
+            cd = int(AC_n)/(len(a)-1)
+            AC_list.append(cd)
+            ef = float(AF_n)/(len(a)-1)
+            AF_list.append(ef)
+        if count >0:
+            if count == 1:
+                single +=1
+            else:
+                multiple +=1
+            if count >5:
+                lots +=1
+
+print(single)
+print(multiple)
+print(lots)
+
+n_variants_sort = sorted(n_variants)
+print(mean(n_variants))
+print(n_variants_sort[0])
+print(n_variants_sort[-1])
+
+AC_list_sort = sorted(AC_list)
+print(mean(AC_list))
+print(AC_list_sort[0])
+print(AC_list_sort[-1])
+
+AF_list_sort = sorted(AF_list)
+print(mean(AF_list))
+print(AF_list_sort[0])
+print(AF_list_sort[-1])
+
+
