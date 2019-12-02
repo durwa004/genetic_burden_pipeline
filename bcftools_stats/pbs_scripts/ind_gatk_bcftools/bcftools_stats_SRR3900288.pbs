@@ -1,0 +1,13 @@
+#!/bin/bash -l
+#PBS -l nodes=1:ppn=1,walltime=24:00:00,mem=2g
+#PBS -m abe
+#PBS -M durwa004@umn.edu
+#PBS -o $PBS_JOBID.bcftools_stats.genotyped.vcf.gz.out
+#PBS -e $PBS_JOBID.bcftools_stats.genotyped.vcf.gz.err
+#PBS -N bcftools_stats.genotyped.vcf.gz.pbs
+#PBS -q small
+module load bcftools
+
+cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/genotyped_files/gatk
+
+for i in  NC_001640_1 NC_009144_3 NC_009145_3 NC_009146_3 NC_009147_3 NC_009148_3 NC_009149_3 NC_009150_3 NC_009151_3 NC_009152_3 NC_009153_3 NC_009154_3 NC_009155_3 NC_009156_3 NC_009157_3 NC_009158_3 NC_009159_3 NC_009160_3 NC_009161_3 NC_009162_3 NC_009163_3 NC_009164_3 NC_009165_3 NC_009166_3 NC_009167_3 NC_009168_3 NC_009169_3 NC_009170_3 NC_009171_3 NC_009172_3 NC_009173_3 NC_009174_3 unplaced ; do bcftools stats -s SRR3900288 ${i}.genotyped.vcf.gz > ind_bcftools_stats_files/SRR3900288_Shetland_${i}.stats;done

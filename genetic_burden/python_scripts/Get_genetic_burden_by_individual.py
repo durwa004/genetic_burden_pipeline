@@ -33,11 +33,11 @@ with open(path + "/genetic_burden_535_horses.txt", "r") as input_file, open(path
     for line in input_file:
         line = line.rstrip("\n").split("\t")
         for i in range(len(line)):
-            if "0/1" in line[i]:
+            if "0/1" in line[i] or "0/2" in line[i] or "0/3" in line[i]:
                 a = het[header[i]]
                 b = int(a) + 1
                 het[header[i]] = b
-            elif "1/1" in line[i]:
+            elif "1/1" in line[i] or "2/2" in line[i] or "1/2" in line[i] or "1/3" in line[i] or "2/3" in line[i] or "2/1" in line[i]:
                 a = hom[header[i]]
                 b = int(a) + 1
                 hom[header[i]] = b
@@ -48,8 +48,11 @@ with open(path + "/genetic_burden_535_horses.txt", "r") as input_file, open(path
     for key in het.keys():
         if key in horse_breed.keys():
             print(key, horse_breed[key], het[key], hom[key], missing[key],sep = "\t", file = output_file)
+<<<<<<< HEAD
 
         
 
 
 
+=======
+>>>>>>> bd79e80b2d2ddb753ca8b6799fce79e77fcbf9c7
