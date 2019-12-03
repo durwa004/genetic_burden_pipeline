@@ -1,7 +1,8 @@
+from __future__ import division  
 import gzip
 from statistics import mean  
-from __future__ import division  
 
+#This is a very long script and likely can be tidied up at some point!!
 path = "/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/gb_analysis"
 
 #Need to get header from vcf file
@@ -32,22 +33,23 @@ with open(path + "/unique_gb.txt", "r") as input_file, open(path + "/unique_gb_g
         #RefSeq mRNA accession to gene symbol
 
 #Create accession/gene symbol dictionary
-genes = {}
+genes_unique = {}
 with open(path + "/unique_gb.txt", "r") as input_file:
     for line in input_file:
         line = line.rstrip("\n").split("\t")
         old = line[9].split(".")
-        genes[old[0]] = "A"
+        genes_unique[old[0]] = "A"
 with open(path + "/unique_gb_genes_with_symbols.txt", "r") as genes_file:
    for line1 in genes_file:
        line1 = line1.rstrip("\n").split("\t")
-       for key in genes.keys():
+       for key in genes_unique.keys():
            if key == line1[0]:
-               genes[key] = line1[1]
+               genes_unique[key] = line1[1]
 
 #Print out the unique variants and which horse they are present in
 #0-12 not horses
-with open(path + "/unique_gb.txt", "r") as input_file, open(path + "/unique_gb_individuals.txt", "w") as output_file:
+with open(path + "/unique_gb.txt", "r") as input_file, open(path + "/unique_gb_individuals.txt", 
+         "w") as output_file, open(path + "/unique_gb_genes.txt", "w") as output2:
     header = input_file.readline()
     header = header.split("\t")
     for line in input_file:
@@ -64,8 +66,9 @@ with open(path + "/unique_gb.txt", "r") as input_file, open(path + "/unique_gb_i
                         a = key + ":" + horse_breed[key]
                         ind.append(a)
         c = line[9].split(".")
-        print("\t".join(line[0:9]),genes[c[0]], line[10],
+        print("\t".join(line[0:9]),genes_unique[c[0]], line[10],
                   line[11], line[12], "\t".join(ind), sep = "\t", file = output_file)
+        print(genes_unique[c[0]], file = output2)
 
 #               
 #Do for all GB variants
@@ -376,3 +379,203 @@ print(AF_list_sort[0])
 print(AF_list_sort[-1])
 
 
+#############################################################################
+#Create accession/gene symbol dictionary for homozygous/heterozygous variants
+genotype = {}
+with open(path + "/gb_genes_symbols.txt", "r") as genes_file:
+   genes_file.readline()
+   for line1 in genes_file:
+       line1 = line1.rstrip("\n").split("\t")
+       a = line1[0].split(".")
+       if "-" in line1[1]:
+           if line1[0] in genotype.keys():
+               genotype[line1[0]][line1[0]] = {}
+           else:
+               genotype[line1[0]] = {}
+               genotype[line1[0]][line1[0]] = {}
+       else:
+           if line1[1] in genotype.keys():
+               genotype[line1[1]][line1[0]] = {}
+           else:
+               genotype[line1[1]] = {}
+               genotype[line1[1]][line1[0]] = {}
+print(len(genotype))
+
+count = 0
+for key in genotype.keys():
+    for key1 in genotype[key].keys():
+        count +=1
+print(count)
+
+#Add in AC and AF to gene/transcript dictionary
+with open(path + "/genetic_burden_details.txt", "r") as input_file:
+    input_file.readline()
+    for line in input_file:
+        line = line.rstrip("\n").split("\t")
+        a = line[8].split(".")
+        for gene in genotype.keys():
+            for transcript in genotype[gene].keys():
+                count_hom = 0
+                count_het = 0
+                count_miss = 0
+                count_ref = 0
+                if transcript == a[0]:
+                    genotypes = line[13:]
+                    if "," in genotype[gene][a[0]]:
+                        for item,value in enumerate(genotypes):
+                            if "0/0" in value:
+                                count_ref +=1
+                            elif "1/1" in value or "1/2" in value or "1/3" in value or "2/2" in value or "3/3" in value or "2/1" in value or "2/3" in value:
+                                count_hom +=1
+                            elif "0/1" in value or "0/2" in value or "0/3" in value:
+                                count_het +=1
+                            elif "./." in value:
+                                count_miss +=1
+                            else:
+                                print(value)
+                        b = genotype[gene][a[0]] + str(count_ref) + ":" + str(count_hom) + ":" + str(count_het) + ":" + str(count_miss) + ":" + line[11] + ","
+                        genotype[gene][a[0]] = b
+                    else:
+                        for item,value in enumerate(genotypes):
+                            if "0/0" in value:
+                                count_ref +=1
+                            elif "1/1" in value or "1/2" in value or "1/3" in value or "2/2" in value or "3/3" in value or "2/1" in value or "2/3" in value:
+                                count_hom +=1
+                            elif "0/1" in value or "0/2" in value or "0/3" in value:
+                                count_het +=1
+                            elif "./." in value:
+                                count_miss +=1
+                            else:
+                                print(value)
+                        b = str(count_ref) + ":" + str(count_hom) + ":" + str(count_het) + ":" + str(count_miss) + ":" + line[11] + ","
+                        genotype[gene][a[0]] = b
+
+#Get number of homozygotes/heterozygotes for each gene
+n_hom = []
+n_het = []
+lof_n_hom = []
+lof_n_het = []
+transcript_hom = []
+transcript_het = []
+lots = []
+lof_transcript_hom = []
+lof_transcript_het = []
+lof_lots = []
+with open(path + "/multiple_homozygous_gb_genotypes.txt", "w") as output_file, open(path+"/multiple_homozygous_lof_genotypes", "w") as output2:
+    for key,value in genotype.items():
+        count_hom = 0
+        count_het = 0
+        lof_hom = 0
+        lof_het = 0
+        trans_hom = 0
+        trans_lof_hom = 0
+        for item,value1 in genotype[key].items():
+            a = value1.split(",")
+            for i in range(len(a)):
+                ab = a[i].split(":")
+                if len(ab) >1:
+                    if int(ab[1]) >0:
+                        count_hom += 1
+                        trans_hom += int(ab[1]) 
+                    if ab[4] == "y":
+                        if int(ab[1]) > 0:
+                            lof_hom += 1
+                            trans_lof_hom += int(ab[1])
+        n_hom.append(trans_hom)
+        lof_n_hom.append(trans_lof_hom)
+        if count_hom > 0:
+            transcript_hom.append(count_hom)
+        if count_hom >5:
+            lots.append(count_hom)
+            print(key, file = output_file)
+        if lof_hom > 0:
+            lof_transcript_hom.append(count_hom)
+        if lof_hom >5:
+            lof_lots.append(count_hom)
+            print(key, file = output2)
+
+    
+print(len(transcript_hom))
+print(len(lots))
+
+n_hom_sort = sorted(n_hom)
+print(mean(n_hom))
+print(n_hom_sort[0])
+print(n_hom_sort[-1])
+
+print(len(lof_transcript_hom))
+print(len(lof_transcript_het))
+print(len(lof_lots))
+
+lof_hom_sort = sorted(lof_n_hom)
+print(mean(lof_hom_sort))
+print(lof_hom_sort[0])
+print(lof_hom_sort[-1])
+                    
+#Get number of homozygotes/heterozygotes for each transcript
+n_hom = []
+n_het = []
+lof_n_hom = []
+lof_n_het = []
+transcript_hom = []
+transcript_het = []
+lots = []
+lof_transcript_hom = []
+lof_transcript_het = []
+lof_lots = []
+for key,value in genotype.items():
+    count = 0
+    for item,value1 in genotype[key].items():
+        count_hom = 0
+        count_het = 0
+        lof_hom = 0
+        lof_het = 0
+        a = value1.split(",")
+        for i in range(len(a)):
+            ab = a[i].split(":")
+            if len(ab) >1:
+                if int(ab[1]) >0:
+                    count_hom += 1
+                    n_hom.append(int(ab[1]))
+                elif int(ab[2]) > 0:
+                    count_het +=1
+                    n_het.append(ab[1])  
+                if ab[4] == "y":
+                    if int(ab[1]) > 0:
+                        lof_hom += 1
+                        lof_n_hom.append(int(ab[1]))
+                    elif int(ab[2]) > 0:
+                        lof_het +=1
+                        lof_n_het.append(ab[2])
+        if count_hom > 0:
+            transcript_hom.append(count_hom)
+        if count_hom >5:
+            lots.append(count_hom)
+        if count_het >0:
+            transcript_het.append(count_het)
+        if lof_hom > 0:
+            lof_transcript_hom.append(count_hom)
+        if lof_hom >5:
+            lof_lots.append(count_hom)
+        if lof_het >0:
+            lof_transcript_het.append(count_het) 
+
+    
+print(len(transcript_hom))
+print(len(transcript_het))
+print(len(lots))
+
+n_hom_sort = sorted(n_hom)
+print(mean(n_hom))
+print(n_hom_sort[0])
+print(n_hom_sort[-1])
+
+print(len(lof_transcript_hom))
+print(len(lof_transcript_het))
+print(len(lof_lots))
+
+lof_hom_sort = sorted(lof_n_hom)
+print(mean(lof_hom_sort))
+print(lof_hom_sort[0])
+print(lof_hom_sort[-1])
+                    

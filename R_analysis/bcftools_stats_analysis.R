@@ -128,6 +128,18 @@ mean(intersect_stats$nNonRefHom)
 mean(intersect_stats$nHets)
 intersect_stats$tstv <- intersect_stats$Ts/intersect_stats$Tv
 
+#Get number of heterozygous variants and number of homozygous variants per kb of sequence
+#taken from NCBI (2,474.93 Mb, 2,474,930 kb)
+intersect_stats$het_kb <- intersect_stats$nHets /2474930
+intersect_stats$hom_kb <- intersect_stats$nNonRefHom /2474930
+intersect_stats$nvariants_kb <- intersect_stats$nvariants /2474930
+mean(intersect_stats$het_kb)
+range(intersect_stats$het_kb)
+mean(intersect_stats$hom_kb)
+range(intersect_stats$hom_kb)
+mean(intersect_stats$nvariants_kb)
+range(intersect_stats$nvariants_kb)
+
 #Add in DOC info
 DOC <- read.table("../DOC/DOC_by_horse.txt", header=T)
 colnames(DOC) = c("Sample", "total_DOC","nuclear_placed_DOC")
@@ -217,24 +229,37 @@ xy = ggplot(intersect_doc, aes(x=nuclear_placed_DOC,y=nvariants)) + theme_bw() +
 intersect_stats_br <- intersect_doc %>% 
   filter(!grepl('Other', breed))
 fit1 <- (lm(nvariants ~ breed, data=intersect_stats_br))
-fit2 <- (lm(nvariants ~ breed + log10(nuclear_placed_DOC), data=intersect_stats_br))
+fit2 <- (lm(nvariants ~ breed + nuclear_placed_DOC, data=intersect_stats_br))
 anova(fit1,fit2)
 
-nvariants_m <- (lm(nvariants ~ breed + log10(nuclear_placed_DOC),data=intersect_stats_br))
+nvariants_m <- (lm(nvariants ~ breed + nuclear_placed_DOC,data=intersect_stats_br))
+n_hom_variants_m <- (lm(nNonRefHom ~ breed + nuclear_placed_DOC,data=intersect_stats_br))
 summary(nvariants_m)
-test(emmeans(nvariants_m, ~breed, "breed",weights = "proportional", type = "response"))
-confint(emmeans(nvariants_m, ~breed, "breed",weights = "proportional", type = "response"))
+summary(n_hom_variants_m)
 
-emmip(noise.lm, type ~ size | side)
-nvariants_lm_plot <- plotemms(nvariants_m, digits=2, color = "Fat_g") + ylab("Estimated Marginal Mean of log10 TEQ")
+#Get predictions for mean of each point
+nvariants_pred <- matrix(predict(ref_grid(nvariants_m)),nrow=10)
+#Get reference grid
+nvariants_rg <- ref_grid(nvariants_m, ~breed)
+#Get EMMEANs
+nvariants_emm <- emmeans(nvariants_m, "breed", weights = "proportional", type = "response")
+n_hom_variants_emm <- emmeans(n_hom_variants_m, "breed", weights = "proportional", type = "response")
 
-
-kruskal.test(intersect_stats_br$nvariants, intersect_stats_br$breed)
-x = ggplot(intersect_stats_br, aes(x=breed, y=nvariants)) + theme_bw() + ylab("Number of variants") + 
-  xlab("Breed") + geom_boxplot(fill=rgb(122/255,0/255,25/255,1)) +scale_y_continuous(labels=comma) + 
+####Plot EMMEANS
+#Number of variants
+x <- plot(nvariants_emm) + geom_boxplot() + theme_bw() + xlab("EMMEAN of number of variants") + 
+  ylab("Breed") +scale_x_continuous(labels=comma) + 
   theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
-        axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("../bcftools_stats_output/10_breeds_nvariants.tiff", x, base_height = 3.5, base_width = 6)
+        axis.line.y = element_line(), axis.text.x = element_text(), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
+save_plot("../Paper_2019/Figures/nvariants_EMMEANS.tiff", x, base_height = 3.5, base_width = 8)
+#Number of homozygous variants
+x <- plot(n_hom_variants_emm) + geom_boxplot() + theme_bw() + xlab("EMMEAN of number of homozygous variants") + 
+  ylab("Breed") +scale_x_continuous(labels=comma) + 
+  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
+        axis.line.y = element_line(), axis.text.x = element_text(), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
+save_plot("../Paper_2019/Figures/n_hom_variants_EMMEANS.tiff", x, base_height = 3.5, base_width = 8)
+
+
 
 #DOC
 kruskal.test(intersect_stats_br$nuclear_placed_DOC, intersect_stats_br$breed)
