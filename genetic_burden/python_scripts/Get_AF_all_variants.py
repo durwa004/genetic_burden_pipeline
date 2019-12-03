@@ -3,7 +3,7 @@ path = "/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_o
 
 #Get AF all variants
 all_variants = {}
-with gzip.open("thesis_intersect_snpeff.ann.vcf.gz", "rt") as input_file:
+with gzip.open(path + "thesis_intersect_snpeff.ann.vcf.gz", "rt") as input_file:
     for line in input_file:
         if "#" in line:
             input_file.readline()
