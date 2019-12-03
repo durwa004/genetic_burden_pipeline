@@ -21,7 +21,7 @@ with gzip.open("../../SnpEff/thesis_intersect_snpeff.ann.vcf.gz", "rt") as input
 
 #Get breed info
 horse_breed = {}
-with open("../../../horse_genomes_breeds_tidy.txt", "r") as input_file:
+with open("../../../horse_genomes_breeds_all.txt", "r") as input_file:
     input_file.readline()
     for line in input_file:
         line = line.rstrip("\n").split("\t")
@@ -29,19 +29,20 @@ with open("../../../horse_genomes_breeds_tidy.txt", "r") as input_file:
 horse_breed['TWILIGHT'] = "TB"
             
 #Get genetic burden per individual (overall)
-with open(path + "/genetic_burden_535_horses.txt", "r") as input_file, open(path + "/ann_se_gb_by_individual.txt", "w") as output_file:
+with open(path + "/genetic_burden_535_horses.txt", "r") as input_file, open(path + "/ann_se_gb_by_individual_breed.txt", "w") as output_file:
     for line in input_file:
         line = line.rstrip("\n").split("\t")
-        for i in range(len(line)):
-            if "0/1" in line[i] or "0/2" in line[i] or "0/3" in line[i]:
+        line1 = line[9:]
+        for i in range(len(line1)):
+            if "0/1" in line1[i] or "0/2" in line1[i] or "0/3" in line1[i]:
                 a = het[header[i]]
                 b = int(a) + 1
                 het[header[i]] = b
-            elif "1/1" in line[i] or "2/2" in line[i] or "1/2" in line[i] or "1/3" in line[i] or "2/3" in line[i] or "2/1" in line[i]:
+            elif "1/1" in line1[i] or "2/2" in line1[i] or "1/2" in line1[i] or "1/3" in line1[i] or "2/3" in line1[i] or "2/1" in line1[i]:
                 a = hom[header[i]]
                 b = int(a) + 1
                 hom[header[i]] = b
-            elif "./." in line[i]:
+            elif "./." in line1[i]:
                 a = missing[header[i]]
                 b = int(a) + 1
                 missing[header[i]] = b
@@ -51,7 +52,7 @@ with open(path + "/genetic_burden_535_horses.txt", "r") as input_file, open(path
 
 #Get number of lof variants per individual
 header1 = ["NA", "NA"] + header
-with open(path + "/lof_variants.txt", "r") as input_file, open(path + "/ann_se_lof_by_individual.txt", "w") as output_file:
+with open(path + "/lof_variants_breed.txt", "r") as input_file, open(path + "/ann_se_lof_by_individual_breed.txt", "w") as output_file:
     input_file.readline()
     for line in input_file:
         line = line.rstrip("\n").split("\t")
@@ -71,13 +72,4 @@ with open(path + "/lof_variants.txt", "r") as input_file, open(path + "/ann_se_l
     for key in het.keys():
         if key in horse_breed.keys():
             print(key, horse_breed[key], het[key], hom[key], missing[key],sep = "\t", file = output_file)
-=======
-<<<<<<< HEAD
 
-        
-
-
-
-=======
->>>>>>> bd79e80b2d2ddb753ca8b6799fce79e77fcbf9c7
->>>>>>> 704448ef000bb6c9095c683a8b8aa8c9db5c6108

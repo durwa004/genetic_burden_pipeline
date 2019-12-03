@@ -1,0 +1,13 @@
+#!/bin/bash -l
+#PBS -l nodes=1:ppn=8,walltime=06:00:00,mem=4g
+#PBS -m abe
+#PBS -M durwa004@umn.edu
+#PBS -o $PBS_JOBID.bcftools_view_Arabian.out
+#PBS -e $PBS_JOBID.bcftools_view_Arabian.err
+#PBS -N bcftools_view_Arabian.pbs
+#PBS -q lab
+module load bcftools
+
+cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/SnpEff/present_in_all/
+
+bcftools view --min-af 0.5 ../thesis_intersect_snpeff.ann.vcf.gz > thesis_intersect_af_over_0.5.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_af_over_0.5.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_af_over_0.5.vcf.gz
