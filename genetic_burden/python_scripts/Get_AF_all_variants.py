@@ -55,10 +55,10 @@ for key,value in gb_variants.items():
         del all_variants[key]
 
 #Print list of AFs for GB / all variants
-with open(path + "../gb_analysis/AF_gb_cf_all_variants/AF_gb_variants.txt", "w") as output_file:
-    print("GB_AF", sep = "\t", file = output_file)
-    for key,value in gb_variants.items():
-        print(value, file = output_file)
+#with open(path + "../gb_analysis/AF_gb_cf_all_variants/AF_gb_variants.txt", "w") as output_file:
+#    print("GB_AF", sep = "\t", file = output_file)
+#    for key,value in gb_variants.items():
+#        print(value, file = output_file)
 
 with open(path + "../gb_analysis/AF_gb_cf_all_variants/AF_all_variants.txt", "w") as output_file:
     print("all_AF", sep = "\t", file = output_file)

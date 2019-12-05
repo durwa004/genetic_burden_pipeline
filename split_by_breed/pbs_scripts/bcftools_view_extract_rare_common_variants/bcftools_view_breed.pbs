@@ -1,0 +1,13 @@
+#!/bin/bash -l
+#PBS -l nodes=1:ppn=8,walltime=12:00:00,mem=2g
+#PBS -m abe
+#PBS -M durwa004@umn.edu
+#PBS -o $PBS_JOBID.bcftools_view_breed.out
+#PBS -e $PBS_JOBID.bcftools_view_breed.err
+#PBS -N bcftools_view_breed.pbs
+#PBS -q batch
+module load bcftools
+
+cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files
+
+bcftools view -S breed_ids.list --min-ac 1 ../joint_intersect_without_Prze/thesis_intersect.vcf.gz > thesis_intersect_breed.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_breed.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_breed.vcf.gz

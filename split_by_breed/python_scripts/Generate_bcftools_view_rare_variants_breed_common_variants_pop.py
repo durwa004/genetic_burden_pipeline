@@ -25,12 +25,6 @@ def make_arg_parser():
             metavar="",
             required=True,
             help="Breed group to extract [required]")
-    parser.add_argument(
-            "-m5", "--mn5",
-            default=argparse.SUPPRESS,
-            metavar="",
-            required=True,
-            help="5% AF AC cut off (unique for each breed) [required]")            
     return parser
 
 

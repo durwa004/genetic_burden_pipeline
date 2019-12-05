@@ -8,8 +8,6 @@
 #PBS -q batch
 module load bcftools
 
-cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect
+cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files
 
-bcftools view -S STB_ids.list --min-ac 1 thesis_intersect.vcf.gz > thesis_intersect_STB.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_STB.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_STB.vcf.gz
-bcftools view thesis_intersect_STB.vcf.gz --min-ac 1 --max-ac 3 > thesis_intersect_STB_rare.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_STB_rare.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_STB_rare.vcf.gz
-bcftools view thesis_intersect_STB.vcf.gz --min-ac 10 > thesis_intersect_STB_common.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_STB_common.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_STB_common.vcf.gz
+bcftools view -S STB_ids.list --min-ac 1 ../joint_intersect_without_Prze/thesis_intersect.vcf.gz > thesis_intersect_STB.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_STB.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_STB.vcf.gz

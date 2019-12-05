@@ -57,4 +57,4 @@ if __name__ == '__main__':
         for i in range(len(breed_list)):
             if breed == breed_list[i]:
                 continue
-            print(f"bcftools isec -p {breed}_rare_",breed_list[i],f"_common thesis_intersect_{breed}_rare.vcf.gz thesis_intersect_",breed_list[i],"_common.vcf.gz", file = f, sep = "")
+            print(f"bcftools isec -p {breed}_rare_",breed_list[i],f"_common {breed}_rare.vcf.gz ",breed_list[i],"_common.vcf.gz", file = f, sep = "")
