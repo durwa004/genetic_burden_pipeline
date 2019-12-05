@@ -6,7 +6,7 @@ library(dplyr)
 setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/gb_analysis/")
 
 #GB
-data = read.table("ann_se_gb_by_individual.txt", header=F)
+data = read.table("ann_se_gb_by_individual.txt", header=F) # V3 = het, V4 = hom, V5 = missing?
 data$total = data$V3 + data$V4
 mean(data$total) 
 range(data$total)
@@ -26,66 +26,47 @@ mean(data$total[data$V2 == "STB"]) #3514
 mean(data$total[data$V2 == "TB"]) #3033
 mean(data$total[data$V2 == "WP"]) #3603
 
-data_br <- data %>% 
-  filter(!grepl('Other', V2))
-kruskal.test(data_br$total, data_br$V2)
-
-x = ggplot(data_br, aes(x=V2, y=total)) + theme_bw() + ylab("Genetic burden") + 
-  xlab("Breed") + geom_boxplot() +scale_y_continuous(labels=comma) + 
-  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
-        axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("GB_by_breed.tiff", x, base_height = 3.5, base_width = 6)
-
-x = ggplot(data_br, aes(x=V2, y=V4)) + theme_bw() + ylab("Homozygous genetic burden") + 
-  xlab("Breed") + geom_boxplot() +scale_y_continuous(labels=comma) + 
-  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
-        axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("homozygous_GB_by_breed.tiff", x, base_height = 3.5, base_width = 6)
-
-x = ggplot(data_br, aes(x=V2, y=V3)) + theme_bw() + ylab("Heterozygous genetic burden") + 
-  xlab("Breed") + geom_boxplot() +scale_y_continuous(labels=comma) + 
-  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
-        axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("heterozygous_GB_by_breed.tiff", x, base_height = 3.5, base_width = 6)
-
 #Look for association between breed and genetic burden accounting for DOC
 #Add in DOC info
 library(emmeans)
 DOC <- read.table("../DOC/DOC_by_horse.txt", header=T)
 colnames(DOC) <- c("Sample", "total_DOC", "nuclear_placed_DOC")
-colnames(data) = c("Sample", "breed", "het", "hom", "total", "missing")
+colnames(data) = c("Sample", "breed", "het", "hom", "missing", "total")
 gb_doc <- merge(data,DOC, by="Sample")
 gb_br <- gb_doc %>% 
   filter(!grepl('Other', breed))
 
+fit1 <- (lm(total ~ breed, data=gb_br))
+fit2 <- (lm(total ~ breed + nuclear_placed_DOC, data=gb_br))
+anova(fit1,fit2)
 
-gb_lm <- lm(total ~ breed + nuclear_placed_DOC, data = gb_br)
-summary(gb_lm)
-gb_em <- test(emmeans(gb_lm, ~breed, weights = "proportional", type="response"))
-gb_conf <- confint(emmeans(gb_lm, ~ breed, weights = "proportional", type="response"))
-gb_em_conf <- merge(gb_em,gb_conf, by="breed")
+gb_m <- (lm(total ~ breed + nuclear_placed_DOC,data=gb_br))
+n_hom_gb_m <- (lm(hom ~ breed + nuclear_placed_DOC,data=gb_br))
+summary(gb_m)
+summary(n_hom_gb_m)
+
+#Get EMMEANs
+gb_emm <- emmeans(gb_m, "breed", weights = "proportional", type = "response")
+gb_emm
+n_hom_gb_emm <- emmeans(n_hom_gb_m, "breed", weights = "proportional", type = "response")
+n_hom_gb_emm
+
+####Plot EMMEANS
+#Number of variants
+x <- plot(gb_emm) + geom_boxplot() + theme_bw() + xlab("EMMEAN of genetic burden") + 
+  ylab("Breed") +scale_x_continuous(labels=comma) + 
+  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
+        axis.line.y = element_line(), axis.text.x = element_text(), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
+save_plot("../Paper_2019/Figures/gb_EMMEANS.tiff", x, base_height = 3.5, base_width = 8)
+#Number of homozygous variants
+x <- plot(n_hom_gb_emm) + geom_boxplot() + theme_bw() + xlab("EMMEAN of number of homozygous genetic burden") + 
+  ylab("Breed") +scale_x_continuous(labels=comma) + 
+  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
+        axis.line.y = element_line(), axis.text.x = element_text(), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
+save_plot("../Paper_2019/Figures/n_hom_gb_EMMEANS.tiff", x, base_height = 3.5, base_width = 8)
 
 
-x <- ggplot(gb_em_conf) + (aes(x = breed, y = emmean.x, ymin=lower.CL, ymax=upper.CL))  + 
-  geom_pointrange()  + theme(legend.title = element_blank(),
-  panel.background = element_blank(),
-  panel.border = element_blank(), axis.line.x = element_line(),
-  axis.line.y = element_line(), axis.text.x = element_text(), 
-  axis.text = element_text(size=18), axis.title = element_text(size=18,face="bold")) +
-  coord_flip() + theme(legend.position="none") + ylab("EMMEAN of genetic burden") + 
-  xlab("Breed")
-save_plot("EMMEANs_breed_GB.tiff", x, base_height = 6, base_width = 12)
-
-bp <- ggplot(cb_df,aes(x=Var1,y=Freq)) + theme_bw() + 
-  ylab("Frequency") + xlab("Impact") + geom_bar(stat = "identity") + 
-  scale_y_continuous(labels=comma)+ 
-#source("../genetic_burden_pipeline/R_analysis/sian-code.R")
-#emms1 <- modelemms2(gb_lm,gb_doc)
-#emms1x <- getsig(emms1, gb_lm)
-#plotemms(emms1, digits=2) + ylab("Estimated Marginal Mean of log10 TEQ residuals")
-
-  
-#LOF
+#LOF EMMEANS
 data = read.table("ann_se_lof_by_individual.txt", header=F)
 data$total = data$V3 + data$V4
 mean(data$total) 
@@ -106,9 +87,68 @@ mean(data$total[data$V2 == "STB"]) #3514
 mean(data$total[data$V2 == "TB"]) #3033
 mean(data$total[data$V2 == "WP"]) #3603
 
-data_br <- data %>% 
-  filter(!grepl('Other', V2))
 kruskal.test(data_br$total, data_br$V2)
+DOC <- read.table("../DOC/DOC_by_horse.txt", header=T)
+colnames(DOC) <- c("Sample", "total_DOC", "nuclear_placed_DOC")
+colnames(data) = c("Sample", "breed", "het", "hom", "missing", "total")
+gb_doc <- merge(data,DOC, by="Sample")
+gb_br <- gb_doc %>% 
+  filter(!grepl('Other', breed))
+
+fit1 <- (lm(total ~ breed, data=gb_br))
+fit2 <- (lm(total ~ breed + nuclear_placed_DOC, data=gb_br))
+anova(fit1,fit2)
+
+gb_m <- (lm(total ~ breed + nuclear_placed_DOC,data=gb_br))
+n_hom_gb_m <- (lm(hom ~ breed + nuclear_placed_DOC,data=gb_br))
+summary(gb_m)
+summary(n_hom_gb_m)
+
+#Get EMMEANs
+gb_emm <- emmeans(gb_m, "breed", weights = "proportional", type = "response")
+gb_emm
+n_hom_gb_emm <- emmeans(n_hom_gb_m, "breed", weights = "proportional", type = "response")
+n_hom_gb_emm
+
+####Plot EMMEANS
+#Number of variants
+x <- plot(gb_emm) + geom_boxplot() + theme_bw() + xlab("EMMEAN of LOF variants") + 
+  ylab("Breed") +scale_x_continuous(labels=comma) + 
+  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
+        axis.line.y = element_line(), axis.text.x = element_text(), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
+save_plot("../Paper_2019/Figures/LOF_EMMEANS.tiff", x, base_height = 3.5, base_width = 8)
+#Number of homozygous variants
+x <- plot(n_hom_gb_emm) + geom_boxplot() + theme_bw() + xlab("EMMEAN of number of homozygous LOF variants") + 
+  ylab("Breed") +scale_x_continuous(labels=comma) + 
+  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
+        axis.line.y = element_line(), axis.text.x = element_text(), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
+save_plot("../Paper_2019/Figures/n_hom_LOF_EMMEANS.tiff", x, base_height = 3.5, base_width = 8)
+
+
+
+###Without accounting for DOC ###.
+x = ggplot(data_br, aes(x=V2, y=total)) + theme_bw() + ylab("Genetic burden") + 
+  xlab("Breed") + geom_boxplot() +scale_y_continuous(labels=comma) + 
+  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
+        axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
+save_plot("GB_by_breed.tiff", x, base_height = 3.5, base_width = 6)
+
+x = ggplot(data_br, aes(x=V2, y=V4)) + theme_bw() + ylab("Homozygous genetic burden") + 
+  xlab("Breed") + geom_boxplot() +scale_y_continuous(labels=comma) + 
+  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
+        axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
+save_plot("homozygous_GB_by_breed.tiff", x, base_height = 3.5, base_width = 6)
+
+x = ggplot(data_br, aes(x=V2, y=V3)) + theme_bw() + ylab("Heterozygous genetic burden") + 
+  xlab("Breed") + geom_boxplot() +scale_y_continuous(labels=comma) + 
+  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
+        axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
+save_plot("heterozygous_GB_by_breed.tiff", x, base_height = 3.5, base_width = 6)
+
+
+  
+##LOF without DOC
+
 
 x = ggplot(data_br, aes(x=V2, y=total)) + theme_bw() + ylab("Genetic burden") + 
   xlab("Breed") + geom_boxplot() +scale_y_continuous(labels=comma) + 
