@@ -71,4 +71,4 @@ if __name__ == '__main__':
                             count_common +=1
                         else:
                             count_other +=1
-            print(f"{reed}:Rare-{count_rare}, Common- {count_common}, Other = {count_other}")       
+            print(f"{breed}:Rare-{count_rare}, Common- {count_common}, Other = {count_other}")       

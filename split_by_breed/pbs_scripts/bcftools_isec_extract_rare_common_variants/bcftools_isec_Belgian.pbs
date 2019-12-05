@@ -8,7 +8,7 @@
 #PBS -q batch
 module load bcftools
 
-cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files
+cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_rare_common_vcfs
 
 bcftools isec -p Belgian_rare_Arabian_common Belgian_rare.vcf.gz Arabian_common.vcf.gz
 bcftools isec -p Belgian_rare_Clydesdale_common Belgian_rare.vcf.gz Clydesdale_common.vcf.gz
