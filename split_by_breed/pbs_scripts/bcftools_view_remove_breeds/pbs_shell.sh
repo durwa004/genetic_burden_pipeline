@@ -1,0 +1,10 @@
+qsub /panfs/roc/groups/3/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_view_remove_breeds/bcftools_view_remove_Arabian.pbs
+qsub /panfs/roc/groups/3/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_view_remove_breeds/bcftools_view_remove_QH.pbs
+qsub /panfs/roc/groups/3/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_view_remove_breeds/bcftools_view_remove_STB.pbs
+qsub /panfs/roc/groups/3/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_view_remove_breeds/bcftools_view_remove_Belgian.pbs
+qsub /panfs/roc/groups/3/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_view_remove_breeds/bcftools_view_remove_TB.pbs
+qsub /panfs/roc/groups/3/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_view_remove_breeds/bcftools_view_remove_Morgan.pbs
+qsub /panfs/roc/groups/3/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_view_remove_breeds/bcftools_view_remove_WP.pbs
+qsub /panfs/roc/groups/3/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_view_remove_breeds/bcftools_view_remove_Icelandic.pbs
+qsub /panfs/roc/groups/3/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_view_remove_breeds/bcftools_view_remove_Clydesdale.pbs
+qsub /panfs/roc/groups/3/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_view_remove_breeds/bcftools_view_remove_Shetland.pbs

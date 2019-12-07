@@ -1,0 +1,15 @@
+#!/bin/bash -l
+#PBS -l nodes=1:ppn=8,walltime=12:00:00,mem=2g
+#PBS -m abe
+#PBS -M durwa004@umn.edu
+#PBS -o $PBS_JOBID.bcftools_isec_Belgian_pop.out
+#PBS -e $PBS_JOBID.bcftools_isec_Belgian_pop.err
+#PBS -N bcftools_isec_Belgian_pop.pbs
+#PBS -q batch
+module load bcftools
+
+cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs
+
+bcftools isec -p Belgian_rare_pop_common ../breed_rare_common_vcfs/Belgian_rare.vcf.gz thesis_intersect_without_Belgian_common.vcf.gz
+bcftools isec -p Belgian_common_pop_rare ../breed_rare_common_vcfs/Belgian_common.vcf.gz thesis_intersect_without_Belgian_rare.vcf.gz
+bcftools isec -p unique_variants_Belgian ../thesis_intersect_Belgian.vcf.gz thesis_intersect_without_Belgian.vcf.gz

@@ -18,19 +18,13 @@ def make_arg_parser():
             default=argparse.SUPPRESS,
             metavar="",
             required=True,
-            help="Path to dir for output files  [required]")
+            help="Path to dir for input chrom/pos files  [required]")
     parser.add_argument(
             "-v", "--vcf",
             default=argparse.SUPPRESS,
             metavar="",
             required=True,
             help="vcf to extract variants from [required]")
-    parser.add_argument(
-            "-l", "--list_v",
-            default=argparse.SUPPRESS,
-            metavar="",
-            required=True,
-            help="List of variants (no header) chrom \t pos format [required]")
     return parser
 
 
@@ -41,30 +35,20 @@ if __name__ == '__main__':
 
     data = os.path.abspath(args.data)
     input_file = args.vcf
-    variants = args.list_v
 
-    header = (
-              "#!/bin/bash -l\n"  
-              "#PBS -l nodes=1:ppn=2,walltime=12:00:00,mem=4g\n"
-              "#PBS -m abe\n"
-              "#PBS -M durwa004@umn.edu\n"
-              "#PBS -o $PBS_JOBID.Extract_variants.out\n"
-              "#PBS -e $PBS_JOBID.Extract_variants.err\n"
-              "#PBS -N Extract_variants.pbs\n"
-              "#PBS -q small\n"
-             )
+    for filename in os.listdir(data):
+        b = filename.split(".txt")
+        a = b[0]
+        with open(f"Extract_variants_"+ a+".pbs", "w") as f:
+                print("#!/bin/bash -l\n"
+                  "#PBS -l nodes=1:ppn=8,walltime=06:00:00,mem=1g\n"
+                  "#PBS -m abe\n"
+                  "#PBS -M durwa004@umn.edu\n"
+                  f"#PBS -o $PBS_JOBID.Extract_variants_"+ a + ".out\n"
+                  f"#PBS -e $PBS_JOBID.Extract_variants_"+ a+".err\n"
+                  f"#PBS -N Extract_variants_"+ a+".pbs\n"
+                  "#PBS -q batch\n"
+                  "module load bcftools\n"
+                  f"cd {data}/../breed_rare_common_snpeff\n"
+                  f"bcftools view -R {data}/{filename} {input_file} > {a}_snpeff.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip {a}_snpeff.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix {a}_snpeff.vcf.gz", file = f)
 
-    chrom_pos = []
-    with open(variants) as v_list:
-        for line in v_list:
-            line = line.rstrip("\n").split("\t")
-            ab = line[0] + ":" + line[1] + "-" + line[1]
-            chrom_pos.append(ab)
-
-    pbs = os.path.join(os.getcwd(),"Extract_variants.pbs")
-    
-    with open(pbs, "w") as f:
-        print(header, file=f)
-        print(f"cd {data}\n", file=f)
-        for i in range(len(chrom_pos)):
-            print(f"/home/mccuem/shared/.local/bin/tabix {input_file} ", chrom_pos[i], " > ", chrom_pos[i], ".txt", file = f, sep = "")

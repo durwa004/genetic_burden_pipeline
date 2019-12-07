@@ -40,7 +40,7 @@ if __name__ == '__main__':
     breeds = list(set(horse_breed.values()))
 
     for filename in os.listdir(data):
-        if filename.endswith(".vcf.gz"):
+        if filename.endswith("_common_snpeff.vcf.gz"):
             with gzip.open(data + "/" + filename, "rt") as input_file:
                 for line in input_file:
                     line = line.rstrip("\n").split("\t")
@@ -52,10 +52,10 @@ if __name__ == '__main__':
                         break
 
     for item in range(len(breeds)):
-        with open(data + "/" + breeds[item] + "_rare_pop_common.txt", "w") as output_file:
+        with open(data + "/" + breeds[item] + "_rare_other_breed_common.txt", "w") as output_file:
             print("Common_breed\tCHROM\tPOS\tREF\tALT\tAC\tAF\tconsequence\timpact\tgene\tcoding\tprotein\tlof", "\t".join(header[9:]), sep = "\t", file = output_file)
             for filename in os.listdir(data):
-                if filename.endswith(".vcf.gz"):
+                if filename.endswith("_common_snpeff.vcf.gz"):
                     a = filename.split("_rare_")
                     if a[0] == breeds[item]:
                         with gzip.open(data + "/" + filename, "rt") as input_file:
@@ -97,4 +97,4 @@ if __name__ == '__main__':
                                         lof = "y"
                                     else:
                                         lof = "n"
-                        print(a[0],line[0], line[1], line[3],line[4], AC, AF, consequence, impact, gene, coding, protein, lof,"\t".join(line[9:]), sep = "\t", file = output_file)
+                        print(a[1],line[0], line[1], line[3],line[4], AC, AF, consequence, impact, gene, coding, protein, lof,"\t".join(line[9:]), sep = "\t", file = output_file)
