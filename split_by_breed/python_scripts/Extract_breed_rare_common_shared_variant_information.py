@@ -50,19 +50,22 @@ if __name__ == '__main__':
                             header.append(line[i])
                         header1 = header[9:]
                         break
-
+#Get chrom/pos for all of the variants that are differentiated - can't get all the details, otherwise there is too much information
     for item in range(len(breeds)):
         with open(data + "/" + breeds[item] + "_rare_other_breed_common.txt", "w") as output_file:
             print("Common_breed\tCHROM\tPOS\tREF\tALT\tAC\tAF\tconsequence\timpact\tgene\tcoding\tprotein\tlof", "\t".join(header[9:]), sep = "\t", file = output_file)
             for filename in os.listdir(data):
                 if filename.endswith("_common_snpeff.vcf.gz"):
                     a = filename.split("_rare_")
+                    print("Running: " + breeds[item] + "on " + filename)
                     if a[0] == breeds[item]:
                         with gzip.open(data + "/" + filename, "rt") as input_file:
                             for line in input_file:
                                 line = line.rstrip("\n").split("\t")
                                 if "#" in line[0]:
-                                    next
+                                    continue 
+                                if len(line) <1:
+                                    continue
                                 else:
                                     ab = line[7].split(";")
                                     cd = ab[1].split("AF=")
@@ -97,4 +100,4 @@ if __name__ == '__main__':
                                         lof = "y"
                                     else:
                                         lof = "n"
-                        print(a[1],line[0], line[1], line[3],line[4], AC, AF, consequence, impact, gene, coding, protein, lof,"\t".join(line[9:]), sep = "\t", file = output_file)
+                                print(a[1],line[0], line[1], line[3],line[4], AC, AF, consequence, impact, gene, coding, protein, lof,"\t".join(line[9:]), sep = "\t", file = output_file)
