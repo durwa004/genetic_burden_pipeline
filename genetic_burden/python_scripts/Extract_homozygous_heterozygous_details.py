@@ -133,17 +133,17 @@ with open(path + "/all_homozygotes_details.txt", "r") as input_file, open(path +
 #Also need to pull out the ones that are not homozygous in all individuals
 #Get list of affected genes
 coding = 0
-with open(path + "/all_homozygotes_details.txt", "r") as input_file, open(path + "/all_homozygotes_genes.txt", "w") as output_file:
+with open(path + "/variants_present_in_all_details.txt", "r") as input_file, open(path + "/variants_present_in_all_genes.txt", "w") as output_file:
     input_file.readline()
     for line in input_file:
         line = line.rstrip("\n").split("\t")
         if line[7] != "MODIFIER":
             print(line[8], file = output_file)
             coding +=1
-
+print(coding)
 #Create accession/gene symbol dictionary
 genes = {}
-with open(path + "/all_homozygotes_genes_symbols.txt", "r") as genes_file:
+with open(path + "/variants_present_in_all_genes_symbols.txt", "r") as genes_file:
    genes_file.readline()
    for line1 in genes_file:
        line1 = line1.rstrip("\n").split("\t")
@@ -169,7 +169,18 @@ for key in genes.keys():
 print(count)
 
 #Get consequence and AF etc of these variants (use R)
-with open(path + "/all_homozygotes_details.txt", "r") as input_file, open(path + "/all_homozygotes_summary.txt", "w") as output_file:
+with open(path + "/variants_present_in_all_details.txt", "r") as input_file, open(path + "/variants_present_in_all_summary.txt", "w") as output_file:
+    input_file.readline()
+    print("AC\tAF\tconsequence\timpact\tgene\tlof", file = output_file)
+    for line in input_file:
+        line = line.rstrip("\n").split("\t")
+        gene = line[8]
+        if gene == "":
+            gene = "NA"
+        print(line[4], line[5], line[6], line[7], gene, line[11], sep = "\t", file = output_file)
+
+#Get consequence and AF etc of these variants (use R)
+with open(path + "/variants_present_in_all_not_homozygous_in_all.txt", "r") as input_file, open(path + "/variants_present_in_all_not_homozygous_in_all_summary.txt", "w") as output_file:
     input_file.readline()
     print("AC\tAF\tconsequence\timpact\tgene\tlof", file = output_file)
     for line in input_file:

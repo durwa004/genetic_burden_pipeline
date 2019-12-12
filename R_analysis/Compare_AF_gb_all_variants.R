@@ -8,4 +8,6 @@ variants$type <- rep("all",length(variants))
 
 gb_variants <- merge(gb,variants, by="")
 #Compare the means
-t.test(gb, variants)
+t.test(gb$GB_AF, variants$all_AF)
+range(gb$GB_AF)
+range(variants$all_AF)
