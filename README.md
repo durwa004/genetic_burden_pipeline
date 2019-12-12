@@ -291,7 +291,8 @@ $ sh /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_bur
 ```
 - Create rare AF <3% and common AF >10% pop vcfs
 ```
-$ qsub -I -l nodes=1:ppn=8,walltime=12:00:00,mem=4g
+$ qsub -I -l nodes=1:ppn=8,walltime=24:00:00,mem=4g -q lab-long
+$ source activate snakemake
 $ python /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/python_scripts/Extract_rare_common_breed_pop_af.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs/ -r 0.03 -c 0.10
 
 $ /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip without_{breed}_rare.vcf 
@@ -337,7 +338,10 @@ $ Theses_analysis_breed_pop_genes.py
 $ breed_pop_snpeff_info.R
 ```
 
-# known causal variants
+# known causal variants 
+Decided to do all variants on OMIA - download from: https://omia.org/results/?search_type=advanced&gb_species_id=9796 (12/11/2019)
+- Also pulled equine qtls from animal genome: https://www.animalgenome.org/cgi-bin/QTLdb/EC/download?tmpname=mapDwnLd&file=cM
+As of Release 39, there have been 2,260 horse QTLs released for public access on the Horse QTLdb. These data were curated from 88 publications and represent 54 different horse traits.
 - Tidy up variant locations (from my computer and create shell script)
 ```
 $ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/Tidy_known_variants_for_extraction.py 
