@@ -339,17 +339,23 @@ $ breed_pop_snpeff_info.R
 ```
 
 # known causal variants 
-Decided to do all variants on OMIA - download from: https://omia.org/results/?search_type=advanced&gb_species_id=9796 (12/11/2019)
+Decided to do all variants on OMIA - download from: https://omia.org/results/?search_type=advanced&gb_species_id=9796 (12/11/2019) - 152 variants
 - Also pulled equine qtls from animal genome: https://www.animalgenome.org/cgi-bin/QTLdb/EC/download?tmpname=mapDwnLd&file=cM
 As of Release 39, there have been 2,260 horse QTLs released for public access on the Horse QTLdb. These data were curated from 88 publications and represent 54 different horse traits.
+Excluded QTLs without snp IDs/positions on the genome in the download
+Selected the peak SNP to investigate = 1,730 QTLs (1,559 unique)
 - Tidy up variant locations (from my computer and create shell script)
 ```
 $ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/Tidy_known_variants_for_extraction.py 
-$ sh /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/known_SNVs_tabix.sh
 ```
 - Get variant locations - on my laptop
 ```
 $ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/Get_known_causal_variants.py
+```
+- Pull out QTLs from dbsnp
+```
+$ scp /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/grep_get_rs_chrom_pos.sh durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/dbsnp/
+$ 
 ```
 - Extract known variants - MSI
 ```
