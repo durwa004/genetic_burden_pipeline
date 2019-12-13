@@ -4,10 +4,10 @@ library(dplyr)
 library(forcats)
 library(devtools)
 library(ggpubr)
-library(emmeans)
+library(scales)
 
 #Only include autosomes and chr X (not MT and unplaced contigs)
-setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/bcftools_stats_output//")
+setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/bcftools_stats_output/")
 ###bcftools
 bcftools <- read.table("bcftools_number_of_variants.txt", header=T)
 bcf_v <- sum(bcftools$no_records)
@@ -120,7 +120,7 @@ union_stats <- read.table("union_by_ind_number_of_variants.txt",header=T)
 mean(union_stats$nHets/union_stats$nNonRefHom)
 
 ####Figure out number of variants per individual
-intersect_stats <- read.table("../with_prze/bcftools_stats_output_with_prze/intersect_by_ind_number_of_variants.txt",header=T)
+intersect_stats <- read.table("intersect_by_ind_number_of_variants.txt",header=T)
 intersect_stats$nvariants <- intersect_stats$nNonRefHom + intersect_stats$nHets
 mean(intersect_stats$nvariants)
 mean(intersect_stats$nIndels)
@@ -207,6 +207,16 @@ x = ggplot(intersect_doc, aes(x=nuclear_placed_DOC,y=nvariants)) + theme_bw() + 
         axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
 save_plot("535_individuals_DOC_nvariants.tiff", x, base_height = 3.5, base_width = 6)
 
+#Add in breed colors
+x = ggplot(intersect_doc, aes(x=nuclear_placed_DOC,y=nvariants)) + theme_bw() + ylab("Number of variants") + 
+  xlab("Depth of coverage") + geom_point(aes(color=breed)) + scale_x_continuous(limits = c(0,50))+
+  scale_y_continuous(labels=comma, limits = c(0,8000000)) + geom_smooth() +
+  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
+        axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
+save_plot("535_individuals_DOC_nvariants_breed.tiff", x, base_height = 3.5, base_width = 6)
+
+
+
 #Non linear association therefore pearson's correlation isn't useful
 #cor.test(intersect_doc$nuclear_placed_DOC,intersect_doc$nvariants, method = "pearson")
 library(devtools)
@@ -224,40 +234,6 @@ xy = ggplot(intersect_doc, aes(x=nuclear_placed_DOC,y=nvariants)) + theme_bw() +
   scale_y_continuous(labels=comma, limits = c(0,8000000)) +
   theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
         axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-
-####Figure out differences in the number of variants per breed
-intersect_stats_br <- intersect_doc %>% 
-  filter(!grepl('Other', breed))
-fit1 <- (lm(nvariants ~ breed, data=intersect_stats_br))
-fit2 <- (lm(nvariants ~ breed + nuclear_placed_DOC, data=intersect_stats_br))
-anova(fit1,fit2)
-
-nvariants_m <- (lm(nvariants ~ breed + nuclear_placed_DOC,data=intersect_stats_br))
-n_hom_variants_m <- (lm(nNonRefHom ~ breed + nuclear_placed_DOC,data=intersect_stats_br))
-summary(nvariants_m)
-summary(n_hom_variants_m)
-
-#Get predictions for mean of each point
-nvariants_pred <- matrix(predict(ref_grid(nvariants_m)),nrow=10)
-#Get reference grid
-nvariants_rg <- ref_grid(nvariants_m, ~breed)
-#Get EMMEANs
-nvariants_emm <- emmeans(nvariants_m, "breed", weights = "proportional", type = "response")
-n_hom_variants_emm <- emmeans(n_hom_variants_m, "breed", weights = "proportional", type = "response")
-
-####Plot EMMEANS
-#Number of variants
-x <- plot(nvariants_emm) + geom_boxplot() + theme_bw() + xlab("EMMEAN of number of variants") + 
-  ylab("Breed") +scale_x_continuous(labels=comma) + 
-  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
-        axis.line.y = element_line(), axis.text.x = element_text(), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("../Paper_2019/Figures/nvariants_EMMEANS.tiff", x, base_height = 3.5, base_width = 8)
-#Number of homozygous variants
-x <- plot(n_hom_variants_emm) + geom_boxplot() + theme_bw() + xlab("EMMEAN of number of homozygous variants") + 
-  ylab("Breed") +scale_x_continuous(labels=comma) + 
-  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
-        axis.line.y = element_line(), axis.text.x = element_text(), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("../Paper_2019/Figures/n_hom_variants_EMMEANS.tiff", x, base_height = 3.5, base_width = 8)
 
 
 

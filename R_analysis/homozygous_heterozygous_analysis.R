@@ -17,7 +17,7 @@ mean(data1$AF)
 range(data1$AF)
 table(data1$impact)
 
-t.test(data1$AF[data$impact == "MODIFIER"], data1$AF[data$impact != "MODIFIER"])
+t.test(data1$AF[data1$impact == "MODIFIER"], data1$AF[data1$impact != "MODIFIER"])
 
 #Present in all - need to run this and then compare the heterozygous to the homozygous variants
 data2 <- read.table("variants_present_in_all_summary.txt", header=T)
@@ -26,8 +26,9 @@ range(data2$AC)
 mean(data2$AF)
 range(data2$AF)
 table(data2$impact)
+table(data2$lof)
 
-t.test(data2$AF[data$impact == "MODIFIER"], data2$AF[data$impact != "MODIFIER"])
+t.test(data2$AF[data2$impact == "MODIFIER"], data2$AF[data2$impact != "MODIFIER"])
 
 #Present in all but not homozygous in all
 data3 <- read.table("variants_present_in_all_not_homozygous_in_all_summary.txt", header=T)
@@ -37,7 +38,7 @@ mean(data3$AF)
 range(data3$AF)
 table(data3$impact)
 
-t.test(data3$AF[data$impact == "MODIFIER"], data3$AF[data$impact != "MODIFIER"])
+t.test(data3$AF[data3$impact == "MODIFIER"], data3$AF[data3$impact != "MODIFIER"])
 
 #Compare all homozygotes with those that are present in all but not all homozygotes
 t.test(data3$AF[data$impact == "MODIFIER"], data1$AF[data$impact == "MODIFIER"])

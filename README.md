@@ -1,6 +1,6 @@
 # genetic_burden_pipeline
 Scripts and tools to estimate the genetic burden as part of my first aim of my thesis.
-
+NB - search for **NEED TO WORK ON** for things that need to be done for different sections of thesis
 To do for paper: 
 - Each variant caller, across population, breed, variant location (exon, intron, intergenic, splice site, or within 5kb of a gene), SNP consequence (high/moderate/low/modifier).
   - TsTv
@@ -266,15 +266,18 @@ $ python ../../python_scripts/Extract_bcftools_stats_isec.py -d /home/mccuem/sha
 $ sed -i 's$ xxxxx$$g' *
 $ sh /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_query_breed_rare_common/bcftools_query_chrom_pos.sh 
 ```
-- Extract the breed_rare_common variants from the snpeff filde
+- Extract the breed_rare_common variants from the snpeff file
 ```
-$ python ../../python_scripts/Generate_extract_variants.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_rare_common_vcfs/breed_rare_common_chrom_pos/ -v /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/SnpEff/thesis_intersect_snpeff.ann.vcf.gz
-$ python ../../../../variant_calling/python_generation_scripts/Generate_pbs_submission_shell.py -d ../bcftools_view_extract_regions/
-$ sh /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_view_extract_regions/pbs_shell.sh 
+$ python ../../python_scripts/Generate_extract_variants.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_rare_common_vcfs/breed_rare_common_chrom_pos/ 
+$ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_view_extract_regions/Extract_variants_rare_common_breed.pbs
+$ module load bcftools
+$ bcftools stats rare_common_breed_snpeff.vcf.gz > rare_common_breed_snpeff.vcf.gz.stats
+$ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/SnpSift_filter_breed_rare_common.pbs
 ```
-- Extract the breed details from the output vcfs for breed rare/common variants (**RUNNING GB**)
+- Extract the breed details from the output vcf for breed rare/common variants **NEED TO WORK ON**
+- Need to pull in info re which breed rare/common
 ```
-$ qsub -I -l nodes=1:ppn=8,walltime=12:00:00,mem=4g
+$ qsub -I -l nodes=1:ppn=8,walltime=12:00:00,mem=40g
 $ python  /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/python_scripts/Extract_breed_rare_common_shared_variant_information.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_rare_common_vcfs/breed_rare_common_snpeff -i /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/horse_genomes_breeds_tidy.txt
 ```
 - Move files back to my laptop (not complete yet)
@@ -284,13 +287,24 @@ $ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject
 
 # Number of variants that are rare in one breed and common in the general population and variants that are common in that breed and rare in the general population 
 
-- Create vcfs without each breed and rare AF <3% and common AF >10% pop vcfs
+- Create vcfs without each breed
 ```
-$ python ../../python_scripts/Generate_bcftools_view_extract_breed.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/ -i /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/horse_genomes_breeds_tidy.txt
+$ python ../../python_scripts/Generate_bcftools_view_extract_breed.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs -i /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/horse_genomes_breeds_tidy.txt
 $ python ../../../../variant_calling/python_generation_scripts/Generate_pbs_submission_shell.py -d ../bcftools_view_remove_breed/
 $ sh /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_view_remove_breeds/pbs_shell.sh
 ```
-- Get intersect between the files
+- Create rare AF <3% and common AF >10% pop vcfs
+```
+$ qsub -I -l nodes=1:ppn=8,walltime=24:00:00,mem=4g -q lab-long
+$ source activate snakemake
+$ python /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/python_scripts/Extract_rare_common_breed_pop_af.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs/ -r 0.03 -c 0.10
+
+$ /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip without_{breed}_rare.vcf 
+$ /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix without_{breed}_rare.vcf.gz 
+$ /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip without_{breed}_common.vcf 
+$ /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix without_{breed}_common.vcf.gz 
+```
+- Get intersect between the files **LOOK AT NEXT**
 ```
 $ python ../../python_scripts/Generate_bcftools_isec_rare_common_variants_breed_pop.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs/ -i /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/horse_genomes_breeds_tidy.txt 
 $ python ../../../../variant_calling/python_generation_scripts/Generate_pbs_submission_shell.py -d ../bcftools_isec_breed_pop_rare_common_variants/
@@ -306,11 +320,12 @@ $ sh breed_pop_common_rare_tidy.sh
 ```
 $ python ../../python_scripts//Extract_bcftools_stats_isec_po.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs/
 $ sed -i 's$ xxxxx$$g' *
-$ sh /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_query_breed_rare_common/bcftools_pop_query_chrom_pos.sh 
+$ qsub -I -l nodes=1:ppn=1,walltime=12:00:00,mem=4g
+$ sh /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_query_breed_rare_common/bcftools_query_pop_chrom_pos.sh 
 ```
-- Extract the breed_rare_common variants from the snpeff file
+- Extract the breed_rare_common variants from the snpeff file 
 ```
-$ python ../../python_scripts/Generate_extract_variants.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs/breed_pop_rare_common_chrom_pos/ -v /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/SnpEff/thesis_intersect_snpeff.ann.vcf.gz
+$ python ../../python_scripts/Generate_extract_variants.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs/breed_pop_rare_common_chrom_pos/ 
 $ python ../../../../variant_calling/python_generation_scripts/Generate_pbs_submission_shell.py -d ../bcftools_view_extract_regions_pop/
 $ sh /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_view_extract_regions_pop/pbs_shell.sh 
 ```
@@ -319,54 +334,34 @@ $ sh /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_bur
 $ qsub -I -l nodes=1:ppn=8,walltime=12:00:00,mem=4g
 $ python  /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/python_scripts/Extract_breed_pop_shared_variant_information.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs/breed_pop_rare_common_snpeff/ -i /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/horse_genomes_breeds_tidy.txt
 ```
+- Transfer to my laptop for analysis
+```
+$ scp -r durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs/breed_pop_rare_common_snpeff/breed_pop_variants /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/breed_pop_variants/
+$ scp -r durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs/breed_pop_stats_summary /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/breed_pop_variants/
+$ Theses_analysis_breed_pop_genes.py
+$ breed_pop_snpeff_info.R
+```
 
-NEED TO TRANSFER FILES TO MY LAPTOP FOR ANALYSIS (BOTH .STATS FILES AND THE RESULTS OF THE TYPE OF VARIAN)
-
-
-
-
-
-Transfer to my laptop and analyze using R, then extract list of chrom/pos (unique) to extract from SnpEff file
-```
-$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/breed_pop_differences/rare_breed_common_pop.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/breed_pop_variants/
-$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/common_breed_rare_pop.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/breed_pop_variants/
-$ breed_pop_variants.R
-$ Theses_analysis.py
-```
-Then transfer list of chrom/pos for the variants to be extracted from SnpEff output
-```
-$ scp /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/breed_pop_variants/rare_breed_common_pop_shared_variants.txt durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/breed_pop_differences/
-$ scp /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/breed_pop_variants/common_breed_rare_pop_shared_variants.txt durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/breed_pop_differences/
-```
-Extract information about breed/pop difference variant type
-```
-$ python ../python_scripts/Generate_extract_variants.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/breed_pop_differences/rare_breed_common_pop -v /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/SnpEff/thesis_intersect_snpeff.ann.vcf.gz -l /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/breed_pop_differences/rare_breed_common_pop_shared_variants.txt 
-$ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/Extract_variants.pbs 
-$ cat * > rare_breed_common_pop_snpeff_variants.txt
-$ python ../python_scripts/Generate_extract_variants.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/breed_pop_differences/common_breed_rare_pop -v /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/SnpEff/thesis_intersect_snpeff.ann.vcf.gz -l /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/breed_pop_differences/common_breed_rare_pop_shared_variants.txt 
-$ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/Extract_variants.pbs
-$ cat * > common_breed_rare_pop_snpeff_variants.txt
-$ cat * > rare_breed_common_pop_snpeff_variants.txt
-$ Extract_breed_pop_shared_variant_information.py
-```
-Download back to my laptop for analysis!
-```
-$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/breed_pop_differences/common_breed_rare_pop/common_breed_rare_pop_snpeff_info.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/breed_pop_variants/
-$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect/breed_pop_differences/rare_breed_common_pop/rare_breed_common_pop_snpeff_info.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/breed_pop_variants/
-```
---Fst of genes containing these variants - look for genes with strong differentiation between populations
--Putatively functional variants (high/moderate) - number per individual genome
--- breed differences
-- Predicted consequence of variant
-
-# known causal variants
+# known causal variants 
+Decided to do all variants on OMIA - download from: https://omia.org/results/?search_type=advanced&gb_species_id=9796 (12/11/2019) - 154 variants (also PSSM2 patent, and 88 horses paper) - IDENTIFIED 93 OF THEM
+- Also pulled equine qtls from animal genome: https://www.animalgenome.org/cgi-bin/QTLdb/EC/download?tmpname=mapDwnLd&file=cM
+As of Release 39, there have been 2,260 horse QTLs released for public access on the Horse QTLdb. These data were curated from 88 publications and represent 54 different horse traits.
+Excluded QTLs without snp IDs/positions on the genome in the download
+Selected the peak SNP to investigate = 1,730 QTLs (1,559 unique)
 - Tidy up variant locations (from my computer and create shell script)
 ```
 $ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/Tidy_known_variants_for_extraction.py 
-$ sh /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/known_SNVs_tabix.sh
 ```
 - Get variant locations - on my laptop
 ```
+$ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/Get_known_causal_variants.py
+```
+- Pull out QTLs from dbsnp **WORKING ON**
+```
+$ scp /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/grep_get_rs_chrom_pos.sh durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/dbsnp/
+$ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/get_ECA2_coordinates_from_QTL_lines.py
+$ source activate ensembl-vep
+$ ncbi_remap_known.sh
 $ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/Get_known_causal_variants.py
 ```
 - Extract known variants - MSI
@@ -376,10 +371,13 @@ $ scp /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causa
 $ sh known_SNVs_tabix.sh
 $ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/Get_known_causal_variants.py 
 ```
-- Move back to my laptop
+- Move back to my laptop - Manually check position of variants (and get combination genotypes for the variants that a group of variants represent the phenotype
 ```
 $ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/known_variants/known_disease_locations/known_variants_present.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants
+$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/known_variants/known_disease_locations/No_variants_present.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants
+$ /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/genetic_burden_pipeline/genetic_burden/python_scripts/Get_correct_genotypes_for_known_variants.py
 $ known_causal_variants.R
 ```
 
-
+# Future things to look at
+--Fst of genes containing these variants - look for genes with strong differentiation between populations
