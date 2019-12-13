@@ -8,8 +8,8 @@
 #PBS -q batch
 module load bcftools
 
-cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files
+cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs
 
-bcftools view -S remove_Belgian_ids.list --min-ac 1 ../joint_intersect_without_Prze/thesis_intersect.vcf.gz > thesis_intersect_without_Belgian.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_without_Belgian.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_without_Belgian.vcf.gz
-bcftools view thesis_intersect_without_Belgian.vcf.gz --min-ac 1 --max-af 0.03 > thesis_intersect_without_Belgian_rare.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_without_Belgian_rare.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_without_Belgian_rare.vcf.gz
-bcftools view thesis_intersect_Belgian.vcf.gz --min-af 0.10 > thesis_intersect_without_Belgian_common.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_without_Belgian_common.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_without_Belgian_common.vcf.gz
+#bcftools view -S remove_Belgian_ids.list --min-ac 1 ../joint_intersect_without_Prze/thesis_intersect.vcf.gz > thesis_intersect_without_Belgian.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_without_Belgian.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_without_Belgian.vcf.gz
+bcftools view ../thesis_intersect_without_Belgian.vcf.gz --min-ac 1 --max-af 0.03 > thesis_intersect_without_Belgian_rare.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_without_Belgian_rare.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_without_Belgian_rare.vcf.gz
+bcftools view ../thesis_intersect_Belgian.vcf.gz --min-af 0.10 > thesis_intersect_without_Belgian_common.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_without_Belgian_common.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_without_Belgian_common.vcf.gz
