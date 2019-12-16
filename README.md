@@ -373,7 +373,7 @@ $ scp /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causa
 $ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/get_ECA2_coordinates_from_QTL_lines.py
 $ source activate ensembl-vep
 $ split -l 500 QTL_EC2_chrom_pos.bed QTLs_
-$ ncbi_remap_known.sh
+$ sh ncbi_remap_known.sh
 $ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/Tidy_known_variants_for_extraction.py
 $ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/Get_known_causal_variants.py
 ```
