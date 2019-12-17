@@ -33,9 +33,9 @@ with open("known_disease_locations/No_variants_present.txt", "w") as output_file
     print("Phenotype", "chrom", "pos", "ref", "alt", "AC", "AF", "\t".join(header[9:]), sep = "\t", file = output2)
     print("NA", "NA", "NA", "NA", "NA", "NA", "NA", "\t".join(breed), sep = "\t", file = output2)
     for filename in os.listdir():
-        if not os.path.isdir(filename):
+        if filename.endswith(".txt"):
             with open(filename, "r") as input_file:
-                if os.stat(filename) !=0:
+                if os.stat(filename).st_size !=0:
                     for line in input_file:
                         genotype = []
                         count = 0
@@ -58,7 +58,7 @@ with open("known_disease_locations/No_variants_present.txt", "w") as output_file
                                 AC += int(genotype[i])
                         AF = AC/(count*2)
                         print(filename, line[0], line[1],line[3], line[4],AC,AF, "\t".join(genotype),sep = "\t", file = output2)
-                elif os.stat(filename) == 0:
+                elif os.stat(filename).st_size == 0:
                     print(filename, file = output_file)
 
 #Then need to double check that the variants are the exact position that they are supposed to be

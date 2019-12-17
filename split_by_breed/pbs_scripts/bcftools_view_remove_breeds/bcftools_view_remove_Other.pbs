@@ -1,0 +1,15 @@
+#!/bin/bash -l
+#PBS -l nodes=1:ppn=8,walltime=12:00:00,mem=2g
+#PBS -m abe
+#PBS -M durwa004@umn.edu
+#PBS -o $PBS_JOBID.bcftools_view_Other.out
+#PBS -e $PBS_JOBID.bcftools_view_Other.err
+#PBS -N bcftools_view_Other.pbs
+#PBS -q batch
+module load bcftools
+
+cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs
+
+#bcftools view -S remove_Other_ids.list --min-ac 1 ../joint_intersect_without_Prze/thesis_intersect.vcf.gz > thesis_intersect_without_Other.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_without_Other.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_without_Other.vcf.gz
+bcftools view ../thesis_intersect_without_Other.vcf.gz --min-ac 1 --max-af 0.03 > thesis_intersect_without_Other_rare.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_without_Other_rare.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_without_Other_rare.vcf.gz
+bcftools view ../thesis_intersect_Other.vcf.gz --min-af 0.10 > thesis_intersect_without_Other_common.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_without_Other_common.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_without_Other_common.vcf.gz

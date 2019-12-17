@@ -41,20 +41,26 @@ if __name__ == '__main__':
         ids.readline()
         for line in ids:
             horse,group = line.rstrip("\n").split("\t")
-            if group == "Other":
-                pass
+            if group in breed.keys():
+                a = breed[group] + ":" + horse
+                breed[group] = a
             else:
-                if group in breed.keys():
-                    a = breed[group] + ":" + horse
-                    breed[group] = a
+                breed[group] = horse
+
+    breed_groups = list(set(breed.keys()))
+
+    for i,v in enumerate(breed_groups):
+        with open(f"{data}/remove_{v}_ids.list", "w") as output_file:
+            for key,value in breed.items():
+                if key == v:
+                    continue
                 else:
-                    breed[group] = horse
+                    horses = value.split(":")
+                    for i in range(len(horses)):
+                        print(horses[i], file = output_file)
 
     for key,value in breed.items():
-        with open(f"{data}/remove_{key}_ids.list", "w") as output_file, open(f"bcftools_view_remove_{key}.pbs", "w") as f:
-            horses = value.split(":")
-            for i in range(len(horses)):
-                print(horses[i], file = output_file)
+        with open(f"bcftools_view_remove_{key}.pbs", "w") as f:
             print("#!/bin/bash -l\n"
                 "#PBS -l nodes=1:ppn=8,walltime=12:00:00,mem=2g\n"
                 "#PBS -m abe\n"
@@ -65,6 +71,6 @@ if __name__ == '__main__':
                 "#PBS -q batch\n"
                 "module load bcftools\n", file = f)
             print(f"cd {data}\n", file=f)
-            print(f"bcftools view -S remove_{key}_ids.list --min-ac 1 ../joint_intersect_without_Prze/thesis_intersect.vcf.gz > thesis_intersect_without_{key}.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_without_{key}.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_without_{key}.vcf.gz",file=f) 
-            print(f"bcftools view thesis_intersect_without_{key}.vcf.gz --min-ac 1 --max-af 0.03 > thesis_intersect_without_{key}_rare.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_without_{key}_rare.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_without_{key}_rare.vcf.gz", file=f)
-            print(f"bcftools view thesis_intersect_{key}.vcf.gz --min-af 0.10 > thesis_intersect_without_{key}_common.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_without_{key}_common.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_without_{key}_common.vcf.gz", file=f)
+            print(f"#bcftools view -S remove_{key}_ids.list --min-ac 1 ../joint_intersect_without_Prze/thesis_intersect.vcf.gz > thesis_intersect_without_{key}.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_without_{key}.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_without_{key}.vcf.gz",file=f) 
+            print(f"bcftools view ../thesis_intersect_without_{key}.vcf.gz --min-ac 1 --max-af 0.03 > thesis_intersect_without_{key}_rare.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_without_{key}_rare.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_without_{key}_rare.vcf.gz", file=f)
+            print(f"bcftools view ../thesis_intersect_{key}.vcf.gz --min-af 0.10 > thesis_intersect_without_{key}_common.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_intersect_without_{key}_common.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_intersect_without_{key}_common.vcf.gz", file=f)
