@@ -378,6 +378,8 @@ $ source activate ensembl-vep
 $ split -l 500 QTL_EC2_chrom_pos.bed QTLs_
 $ sh ncbi_remap_known.sh
 $ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/Get_known_causal_variants.py
+$ sh QTLs_remapped.sh
+$ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/Get_known_causal_variants.py
 ```
 - Extract known variants - MSI
 ```
