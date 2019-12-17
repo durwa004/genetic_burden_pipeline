@@ -359,7 +359,8 @@ Decided to do all variants on OMIA - download from: https://omia.org/results/?se
 - Also pulled equine qtls from animal genome: https://www.animalgenome.org/cgi-bin/QTLdb/EC/download?tmpname=mapDwnLd&file=cM
 As of Release 39, there have been 2,260 horse QTLs released for public access on the Horse QTLdb. These data were curated from 88 publications and represent 54 different horse traits.
 Excluded QTLs without snp IDs/positions on the genome in the download
-:qSelected the peak SNP to investigate = 1,730 QTLs (1,559 unique)
+Selected the peak SNP to investigate = 1,730 QTLs (1,559 unique)
+679 mapped uniquely, 549 mapped to multiple places in the genome
 - Tidy up variant locations (from my computer and create shell script)
 ```
 $ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/Tidy_known_variants_for_extraction.py 
