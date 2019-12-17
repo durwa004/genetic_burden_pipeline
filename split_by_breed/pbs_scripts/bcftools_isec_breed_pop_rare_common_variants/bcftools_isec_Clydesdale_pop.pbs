@@ -10,6 +10,6 @@ module load bcftools
 
 cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs
 
-bcftools isec -p Clydesdale_rare_pop_common ../breed_rare_common_vcfs/Clydesdale_rare.vcf.gz thesis_intersect_without_Clydesdale_common.vcf.gz
-bcftools isec -p Clydesdale_common_pop_rare ../breed_rare_common_vcfs/Clydesdale_common.vcf.gz thesis_intersect_without_Clydesdale_rare.vcf.gz
+bcftools isec -p Clydesdale_rare_pop_common ../breed_rare_common_vcfs/Clydesdale_rare.vcf.gz without_Clydesdale_common.vcf.gz
+bcftools isec -p Clydesdale_common_pop_rare ../breed_rare_common_vcfs/Clydesdale_common.vcf.gz without_Clydesdale_rare.vcf.gz
 bcftools isec -p unique_variants_Clydesdale ../thesis_intersect_Clydesdale.vcf.gz thesis_intersect_without_Clydesdale.vcf.gz

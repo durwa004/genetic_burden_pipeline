@@ -64,8 +64,8 @@ if __name__ == '__main__':
                 "module load bcftools\n", file = f)
             print(f"cd {data}\n", file=f)
             #Rare breed/common pop
-            print(f"bcftools isec -p {key}_rare_pop_common ../breed_rare_common_vcfs/{key}_rare.vcf.gz thesis_intersect_without_{key}_common.vcf.gz", file =f)
+            print(f"bcftools isec -p {key}_rare_pop_common ../breed_rare_common_vcfs/{key}_rare.vcf.gz without_{key}_common.vcf.gz", file =f)
             #Common breed/rare pop
-            print(f"bcftools isec -p {key}_common_pop_rare ../breed_rare_common_vcfs/{key}_common.vcf.gz thesis_intersect_without_{key}_rare.vcf.gz", file =f)
+            print(f"bcftools isec -p {key}_common_pop_rare ../breed_rare_common_vcfs/{key}_common.vcf.gz without_{key}_rare.vcf.gz", file =f)
             #Present in breed/absent in pop
             print(f"bcftools isec -p unique_variants_{key} ../thesis_intersect_{key}.vcf.gz thesis_intersect_without_{key}.vcf.gz", file =f)

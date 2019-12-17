@@ -8,6 +8,7 @@ Created on Mon Aug  5 11:04:17 2019
 import argparse
 import os
 import gzip
+from statistics import mean
 
 def make_arg_parser():
     parser = argparse.ArgumentParser(
@@ -29,12 +30,13 @@ if __name__ == '__main__':
 
     data = os.path.abspath(args.data)
 
+    unique = {}
     chrom_pos = {}
-
     for filename in os.listdir(data):
-        b = filename.split(".txt")
-        a = b[0]
-        if "_rare_pop_common_" in b[0]:
+        if filename.endswith(".txt"):
+            b = filename.split(".txt")
+            breed = b[0]
+            un = filename.split("_")
             with open(data + "/" + filename, "r") as input_file:
                 for line in input_file:
                     line = line.rstrip("\n").split("\t")
@@ -42,119 +44,94 @@ if __name__ == '__main__':
                         continue
                     else:
                         a = line[0] + ":" + line[1]
-                    if a in chrom_pos.keys():
-                        b = chrom_pos[a]
-                        b = int(b) + 1
-                        chrom_pos[a] = b
-                    else:
-                        chrom_pos[a] = 0
+                        if "unique" in un[0]:
+                            if a in unique.keys():
+                                b = unique[a]
+                                b = b + ":" + breed 
+                                unique[a] = b
+                            else:
+                                unique[a] = breed
+                        else:
+                            if a in chrom_pos.keys():
+                                b = chrom_pos[a]
+                                b = b + ":" + breed
+                                chrom_pos[a] = b
+                            else:
+                                chrom_pos[a] = breed
 
         #Get average number of times each variant appears
-    rare_common = list(chrom_pos.values())
-    print("Variant details (breed_rare_pop_common). Mean = ", mean(rare_common), "Max = ", max(rare_common), "Min = ", min(rare_common))
+    count = 0
+    min_c = 3
+    max_c = 0
+    for key, value in chrom_pos.items():
+        a = value.split(":")
+        count += len(a)
+        if len(a) < int(min_c):
+            min_c = len(a)
+        elif len(a) > int(max_c):
+            max_c = len(a)
+        
+    print("Breed pop variant details. Mean = ")
+    print(count/(len(chrom_pos.keys())))
+    print("Max = ")
+    print(max_c)
+    print("Min = ")
+    print(min_c)
 
-    with open(f"{data}/breed_rare_common_pop_chrom_pos.txt", "w") as f:
-        for key in chrom_pos.keys():
+    count = 0
+    min_c = 3
+    max_c = 0
+    for key, value in unique.items():
+        a = value.split(":")
+        count += len(a)
+        if len(a) < int(min_c):
+            min_c = len(a)
+        elif len(a) > int(max_c):
+            max_c = len(a)
+
+    print("Unique variant details. Mean = ")
+    print(count/(len(chrom_pos.keys())))
+    print("Max = ")
+    print(max_c)
+    print("Min = ")
+    print(min_c)
+
+#    with open(f"{data}/rare_common_breed_chrom_pos.txt", "w") as f, open(f"{data}/rare_common_breed_chrom_pos_with_breed_details.txt", "w") as f2:
+    with open(f"{data}/all_shared_variants/rare_common_breed_pop_chrom_pos.txt", "w") as f, open(f"{data}/all_shared_variants/rare_common_breed_pop_chrom_pos_with_breed_details.txt", "w") as f2:
+        for key,value in chrom_pos.items():
             a = key.split(":")
             print(a[0], a[1], sep = "\t", file = f)
+            print(a[0], a[1], value, sep = "\t", file = f2)
 
-    with open(f"Extract_variants_breed_rare_common_pop.pbs", "w") as f:
-        print("#!/bin/bash -l\n"
-          "#PBS -l nodes=1:ppn=8,walltime=06:00:00,mem=1g\n"
-          "#PBS -m abe\n"
-          "#PBS -M durwa004@umn.edu\n"
-          f"#PBS -o $PBS_JOBID.Extract_variants_breed_rare_common_pop.out\n"
-          f"#PBS -e $PBS_JOBID.Extract_variants_breed_rare_common_pop.err\n"
-          f"#PBS -N Extract_variants_breed_rare_common_pop.pbs\n"
-          "#PBS -q batch\n"
-          "module load bcftools\n"
-          f"cd {data}/../breed_pop_rare_common_snpeff\n"
-          f"bcftools view -R {data}/breed_rare_common_pop_chrom_pos.txt ../../../joint_intersect_without_Prze/thesis_intersect.vcf.gz > breed_rare_common_pop_snpeff.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip breed_rare_common_pop_snpeff.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix breed_rare_common_pop_snpeff.vcf.gz", file = f)
-
-    chrom_pos = {}
-
-    for filename in os.listdir(data):
-        b = filename.split(".txt")
-        a = b[0]
-        if "_common_pop_rare_" in b[0]:
-            with open(data + "/" + filename, "r") as input_file:
-                for line in input_file:
-                    line = line.rstrip("\n").split("\t")
-                    if len(line) <2:
-                        continue
-                    else:
-                        a = line[0] + ":" + line[1]
-                    if a in chrom_pos.keys():
-                        b = chrom_pos[a]
-                        b = int(b) + 1
-                        chrom_pos[a] = b
-                    else:
-                        chrom_pos[a] = 0
-
-        #Get average number of times each variant appears
-    rare_common = list(chrom_pos.values())
-    print("Variant details (breed_common_pop_rare). Mean = ", mean(rare_common), "Max = ", max(rare_common), "Min = ", min(rare_common))
-
-    with open(f"{data}/breed_common_rare_pop_chrom_pos.txt", "w") as f:
-        for key in chrom_pos.keys():
+    with open(f"{data}/all_shared_variants/unique_chrom_pos.txt", "w") as f, open(f"{data}/all_shared_variants/unique_chrom_pos_with_breed_details.txt", "w") as f2:
+        for key,value in unique.items():
             a = key.split(":")
             print(a[0], a[1], sep = "\t", file = f)
+            print(a[0], a[1], value, sep = "\t", file = f2)
 
-    with open(f"Extract_variants_breed_common_rare_pop.pbs", "w") as f:
+    with open(f"Extract_variants_rare_common_breed_pop.pbs", "w") as f:
         print("#!/bin/bash -l\n"
-          "#PBS -l nodes=1:ppn=8,walltime=06:00:00,mem=1g\n"
-          "#PBS -m abe\n"
-          "#PBS -M durwa004@umn.edu\n"
-          f"#PBS -o $PBS_JOBID.Extract_variants_breed_common_rare_pop.out\n"
-          f"#PBS -e $PBS_JOBID.Extract_variants_breed_common_rare_pop.err\n"
-          f"#PBS -N Extract_variants_breed_common_rare_pop.pbs\n"
-          "#PBS -q batch\n"
-          "module load bcftools\n"
-          f"cd {data}/../breed_pop_rare_common_snpeff\n"
-          f"bcftools view -R {data}/breed_common_rare_pop_chrom_pos.txt ../../../joint_intersect_without_Prze/thesis_intersect.vcf.gz > breed_common_rare_pop_snpeff.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip breed_common_rare_pop_snpeff.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix breed_common_rare_pop_snpeff.vcf.gz", file = f)
+                  "#PBS -l nodes=1:ppn=8,walltime=24:00:00,mem=1g\n"
+                  "#PBS -m abe\n"
+                  "#PBS -M durwa004@umn.edu\n"
+                  "#PBS -o $PBS_JOBID.Extract_variants_rare_common_breed_pop.out\n"
+                  "#PBS -e $PBS_JOBID.Extract_variants_rare_common_breed_pop.err\n"
+                  "#PBS -N Extract_variants_rare_common_breed_pop.pbs\n"
+                  "#PBS -q batch\n"
+                  "module load bcftools\n"
+                  f"cd {data}/../breed_pop_rare_common_snpeff\n"
+                  f"bcftools view -R {data}/all_shared_variants/rare_common_breed_pop_chrom_pos.txt ../../../SnpEff/thesis_intersect_snpeff.ann.vcf.gz > rare_common_breed_pop_snpeff.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip rare_common_breed_pop_snpeff.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix rare_common_breed_pop_snpeff.vcf.gz", file = f)
 
-
-
-    chrom_pos = {}
-
-    for filename in os.listdir(data):
-        b = filename.split(".txt")
-        a = b[0]
-        if "unique" in b[0]:
-            with open(data + "/" + filename, "r") as input_file:
-                for line in input_file:
-                    line = line.rstrip("\n").split("\t")
-                    if len(line) <2:
-                        continue
-                    else:
-                        a = line[0] + ":" + line[1]
-                    if a in chrom_pos.keys():
-                        b = chrom_pos[a]
-                        b = int(b) + 1
-                        chrom_pos[a] = b
-                    else:
-                        chrom_pos[a] = 0
-
-        #Get average number of times each variant appears
-    rare_common = list(chrom_pos.values())
-    print("Variant details (unique). Mean = ", mean(rare_common), "Max = ", max(rare_common), "Min = ", min(rare_common))
-
-    with open(f"{data}/breed_unique_chrom_pos.txt", "w") as f:
-        for key in chrom_pos.keys():
-            a = key.split(":")
-            print(a[0], a[1], sep = "\t", file = f)
-
-    with open(f"Extract_variants_breed_unique_pop.pbs", "w") as f:
+    with open(f"Extract_variants_unique.pbs", "w") as f:
         print("#!/bin/bash -l\n"
-          "#PBS -l nodes=1:ppn=8,walltime=06:00:00,mem=1g\n"
-          "#PBS -m abe\n"
-          "#PBS -M durwa004@umn.edu\n"
-          f"#PBS -o $PBS_JOBID.Extract_variants_breed_unique_pop.out\n"
-          f"#PBS -e $PBS_JOBID.Extract_variants_breed_unique_pop.err\n"
-          f"#PBS -N Extract_variants_breed_unique_pop.pbs\n"
-          "#PBS -q batch\n"
-          "module load bcftools\n"
-          f"cd {data}/../breed_pop_rare_common_snpeff\n"
-          f"bcftools view -R {data}/breed_unique_chrom_pos.txt ../../../joint_intersect_without_Prze/thesis_intersect.vcf.gz > breed_unique_snpeff.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip breed_unique_snpeff.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix breed_uniqu_snpeff.vcf.gz", file = f)
-
+                  "#PBS -l nodes=1:ppn=8,walltime=24:00:00,mem=1g\n"
+                  "#PBS -m abe\n"
+                  "#PBS -M durwa004@umn.edu\n"
+                  "#PBS -o $PBS_JOBID.Extract_variants_unique.out\n"
+                  "#PBS -e $PBS_JOBID.Extract_variants_unique.err\n"
+                  "#PBS -N Extract_variants_unique.pbs\n"
+                  "#PBS -q batch\n"
+                  "module load bcftools\n"
+                  f"cd {data}/../breed_pop_rare_common_snpeff\n"
+                  f"bcftools view -R {data}/all_shared_variants/unique_chrom_pos.txt ../../../SnpEff/thesis_intersect_snpeff.ann.vcf.gz > unique_snpeff.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip unique_snpeff.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix unique_snpeff.vcf.gz", file = f)
 
