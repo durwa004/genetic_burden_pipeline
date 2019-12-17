@@ -273,17 +273,26 @@ $ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_b
 $ module load bcftools
 $ bcftools stats rare_common_breed_snpeff.vcf.gz > rare_common_breed_snpeff.vcf.gz.stats
 $ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/SnpSift_filter_breed_rare_common.pbs
+$ cat rare_common_breed_high.vcf.gz rare_common_breed_moderate.vcf.gz rare_common_breed_low.vcf.gz > rare_common_breed_coding.vcf.gz
 ```
-- Extract the breed details from the output vcf for breed rare/common variants **NEED TO WORK ON**
+- Extract the breed details from the output vcf for breed rare/common variants
 - Need to pull in info re which breed rare/common
 ```
 $ qsub -I -l nodes=1:ppn=8,walltime=12:00:00,mem=40g
-$ python  /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/python_scripts/Extract_breed_rare_common_shared_variant_information.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_rare_common_vcfs/breed_rare_common_snpeff -i /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/horse_genomes_breeds_tidy.txt
+$ python  /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/python_scripts/Extract_breed_rare_common_shared_variant_information.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_rare_common_vcfs/breed_rare_common_snpeff -l /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_rare_common_vcfs/breed_rare_common_chrom_pos/
 ```
-- Move files back to my laptop (not complete yet)
+- Move files back to my laptop 
 ```
-$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_rare_common_vcfs/breed_rare_common_number_of_variants.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/breed_pop_variants/
+$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_rare_common_vcfs/breed_rare_common_snpeff/breed_rare_other_breed_common.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/breed_pop_variants/
+$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_rare_common_vcfs/breed_rare_common_snpeff/breed_differences.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/breed_pop_variants/
+$ Get_breed_rare_breed_common_details.py
 ```
+- Get genes details
+https://biodbnet-abcc.ncifcrf.gov/db/db2db.php
+```
+$ split -l 2,500 breed_breed_disc_gene_list.txt breed_breed_genes_
+```
+https://david.ncifcrf.gov/gene2gene.jsp
 
 # Number of variants that are rare in one breed and common in the general population and variants that are common in that breed and rare in the general population 
 
@@ -304,13 +313,13 @@ $ /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix without_{breed}_rare.v
 $ /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip without_{breed}_common.vcf 
 $ /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix without_{breed}_common.vcf.gz 
 ```
-- Get intersect between the files **LOOK AT NEXT**
+- Get intersect between the files
 ```
 $ python ../../python_scripts/Generate_bcftools_isec_rare_common_variants_breed_pop.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs/ -i /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/horse_genomes_breeds_tidy.txt 
 $ python ../../../../variant_calling/python_generation_scripts/Generate_pbs_submission_shell.py -d ../bcftools_isec_breed_pop_rare_common_variants/
 $ sh /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_isec_breed_pop_rare_common_variants/pbs_shell.sh
 ```
-- Creates a lot of spare files and lots of GB! So tidy up files
+- Creates a lot of spare files and lots of GB! So tidy up files 
 ```
 $ delete_unnecessary_files.py 
 $ module load bcftools
@@ -323,13 +332,15 @@ $ sed -i 's$ xxxxx$$g' *
 $ qsub -I -l nodes=1:ppn=1,walltime=12:00:00,mem=4g
 $ sh /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_query_breed_rare_common/bcftools_query_pop_chrom_pos.sh 
 ```
-- Extract the breed_rare_common variants from the snpeff file 
+- Extract the breed_rare_common variants from the snpeff file  **LOOK AT NEXT**
 ```
-$ python ../../python_scripts/Generate_extract_variants.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs/breed_pop_rare_common_chrom_pos/ 
-$ python ../../../../variant_calling/python_generation_scripts/Generate_pbs_submission_shell.py -d ../bcftools_view_extract_regions_pop/
-$ sh /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_view_extract_regions_pop/pbs_shell.sh 
+$ python ../../python_scripts/Generate_extract_variants_pop.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs/breed_pop_rare_common_chrom_pos/ 
+$ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_view_extract_regions_pop/Extract_variants_rare_common_breed_pop.pbs 
+$ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_view_extract_regions_pop/Extract_variants_unique.pbs 
+$ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/SnpSift_filter_breed_pop_rare_common.pbs
+$ cat rare_common_breed_high.vcf.gz rare_common_breed_moderate.vcf.gz rare_common_breed_low.vcf.gz > rare_common_breed_coding.vcf.gz
 ```
-- Extract the breed details from the output vcfs for breed rare/common variants
+- Extract the breed details from the output vcfs for breed rare/common variants **LOOK AT NEXT**
 ```
 $ qsub -I -l nodes=1:ppn=8,walltime=12:00:00,mem=4g
 $ python  /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/python_scripts/Extract_breed_pop_shared_variant_information.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs/breed_pop_rare_common_snpeff/ -i /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/horse_genomes_breeds_tidy.txt
@@ -340,6 +351,7 @@ $ scp -r durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProj
 $ scp -r durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs/breed_pop_stats_summary /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/breed_pop_variants/
 $ Theses_analysis_breed_pop_genes.py
 $ breed_pop_snpeff_info.R
+$ Get_breed_rare_breed_common_details.py
 ```
 
 # known causal variants 
@@ -361,7 +373,9 @@ $ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden
 $ scp /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/grep_get_rs_chrom_pos.sh durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/dbsnp/
 $ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/get_ECA2_coordinates_from_QTL_lines.py
 $ source activate ensembl-vep
-$ ncbi_remap_known.sh
+$ split -l 500 QTL_EC2_chrom_pos.bed QTLs_
+$ sh ncbi_remap_known.sh
+$ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/Tidy_known_variants_for_extraction.py
 $ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/Get_known_causal_variants.py
 ```
 - Extract known variants - MSI

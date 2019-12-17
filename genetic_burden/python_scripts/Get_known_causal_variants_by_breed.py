@@ -8,37 +8,30 @@ Created on Fri Oct 25 13:42:13 2019
 
 path = "/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/"
 
-#Get breed info
-horse = {}
-with open(path + "horse_genomes_breeds_tidy.txt", "r") as input_file:
-    input_file.readline()
+
+#Goal = disease/horse/breed/genotype
+#Get disease phenotypes
+horse = []
+breed = []
+with open(path + "known_variants_for_analysis.txt", "r") as input_file, open(path + 
+         "known_variants_with_breed.txt", "w") as f:
+    print("Phenotype\thorse\tbreed\tgenotype\tdeleterious\tcausative", file = f)
     for line in input_file:
         line = line.rstrip("\n").split("\t")
-        horse[line[0]] = line[1]
-horse['TWILIGHT'] = "TB"
-
-#Get order of horse ids in vcf
-vcf = []
-with open(path + "horse_ids_vcf.txt", "r") as input_file:
-    for line in input_file:
-        line = line.rstrip("\n")
-        if line == "QUAL":
-            vcf.append("AC")
-        elif line == "FILTER":
-            vcf.append("AF")
-        elif line == "INFO" or line == "FORMAT":
+        if "Phenotype" == line[0]:
+            for i in range(len(line)):
+                horse.append(line[i])
+            next
+        elif "NA" == line[0]:
+            for i in range(len(line)):
+                breed.append(line[i])
             next
         else:
-            vcf.append(line)
+            for i in range(len(line)):
+                if line[i] == "1" or line[i] == "2":
+                    print(line[1], horse[i], breed[i], line[i], line[2], line[3], file =f, sep = "\t")
 
-#Get disease phenotypes
-phenotype = {}
-with open(path + "causal_variants_with_chrom_pos.txt", "r") as input_file:
-    input_file.readline()
-    for line in input_file:
-        line = line.rstrip("\n").split("\t")
-        a = line[2] + ":" + line[1]
-        phenotype[line[3]] = a
+
         
 with open(path + "known_variants_AFs.txt", "r"
           ) as input_file, open(path + "known_CC_with_breeds.txt", "w"

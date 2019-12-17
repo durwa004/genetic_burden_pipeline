@@ -102,6 +102,12 @@ with open(directory + "animalgenomeQTL_for_extraction.txt",encoding = "ISO-8859-
 =======
         print("zgrep ", line[8], " GCA_000002305.1.refseq_chrs.vcf.gz > ", line[1], "_", line[0], ".txt", file = output_file, sep = "")
         rsid.append(line[8])
+<<<<<<< HEAD
+
+#Need to get a list of chrom:pos so that I can put into the remapping tool
+        
+=======
  
 #Need to get a list of chrom:pos so that I can put into the remapping tool
 >>>>>>> 882e64fd6ea0b82f9567aebbb3714ab63edbef84
+>>>>>>> 239cb49afcf71a214d7b01526853ce523d3c2662

@@ -65,7 +65,7 @@ with open("known_disease_locations/No_variants_present.txt", "w") as output_file
 #Did this by hand
 header = []
 breed = []
-with open("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/known_variants_present_exact.txt", 
+with open("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/known_variants_for_analysis.txt", 
           "r") as input_file, open("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/dz_variants_table.txt", 
              "w") as dz_file, open("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/non-dz_variants_table.txt",
                 "w") as non_dz_file:
