@@ -79,9 +79,6 @@ bcftools query -f '%CHROM\t%POS\n' 0000.vcf.gz > /home/mccuem/shared/Projects/Ho
 cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs/unique_variants_Shetland
 
 bcftools query -f '%CHROM\t%POS\n' 0000.vcf.gz > /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs/breed_pop_rare_common_chrom_pos/unique_variants_Shetland_unique.txt
-cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs/QH_rare_pop_common
-
-bcftools query -f '%CHROM\t%POS\n' 0002.vcf.gz > /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs/breed_pop_rare_common_chrom_pos/QH_rare_pop_common_shared.txt
 cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs/QH_common_pop_rare
 
 bcftools query -f '%CHROM\t%POS\n' 0002.vcf.gz > /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs/breed_pop_rare_common_chrom_pos/QH_common_pop_rare_shared.txt

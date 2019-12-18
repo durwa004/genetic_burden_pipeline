@@ -69,22 +69,23 @@ if __name__ == '__main__':
     print("Min = ")
     print(min_c)
 
-    with open(f"{data}/rare_common_breed_chrom_pos.txt", "w") as f, open(f"{data}/rare_common_breed_chrom_pos_with_breed_details.txt", "w") as f2:
+#    with open(f"{data}/rare_common_breed_chrom_pos.txt", "w") as f, open(f"{data}/rare_common_breed_chrom_pos_with_breed_details.txt", "w") as f2:
+    with open(f"{data}/rare_common_breed_pop_chrom_pos.txt", "w") as f, open(f"{data}/rare_common_breed_pop_chrom_pos_with_breed_details.txt", "w") as f2:
         for key,value in chrom_pos.items():
             a = key.split(":")
             print(a[0], a[1], sep = "\t", file = f)
             print(a[0], a[1], value, sep = "\t", file = f2)
 
-    with open(f"Extract_variants_rare_common_breed.pbs", "w") as f:
+    with open(f"Extract_variants_rare_common_breed_pop.pbs", "w") as f:
         print("#!/bin/bash -l\n"
                   "#PBS -l nodes=1:ppn=8,walltime=06:00:00,mem=1g\n"
                   "#PBS -m abe\n"
                   "#PBS -M durwa004@umn.edu\n"
-                  "#PBS -o $PBS_JOBID.Extract_variants_rare_common_breed.out\n"
-                  "#PBS -e $PBS_JOBID.Extract_variants_rare_common_breed.err\n"
-                  "#PBS -N Extract_variants_rare_common_breed.pbs\n"
+                  "#PBS -o $PBS_JOBID.Extract_variants_rare_common_breed_pop.out\n"
+                  "#PBS -e $PBS_JOBID.Extract_variants_rare_common_breed_pop.err\n"
+                  "#PBS -N Extract_variants_rare_common_breed_pop.pbs\n"
                   "#PBS -q batch\n"
                   "module load bcftools\n"
-                  f"cd {data}/../breed_rare_common_snpeff\n"
-                  f"bcftools view -R {data}/rare_common_breed_chrom_pos.txt ../../../SnpEff/thesis_intersect_snpeff.ann.vcf.gz > rare_common_breed_snpeff.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip rare_common_breed_snpeff.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix rare_common_breed_snpeff.vcf.gz", file = f)
+                  f"cd {data}/../breed_pop_rare_common_snpeff\n"
+                  f"bcftools view -R {data}/rare_common_breed_pop_chrom_pos.txt ../../../SnpEff/thesis_intersect_snpeff.ann.vcf.gz > rare_common_breed_pop_snpeff.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip rare_common_breed_pop_snpeff.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix rare_common_breed_pop_snpeff.vcf.gz", file = f)
 

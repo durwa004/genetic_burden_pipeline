@@ -1,0 +1,29 @@
+#!/bin/bash -l
+#PBS -l nodes=1:ppn=4,walltime=12:00:00,mem=2g
+#PBS -m abe
+#PBS -M durwa004@umn.edu
+#PBS -o $PBS_JOBID.SnpSift_filter_NC_001640_1.out
+#PBS -e $PBS_JOBID.SnpSift_filter_NC_001640_1.err
+#PBS -N SnpSift_filter_NC_001640_1.pbs
+#PBS -q lab
+
+cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs/breed_pop_rare_common_snpeff/
+
+java -Djava.io.tmpdir=/home/mccuem/shared/Projects/HorseGenomeProject/Data/temp_files -Xmx4g -jar /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/variant_annotation/SnpEff/snpEff/SnpSift.jar filter "(ANN[0].IMPACT has 'HIGH')" unique_snpeff.vcf.gz > unique_high.vcf
+java -Djava.io.tmpdir=/home/mccuem/shared/Projects/HorseGenomeProject/Data/temp_files -Xmx4g -jar /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/variant_annotation/SnpEff/snpEff/SnpSift.jar filter "(ANN[*].IMPACT = 'MODERATE')" unique_snpeff.vcf.gz > unique_moderate.vcf
+java -Djava.io.tmpdir=/home/mccuem/shared/Projects/HorseGenomeProject/Data/temp_files -Xmx4g -jar /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/variant_annotation/SnpEff/snpEff/SnpSift.jar filter "(ANN[*].IMPACT = 'LOW')" unique_snpeff.vcf.gz > unique_low.vcf
+
+/home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip unique_high.vcf
+/home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix unique_high.vcf.gz
+/home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip unique_moderate.vcf
+/home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix unique_moderate.vcf.gz
+/home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip unique_low.vcf
+/home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix unique_low.vcf.gz
+
+module load bcftools
+bcftools stats unique_high.vcf.gz > unique_high.vcf.gz.stats
+bcftools stats unique_moderate.vcf.gz > unique_moderate.vcf.gz.stats
+bcftools stats unique_low.vcf.gz > unique_low.vcf.gz.stats
+bcftools stats unique_snpeff.vcf.gz > unique_snpeff.vcf.gz.stats
+
+cat unique_high.vcf.gz unique_moderate.vcf.gz unique_low.vcf.gz > unique_coding.vcf.gz

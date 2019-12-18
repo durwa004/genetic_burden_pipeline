@@ -335,10 +335,11 @@ $ sh /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_bur
 - Extract the breed_rare_common variants from the snpeff file  **LOOK AT NEXT**
 ```
 $ python ../../python_scripts/Generate_extract_variants_pop.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs/breed_pop_rare_common_chrom_pos/ 
-$ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_view_extract_regions_pop/Extract_variants_rare_common_breed_pop.pbs 
+$ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_view_extract_regions_pop/Extract_variants_breed_common_rare_pop.pbs 
+$ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_view_extract_regions_pop/Extract_variants_breed_rare_common_pop.pbs 
 $ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/bcftools_view_extract_regions_pop/Extract_variants_unique.pbs 
 $ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/SnpSift_filter_breed_pop_rare_common.pbs
-$ cat rare_common_breed_high.vcf.gz rare_common_breed_moderate.vcf.gz rare_common_breed_low.vcf.gz > rare_common_breed_coding.vcf.gz
+$ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/SnpSift_filter_unique.pbs
 ```
 - Extract the breed details from the output vcfs for breed rare/common variants **LOOK AT NEXT**
 ```
@@ -360,6 +361,7 @@ Decided to do all variants on OMIA - download from: https://omia.org/results/?se
 As of Release 39, there have been 2,260 horse QTLs released for public access on the Horse QTLdb. These data were curated from 88 publications and represent 54 different horse traits.
 Excluded QTLs without snp IDs/positions on the genome in the download
 Selected the peak SNP to investigate = 1,730 QTLs (1,559 unique)
+679 mapped uniquely, 549 mapped to multiple places in the genome
 - Tidy up variant locations (from my computer and create shell script)
 ```
 $ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/Tidy_known_variants_for_extraction.py 
@@ -370,12 +372,14 @@ $ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden
 ```
 - Pull out QTLs from dbsnp **WORKING ON**
 ```
-$ scp /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/grep_get_rs_chrom_pos.sh durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/dbsnp/
-$ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/get_ECA2_coordinates_from_QTL_lines.py
+$ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/Tidy_known_variants_for_extraction.py
+$ scp /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/grep_get_rs_chrom_pos.sh durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/dbsnp/EVD_dbsnp/known_qtls/
+$ sh grep_get_rs_chrom_pos.sh
 $ source activate ensembl-vep
 $ split -l 500 QTL_EC2_chrom_pos.bed QTLs_
 $ sh ncbi_remap_known.sh
-$ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/Tidy_known_variants_for_extraction.py
+$ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/Get_known_causal_variants.py
+$ sh QTLs_remapped.sh
 $ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/Get_known_causal_variants.py
 ```
 - Extract known variants - MSI

@@ -11,13 +11,19 @@ def make_arg_parser():
             default=argparse.SUPPRESS,
             metavar="",
             required=True,
-            help="Path to dir with output snpeff files  [required]")
+            help="Path to dir with output snpeff file  [required]")
     parser.add_argument(
-            "-i", "--ids",
+            "-l", "--lists",
             default=argparse.SUPPRESS,
             metavar="",
             required=True,
-            help="Horse/breed file [required]")
+            help="directory containing list of chrom/pos for each rare/common breed pair [required]")
+    parser.add_argument(
+            "-b", "--bfreq",
+            default=argparse.SUPPRESS,
+            metavar="",
+            required=True,
+            help="Whether the breed variants are rare, common, or unique [required]")
     return parser
 
 
@@ -27,74 +33,108 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     data = os.path.abspath(args.data)
-    horse_ids = args.ids
+    lists = os.path.abspath(args.lists)
+    freq = args.bfreq
 
-    horse_breed = {}
-    with open(horse_ids, "r") as input_file:
-        input_file.readline()
+    if freq == "rare":
+        snpeff = "breed_rare_common_pop_coding.vcf.gz"
+    elif freq == "common":
+        snpeff = "breed_common_rare_pop_coding.vcf.gz"
+    elif freq == "unique":
+        snpeff = "unique_coding.vcf.gz"
+
+    cp_dict = {}
+    for filename in os.listdir(lists):
+        if filename.endswith(".txt"):
+            a = filename.split("_")
+            if a[1] == freq or a[0] == freq:
+                with open(lists + "/" + filename) as input_file:
+                    a = filename.split(".txt")
+                    for line in input_file:
+                        chrom, pos = line.rstrip("\n").split("\t")
+                        b = chrom + ":" + pos
+                        if b in cp_dict.keys():
+                            c = cp_dict[b] + "," + a[0]
+                            cp_dict[b] = c
+                        else:
+                            cp_dict[b] = a[0]
+
+#Get chrom/pos for all of the variants that are differentiated - can't get all the details, otherwise there is too much information
+    n_shared = []
+    genes = []
+    AF_list = []
+    lof = []
+    with gzip.open(data + "/" + snpeff, "rt") as input_file, open(data + f"/breed_{freq}_pop.txt", "w") as f:
+        print("Gene\tlof", sep = "\t", file = f)
         for line in input_file:
             line = line.rstrip("\n").split("\t")
-            horse_breed[line[0]] = line[1]
-    horse_breed['TWILIGHT'] = "TB"
+            if "#" in line[0]:
+                continue 
+            else:
+                a = line[0] + ":" + line[1]
+                if a in cp_dict.keys():
+                    b = cp_dict[a].split(",")
+                    n_shared.append(len(b))
+                ab = line[7].split(";")
+                cd = ab[1].split("AF=")
+                AF = cd[1]
+                if "," in AF:
+                    ef = AF.split(",")
+                    AF = ef[0]
+                AF_list.append(AF)
+                de = line[7].split("ANN=")
+                bc = de[1].split("|")
+                consequence = bc[1]
+                coding = bc[9]
+                protein = bc[10]
+                impact = bc[2]
+                gene = bc[3]
+                gene = gene.split("-")
+                if "CHR_START" in gene[0]:
+                    gene = gene[-1]
+                else:
+                    if "exon" not in gene[0]:
+                        gene = gene[0]
+                    else:
+                        if "id" in gene[1]:
+                            gene = gene[2]
+                        else:
+                            gene = gene[1]
+                genes.append(gene)
+                if "frameshift" in consequence or "start_lost" in consequence or "stop_gained" in consequence or "stop_lost" in consequence:
+                    lof.append("y")
+                else:
+                    lof.append("n")
+        for i in range(len(genes)):
+            print(genes[i], lof[i], file = f)
 
-    breeds = list(set(horse_breed.values()))
+    count = 0
+    for i in range(len(n_shared)):
+        count += int(n_shared[i])
+    if len(n_shared) >0:
+        print("Mean number of breeds each variant is shared by: ", count/len(n_shared))
+        print("Max number of breeds: ", max(n_shared))
+        print("Min number of breeds: ", min(n_shared))
 
-    for filename in os.listdir(data):
-        if filename.endswith(".vcf.gz"):
-            with gzip.open(data + "/" + filename, "rt") as input_file:
-                for line in input_file:
-                    line = line.rstrip("\n").split("\t")
-                    header = []
-                    if "#CHROM" in line[0]:
-                        for i in range(len(line)):
-                            header.append(line[i])
-                        header1 = header[9:]
-                        break
+    AF_count = 0
+    for i in range(len(AF_list)):
+        AF_count += float(AF_list[i])
+    print("Mean allele frequency: ", AF_count/len(AF_list))
 
-    for item in range(len(breeds)):
-        with open(data + "/" + breeds[item] + "_rare_pop_common.txt", "w") as output_file:
-            print("Common_breed\tCHROM\tPOS\tREF\tALT\tAC\tAF\tconsequence\timpact\tgene\tcoding\tprotein\tlof", "\t".join(header[9:]), sep = "\t", file = output_file)
-            for filename in os.listdir(data):
-                if filename.endswith(".vcf.gz"):
-                    a = filename.split("_rare_")
-                    if a[0] == breeds[item]:
-                        with gzip.open(data + "/" + filename, "rt") as input_file:
-                            for line in input_file:
-                                line = line.rstrip("\n").split("\t")
-                                if "#" in line[0]:
-                                    next
-                                else:
-                                    ab = line[7].split(";")
-                                    cd = ab[1].split("AF=")
-                                    AF = cd[1]
-                                    if "," in AF:
-                                        ef = AF.split(",")
-                                        AF = ef[0]
-                                    bc = ab[0].split("AC=")
-                                    AC = bc[1]
-                                    if "," in AC:
-                                        gh = AC.split(",")
-                                        AC = gh[0]
-                                    de = line[7].split("ANN=")
-                                    bc = de[1].split("|")
-                                    consequence = bc[1]
-                                    coding = bc[9]
-                                    protein = bc[10]
-                                    impact = bc[2]
-                                    gene = bc[3]
-                                    gene = gene.split("-")
-                                    if "CHR_START" in gene[0]:
-                                        gene = gene[-1]
-                                    else:
-                                        if "exon" not in gene[0]:
-                                            gene = gene[0]
-                                        else:
-                                            if "id" in gene[1]:
-                                                gene = gene[2]
-                                            else:
-                                                gene = gene[1]
-                                    if "frameshift" in consequence or "start_lost" in consequence or "stop_gained" in consequence or "stop_lost" in consequence:
-                                        lof = "y"
-                                    else:
-                                        lof = "n"
-                        print(a[0],line[0], line[1], line[3],line[4], AC, AF, consequence, impact, gene, coding, protein, lof,"\t".join(line[9:]), sep = "\t", file = output_file)
+    print("number of genes affected: ", len(set(genes)))
+    print("Number of lof variants: ", lof.count("y"))
+
+    #Get breeds that tend to have the most discrepancies.
+    breeds = []
+    for key, value in cp_dict.items():
+        a = value.split(",")
+        for i in range(len(a)):
+            breeds.append(a[i])
+    print(len(breeds))
+
+    with open(f"breed_{freq}_differences.txt", "w") as f:
+        breeds_set = list(set(breeds))
+        print(f"Breed_{freq}_popn\tn_variants", file = f)
+        for item in range(len(breeds_set)):
+            print(breeds_set[item], breeds.count(breeds_set[item]), sep = "\t", file =f)
+
