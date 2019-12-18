@@ -18,6 +18,12 @@ def make_arg_parser():
             metavar="",
             required=True,
             help="directory containing list of chrom/pos for each rare/common breed pair [required]")
+    parser.add_argument(
+            "-b", "--bfreq",
+            default=argparse.SUPPRESS,
+            metavar="",
+            required=True,
+            help="Whether the breed variants are rare, common, or unique [required]")
     return parser
 
 
@@ -28,29 +34,37 @@ if __name__ == '__main__':
 
     data = os.path.abspath(args.data)
     lists = os.path.abspath(args.lists)
+    freq = args.bfreq
+
+    if freq == "rare":
+        snpeff = "breed_rare_common_pop_coding.vcf.gz"
+    elif freq == "common":
+        snpeff = "breed_common_rare_pop_coding.vcf.gz"
+    elif freq == "unique":
+        snpeff = "unique_coding.vcf.gz"
 
     cp_dict = {}
     for filename in os.listdir(lists):
-        if os.path.isdir(lists + "/" + filename):
-            continue
-        else: 
-            with open(lists + "/" + filename) as input_file:
-                a = filename.split(".txt")
-                for line in input_file:
-                    chrom, pos = line.rstrip("\n").split("\t")
-                    b = chrom + ":" + pos
-                    if b in cp_dict.keys():
-                        c = cp_dict[b] + "," + a[0]
-                        cp_dict[b] = c
-                    else:
-                        cp_dict[b] = a[0]
+        if filename.endswith(".txt"):
+            a = filename.split("_")
+            if a[1] == freq or a[0] == freq:
+                with open(lists + "/" + filename) as input_file:
+                    a = filename.split(".txt")
+                    for line in input_file:
+                        chrom, pos = line.rstrip("\n").split("\t")
+                        b = chrom + ":" + pos
+                        if b in cp_dict.keys():
+                            c = cp_dict[b] + "," + a[0]
+                            cp_dict[b] = c
+                        else:
+                            cp_dict[b] = a[0]
 
 #Get chrom/pos for all of the variants that are differentiated - can't get all the details, otherwise there is too much information
     n_shared = []
     genes = []
     AF_list = []
     lof = []
-    with gzip.open(data + "/rare_common_breed_pop_coding.vcf.gz", "rt") as input_file, open(data + "/breed_rare_other_breed_common.txt", "w") as f:
+    with gzip.open(data + "/" + snpeff, "rt") as input_file, open(data + f"/breed_{freq}_pop.txt", "w") as f:
         print("Gene\tlof", sep = "\t", file = f)
         for line in input_file:
             line = line.rstrip("\n").split("\t")
@@ -97,9 +111,10 @@ if __name__ == '__main__':
     count = 0
     for i in range(len(n_shared)):
         count += int(n_shared[i])
-    print("Mean number of breeds each variant is shared by: ", count/len(n_shared))
-    print("Max number of breeds: ", max(n_shared))
-    print("Min number of breeds: ", min(n_shared))
+    if len(n_shared) >0:
+        print("Mean number of breeds each variant is shared by: ", count/len(n_shared))
+        print("Max number of breeds: ", max(n_shared))
+        print("Min number of breeds: ", min(n_shared))
 
     AF_count = 0
     for i in range(len(AF_list)):
@@ -117,9 +132,9 @@ if __name__ == '__main__':
             breeds.append(a[i])
     print(len(breeds))
 
-    with open("breed_differences.txt", "w") as f:
+    with open(f"breed_{freq}_differences.txt", "w") as f:
         breeds_set = list(set(breeds))
-        print("Breed_rare_common\tn_variants", file = f)
+        print(f"Breed_{freq}_popn\tn_variants", file = f)
         for item in range(len(breeds_set)):
             print(breeds_set[item], breeds.count(breeds_set[item]), sep = "\t", file =f)
 

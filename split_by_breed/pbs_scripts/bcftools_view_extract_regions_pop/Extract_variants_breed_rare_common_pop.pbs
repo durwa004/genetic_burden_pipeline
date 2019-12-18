@@ -1,0 +1,11 @@
+#!/bin/bash -l
+#PBS -l nodes=1:ppn=1,walltime=48:00:00,mem=1g
+#PBS -m abe
+#PBS -M durwa004@umn.edu
+#PBS -o $PBS_JOBID.Extract_variants_breed_rare_common_pop.out
+#PBS -e $PBS_JOBID.Extract_variants_breed_rare_common_pop.err
+#PBS -N Extract_variants_breed_rare_common_pop.pbs
+#PBS -q lab-long
+module load bcftools
+cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs/breed_pop_rare_common_chrom_pos/../breed_pop_rare_common_snpeff
+bcftools view -R /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs/breed_pop_rare_common_chrom_pos/all_shared_variants/breed_rare_common_pop_chrom_pos.txt ../../../SnpEff/thesis_intersect_snpeff.ann.vcf.gz > breed_rare_common_pop_snpeff.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip breed_rare_common_pop_snpeff.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix breed_rare_common_pop_snpeff.vcf.gz
