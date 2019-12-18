@@ -70,7 +70,8 @@ with open("/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibi
                             count +=1
                         else:
                             count_2 +=1
-                            print("/home/mccuem/shared/.local/bin/tabix /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect_without_Prze/thesis_intersect.vcf.gz ", chrom_pos[a], " > ", fn[0], ".txt", sep = "", file =f)
+                            ab = chrom_pos[a].split(":")
+                            print("/home/mccuem/shared/.local/bin/tabix /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect_without_Prze/thesis_intersect.vcf.gz ", chrom_pos[a], "-", ab[1], " > ", fn[0], ".txt", sep = "", file =f)
 
 
 ################################################################################
@@ -78,7 +79,7 @@ with open("/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibi
 
 #Get breed info
 horse_breed = {}
-with open("../../horse_genomes_breeds_tidy.txt", "r") as input_file:
+with open("../../../horse_genomes_breeds_tidy.txt", "r") as input_file:
     input_file.readline()
     for line in input_file:
         line = line.rstrip("\n").split("\t")
@@ -87,7 +88,7 @@ horse_breed['TWILIGHT'] = "TB"
                     
 #Get list of horse ids in order of vcf.
 header = []
-with gzip.open("../SnpEff/thesis_intersect_snpeff.ann.vcf.gz", "rt") as input_file:
+with gzip.open("../../SnpEff/thesis_intersect_snpeff.ann.vcf.gz", "rt") as input_file:
     for line in input_file:
         line = line.rstrip("\n").split("\t")
         if "#CHROM" in line[0]:
@@ -136,8 +137,6 @@ with open("known_QTL_locations/No_QTLs_present.txt", "w") as output_file, open("
                 elif os.stat(filename).st_size == 0:
                     print(filename, file = output_file)
 
-#Then need to double check that the variants are the exact position that they are supposed to be
-#Did this by hand
 header = []
 breed = []
 with open("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/known_variants_for_analysis.txt", 
