@@ -74,4 +74,19 @@ first_row <- plot_grid(bp1,bp2, labels = c("A", "B"))
 #Save as dual plot
 save_plot("associated_variants.tiff", first_row, base_height = 12,base_width = 24)
 
+################################################################################
+###############################################################################
+#QTLs
+setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/")
+data = read.table("known_variants_with_breed.txt", header=T)
+data$genotype <- as.factor(data$genotype)
 
+deleterious_causative <- data %>% 
+  filter(!grepl('n', deleterious)) %>%
+  filter(!grepl('n', causative))
+
+bp1 <- ggplot(deleterious_causative, aes(x=Phenotype, fill=breed)) + geom_histogram(stat = "count")  + 
+  ylab("Allele Count") + scale_y_continuous(limits= c(0,25)) + xlab("Causal variants (deleterious)") + 
+  theme(axis.text = element_text(size=10,angle=90,hjust=1),
+        panel.background = element_blank(),
+        axis.title = element_text(size=12,face="bold"))

@@ -62,7 +62,7 @@ with open("known_disease_locations/No_variants_present.txt", "w") as output_file
                     print(filename, file = output_file)
 
 #Then need to double check that the variants are the exact position that they are supposed to be
-#Did this by hand
+#Did this by hand - rename to known_variants_for_analysis.txt
 header = []
 breed = []
 with open("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/known_variants_for_analysis.txt", 

@@ -23,31 +23,25 @@ with open(path + "/breed_rare_other_breed_common.txt", "r") as input_file, open(
 #Get breeds that most/least commonly have variant discrepancies
 #Need to add the rare and common variants together for each breed difference
 breed_disc = {}
-breeds = []
 with open(path + "/breed_differences.txt", "r") as input_file:
     input_file.readline()
     for line in input_file:
         line = line.rstrip("\n").split("\t")
-        breed_disc[line[0]] = line[1]
-        a = line[0].split("_rare_")
-        breeds.append(a[0])
-breeds = list(set(breeds))
+        a = line[0].split("_")
+        b = a[0] + ":" + a[2]
+        breed_disc[b] = line[1]
 
 br_dict = {}
-for i in range(len(breeds)):
-    for key,value in breed_disc.items():
-        a = key.split("_rare_")
-        b = a[1].split("_common")
-        c = a[0] + ":" + b[0]
-        e = b[0] + ":" + a[0]
-        if c in br_dict.keys():
-            d = int(br_dict[c]) + int(value)
-            br_dict[c] = d
-        elif e in br_dict.keys():
-            d = int(br_dict[e]) + int(value)
-            br_dict[e] = d
-        else:
-            br_dict[c] = int(value)
+breeds = []
+for key,value in breed_disc.items():
+    a = key.split(":")
+    b = a[1] + ":" + a[0]
+    if breeds.count(b) >0 or breeds.count(key) >0:
+        pass
+    else:
+        breeds.append(b)
+        c = int(value) + int(breed_disc[b])
+        br_dict[key] = c
 
 min_c = 100000000
 max_c = 0
