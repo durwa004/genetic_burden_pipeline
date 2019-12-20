@@ -65,6 +65,14 @@ with open("known_disease_locations/No_variants_present.txt", "w") as output_file
 #Did this by hand - rename to known_variants_for_analysis.txt
 header = []
 breed = []
+AF_dz = 0
+max_AF_dz = 0
+min_AF_dz = 100
+count_dz = 0
+count_non_dz = 0
+AF_non_dz = 0
+max_AF_non_dz = 0
+min_AF_non_dz = 100
 with open("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/known_variants_for_analysis.txt", 
           "r") as input_file, open("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/dz_variants_table.txt", 
              "w") as dz_file, open("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/non-dz_variants_table.txt",
@@ -83,13 +91,32 @@ with open("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_
             next
         else:
             if line[2] == "n":
+                count_non_dz +=1
+                AF_non_dz += float(line[9])
+                if float(line[9]) > float(max_AF_non_dz):
+                    max_AF_non_dz = line[9]
+                elif float(line[9]) < float(min_AF_non_dz):
+                    min_AF_non_dz = line[9]
                 for i in range(len(line)):
                     if i >8:
                         if line[i] == "1" or line[i] == "2":
                             print(line[1], header[i], breed[i], line[i], sep = "\t", file = non_dz_file)
             else:
+                count_dz +=1
+                AF_dz += float(line[9])
+                if float(line[9]) > float(max_AF_dz):
+                    max_AF_dz = line[9]
+                elif float(line[9]) < float(min_AF_dz):
+                    min_AF_dz = line[9]
                 for i in range(len(line)):
                     if i >8:
                         if line[i] == "1" or line[i] == "2":
                             print(line[1], header[i], breed[i], line[i], sep = "\t", file = dz_file)
             
+
+print(AF_dz/count_dz)
+print(max_AF_dz)
+print(min_AF_dz)
+print(AF_non_dz/count_non_dz)
+print(max_AF_non_dz)
+print(min_AF_non_dz)

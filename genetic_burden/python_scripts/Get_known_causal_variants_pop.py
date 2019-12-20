@@ -4,7 +4,6 @@ import gzip
 #Get details of frequency of known variants
 #Pull out the remapped SNP locations
 #Need to get disease for each QTL as well as the tabix code
-import os
 import numpy as np
 directory = "/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/dbsnp/EVD_dbsnp/known_qtls/split_files/"
 chrom_pos = {}
@@ -139,12 +138,14 @@ with open("known_QTL_locations/No_QTLs_present.txt", "w") as output_file, open("
 
 header = []
 breed = []
-with open("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/known_variants_for_analysis.txt", 
-          "r") as input_file, open("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/dz_variants_table.txt", 
-             "w") as dz_file, open("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/non-dz_variants_table.txt",
-                "w") as non_dz_file:
-    print("Disease\thorse\tbreed\tgenotype", file = dz_file)
-    print("Disease\thorse\tbreed\tgenotype", file = non_dz_file)
+phenotype = {}
+count = 0
+AF = 0
+max_AF = 0
+min_AF = 100
+with open("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/known_QTLs_present.txt", 
+          "r") as input_file, open("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/QTLs_table.txt", "w") as f:
+    print("Phenotype\thorse\tbreed\tgenotype", file = f)
     for line in input_file:
         line = line.rstrip("\n").split("\t")
         if "Phenotype" in line[0]:
@@ -156,14 +157,26 @@ with open("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_
                 breed.append(line[i])
             next
         else:
-            if line[2] == "n":
-                for i in range(len(line)):
-                    if i >8:
-                        if line[i] == "1" or line[i] == "2":
-                            print(line[1], header[i], breed[i], line[i], sep = "\t", file = non_dz_file)
+            AF += float(line[6])
+            if float(line[6]) > float(max_AF):
+                max_AF = line[6]
+            elif float(line[6]) < float(min_AF):
+                min_AF =line[6]
+            count +=1
+            a = line[0].split("_")
+            if a[0] in phenotype.keys():
+                b = phenotype[a[0]].split(",")
+                c = a[0] + "_" + str(len(b))
+                d = phenotype[a[0]] + "," + a[0]
+                phenotype[a[0]] = d
             else:
-                for i in range(len(line)):
-                    if i >8:
-                        if line[i] == "1" or line[i] == "2":
-                            print(line[1], header[i], breed[i], line[i], sep = "\t", file = dz_file)
-            
+                phenotype[a[0]] = a[0]
+                c = a[0] + "_0"
+            for i in range(len(line)):
+                    if line[i] == "1" or line[i] == "2":
+                        print(c, header[i], breed[i], line[i], sep = "\t", file = f)
+
+#Mean AF
+print(AF/count)
+print(max_AF)
+print(min_AF)

@@ -73,8 +73,8 @@ with open(path + "/breed_common_pop_rare_gene_list.txt" ,"w") as f:
 
 path = "/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/breed_pop_variants/"
 genes = []
-with open(path + "/breed_common_pop.txt", "r") as input_file, open(path + 
-         "/breed_common_pop_rare_genes.txt", "w") as f:
+with open(path + "/breed_rare_pop.txt", "r") as input_file, open(path + 
+         "/breed_rare_pop_common_genes.txt", "w") as f:
     for line in input_file:
         input_file.readline()
         line = line.rstrip("\n").split()
@@ -88,7 +88,7 @@ with open(path + "/breed_common_pop.txt", "r") as input_file, open(path +
 #Get breeds that most/least commonly have variant discrepancies
 #Need to add the rare and common variants together for each breed difference
 breed_disc = {}
-with open(path + "/breed_common_differences.txt", "r") as input_file:
+with open(path + "/breed_rare_differences.txt", "r") as input_file:
     input_file.readline()
     for line in input_file:
         line = line.rstrip("\n").split("\t")
@@ -119,7 +119,7 @@ print(most)
 
 #Reimport the gene names and create a dictionary
 gene_ids = {}
-with open(path + "/breed_common_rare_pop_gene_ids.txt", "r") as input_file:
+with open(path + "/breed_rare_common_pop_gene_ids.txt", "r") as input_file:
     input_file.readline()
     for line in input_file:
         line = line.rstrip("\n").split("\t")

@@ -26,12 +26,6 @@ bp2 <- ggplot(deleterious_causative, aes(x=Phenotype, fill=genotype)) + geom_his
         legend.position="none",
         axis.title = element_text(size=12,face="bold"))+ scale_fill_brewer(palette = "Accent")
 
-#Save as combined plot
-first_row <- plot_grid(bp1,bp2, labels = c("A", "B"))
-#Save as dual plot
-save_plot("causative_deleterious.tiff", first_row, base_height = 12,base_width = 24)
-
-
 non_deleterious_causative <- data %>% 
   filter(!grepl('y', deleterious)) %>%
   filter(!grepl('n', causative))
@@ -50,11 +44,15 @@ bp4 <- ggplot(non_deleterious_causative, aes(x=Phenotype, fill=genotype)) +  geo
         axis.title = element_text(size=12,face="bold"))+ scale_fill_brewer(palette = "Accent")
 
 #Save as combined plot
-second_row <- plot_grid(bp3,bp4, labels = c("A", "B"))
-#Save as dual plot
-save_plot("causative_non_deleterious.tiff", second_row, base_height = 12,base_width = 24)
+first_row <- plot_grid(bp1,bp2, labels = c("A", "B"),rel_widths = 1)
+second_row <- plot_grid(bp3,bp4, labels = c("C", "D"), rel_widths = 1)
+x_c <- plot_grid(first_row,second_row, ncol = 1, rel_widths = 1, rel_heights = 1)
 
-assoc_variants <- data %>%
+#Save as dual plot
+save_plot("../Paper_2019/Nature_genetics/Figures/causative_variants.tiff", 
+          x_c, base_height = 12,base_width = 24)
+
+deleterious_assoc <- data %>%
   filter(!grepl('y', causative))
 bp1 <- ggplot(deleterious_assoc, aes(x=Phenotype, fill=breed)) + geom_histogram(stat = "count")  + 
   ylab("Allele Count") + scale_y_continuous() + xlab("Associated variants") + 
@@ -72,21 +70,31 @@ bp2 <- ggplot(deleterious_assoc, aes(x=Phenotype, fill=genotype)) + geom_histogr
 #Save as combined plot
 first_row <- plot_grid(bp1,bp2, labels = c("A", "B"))
 #Save as dual plot
-save_plot("associated_variants.tiff", first_row, base_height = 12,base_width = 24)
+save_plot("../Paper_2019/Nature_genetics/Figures/associated_variants.tiff", first_row, base_height = 12,base_width = 24)
 
 ################################################################################
 ###############################################################################
 #QTLs
 setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/")
-data = read.table("known_variants_with_breed.txt", header=T)
+data = read.table("QTLs_table.txt", header=T)
 data$genotype <- as.factor(data$genotype)
 
-deleterious_causative <- data %>% 
-  filter(!grepl('n', deleterious)) %>%
-  filter(!grepl('n', causative))
-
-bp1 <- ggplot(deleterious_causative, aes(x=Phenotype, fill=breed)) + geom_histogram(stat = "count")  + 
-  ylab("Allele Count") + scale_y_continuous(limits= c(0,25)) + xlab("Causal variants (deleterious)") + 
+bp1 <- ggplot(data, aes(x=Phenotype, fill=breed)) + geom_histogram(stat = "count")  + 
+  ylab("Allele Count") + scale_y_continuous() + xlab("QTLs") + 
   theme(axis.text = element_text(size=10,angle=90,hjust=1),
         panel.background = element_blank(),
-        axis.title = element_text(size=12,face="bold"))
+        axis.title = element_text(size=12,face="bold"),
+        axis.text.x=element_blank())
+
+bp2 <- ggplot(data, aes(x=Phenotype, fill=genotype)) + geom_histogram(stat = "count")  + 
+  ylab("Allele Count") + scale_y_continuous() + xlab("QTLs") + 
+  theme(axis.text = element_text(size=10,angle=90,hjust=1),
+        panel.background = element_blank(),
+        legend.position="none",
+        axis.title = element_text(size=12,face="bold"),
+        axis.text.x=element_blank())
+
+#Save as combined plot
+first_row <- plot_grid(bp1,bp2, labels = c("A", "B"))
+#Save as dual plot
+save_plot("../Paper_2019/Nature_genetics/Figures/QTLs.tiff", first_row, base_height = 12,base_width = 24)
