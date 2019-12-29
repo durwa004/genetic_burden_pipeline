@@ -57,13 +57,15 @@ x <- plot(gb_emm) + geom_boxplot() + theme_bw() + xlab("EMMEAN of genetic burden
   ylab("Breed") +scale_x_continuous(labels=comma) + 
   theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
         axis.line.y = element_line(), axis.text.x = element_text(), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("../Paper_2019/Figures/gb_EMMEANS.tiff", x, base_height = 3.5, base_width = 8)
+
 #Number of homozygous variants
-x <- plot(n_hom_gb_emm) + geom_boxplot() + theme_bw() + xlab("EMMEAN of number of homozygous genetic burden") + 
+x1 <- plot(n_hom_gb_emm) + geom_boxplot() + theme_bw() + xlab("EMMEAN of number of homozygous genetic burden") + 
   ylab("Breed") +scale_x_continuous(labels=comma) + 
   theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
         axis.line.y = element_line(), axis.text.x = element_text(), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("../Paper_2019/Figures/n_hom_gb_EMMEANS.tiff", x, base_height = 3.5, base_width = 8)
+
+x_c <- plot_grid(x,x1,labels = "AUTO", ncol = 1)
+save_plot("../Paper_2019/Nature_genetics/Figures/gb_gb_hom_EMMEANS.tiff", x_c, base_height = 7, base_width = 8)
 
 
 #LOF EMMEANS
@@ -87,7 +89,7 @@ mean(data$total[data$V2 == "STB"]) #3514
 mean(data$total[data$V2 == "TB"]) #3033
 mean(data$total[data$V2 == "WP"]) #3603
 
-kruskal.test(data_br$total, data_br$V2)
+
 DOC <- read.table("../DOC/DOC_by_horse.txt", header=T)
 colnames(DOC) <- c("Sample", "total_DOC", "nuclear_placed_DOC")
 colnames(data) = c("Sample", "breed", "het", "hom", "missing", "total")
@@ -116,13 +118,14 @@ x <- plot(gb_emm) + geom_boxplot() + theme_bw() + xlab("EMMEAN of LOF variants")
   ylab("Breed") +scale_x_continuous(labels=comma) + 
   theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
         axis.line.y = element_line(), axis.text.x = element_text(), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("../Paper_2019/Figures/LOF_EMMEANS.tiff", x, base_height = 3.5, base_width = 8)
+
 #Number of homozygous variants
-x <- plot(n_hom_gb_emm) + geom_boxplot() + theme_bw() + xlab("EMMEAN of number of homozygous LOF variants") + 
+x1 <- plot(n_hom_gb_emm) + geom_boxplot() + theme_bw() + xlab("EMMEAN of number of homozygous LOF variants") + 
   ylab("Breed") +scale_x_continuous(labels=comma) + 
   theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
         axis.line.y = element_line(), axis.text.x = element_text(), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("../Paper_2019/Figures/n_hom_LOF_EMMEANS.tiff", x, base_height = 3.5, base_width = 8)
+x_c <- plot_grid(x,x1,labels = "AUTO", ncol = 1)
+save_plot("../Paper_2019/Nature_genetics/Figures/lof_lof_hom_EMMEANS.tiff", x_c, base_height = 7, base_width = 8)
 
 
 
