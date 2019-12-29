@@ -6,12 +6,20 @@ with gzip.open("../SnpEff/thesis_intersect_snpeff.coding.ann.vcf.gz", "rt") as i
     for line in input_file:
         line = line.rstrip("\n").split("\t")
         if "#CHROM" in line:
-            print("\t".join(line[0:7]), "AC", "AF", "Consequence","Impact", "Gene", "Where", "coding_change", "protein_change", "\t".join(line[9:]), file = output_file, sep = "\t")
+            print("\t".join(line[0:7]), "AC", "AF", "Consequence","Impact", "Gene", "Where", "coding_change", "protein_change", "lof", "\t".join(line[9:]), file = output_file, sep = "\t")
         elif "#" in line[0]:
             next
         else:
+            lof = "NA"
             ab = line[7].split("ANN=")
             bc = ab[1].split("|")
+            ef = line[7].split(";")
+            for i in range(len(ef)):
+                fe = ef[i].split("LOF=")
+                if len(fe) > 1:
+                    lof = fe[1]
+                else:
+                    lof = "n"
             if bc[0] == line[4]:
                 a = line[7].split("AC=")
                 b = a[1].split(";")
@@ -46,7 +54,8 @@ with gzip.open("../SnpEff/thesis_intersect_snpeff.coding.ann.vcf.gz", "rt") as i
                 where = bc[7]
                 coding = bc[9]
                 protein = bc[10]
-            print("\t".join(line[0:7]), AC, AF, consequence, impact, gene, where, coding, protein, "\t".join(line[9:]), file = output_file, sep = "\t")
+                ef = line[7].split(";")
+            print("\t".join(line[0:7]), AC, AF, consequence, impact, gene, where, coding, protein,lof, "\t".join(line[9:]), file = output_file, sep = "\t")
 
 #Extract annovar variants into same format as snpeff variants
 with open("../annovar/annovar_exonic_variant_function/thesis_intersect.exonic_variant_function", "r") as input_file, open("../SnpEff/SnpEff_coding_tidy.txt", "r") as header, open("../annovar/annovar_coding_tidy.txt", "w") as output_file:
@@ -63,6 +72,10 @@ with open("../annovar/annovar_exonic_variant_function/thesis_intersect.exonic_va
             impact = "LOW"
         elif "unknown" in line[1]:
             impact = "UNKNOWN"
+        if "frameshift" in line[1] or "stopgain" in line[1] or "splice" in line[1]:
+            lof = "y"
+        else:  
+            lof = "n"
         if line[2] == "UNKNOWN":
             b = line[18].split("AC=")
             c = b[1].split(";")
@@ -73,7 +86,7 @@ with open("../annovar/annovar_exonic_variant_function/thesis_intersect.exonic_va
                 AF = f[0]
             else:
                 AF = "NA"
-            print("\t".join(line[11:18]), AC, AF, consequence, impact, "NA", "NA", "NA", "NA", "\t".join(line[20:]), file = output_file, sep = "\t")
+            print("\t".join(line[11:18]), AC, AF, consequence, impact, "NA", "NA", "NA", "NA", lof, "\t".join(line[20:]), file = output_file, sep = "\t")
         else:
             a = line[2].split(":")
             if a[2] == "wholegene,":
@@ -89,7 +102,7 @@ with open("../annovar/annovar_exonic_variant_function/thesis_intersect.exonic_va
                     AF = f[0]
                 else:
                     AF = "NA"
-                print("\t".join(line[11:18]), AC, AF, consequence, impact, gene, "NA", coding, protein, "\t".join(line[20:]), file = output_file, sep = "\t")
+                print("\t".join(line[11:18]), AC, AF, consequence, impact, gene, "NA", coding, protein,lof, "\t".join(line[20:]), file = output_file, sep = "\t")
             else:
                 gene = a[0]
                 coding = a[3]
@@ -103,4 +116,4 @@ with open("../annovar/annovar_exonic_variant_function/thesis_intersect.exonic_va
                     AF = f[0]
                 else:
                     AF = "NA"
-                print("\t".join(line[11:18]), AC, AF, consequence, impact, gene, "NA", coding, protein, "\t".join(line[20:]), file = output_file, sep = "\t")
+                print("\t".join(line[11:18]), AC, AF, consequence, impact, gene, "NA", coding, protein, lof, "\t".join(line[20:]), file = output_file, sep = "\t")

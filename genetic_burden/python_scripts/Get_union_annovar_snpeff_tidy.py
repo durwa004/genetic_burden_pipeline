@@ -24,6 +24,27 @@ print(snpeff_impact.count("HIGH"))
 print(snpeff_impact.count("MODERATE"))
 print(snpeff_impact.count("LOW"))
 
+#Get dictionary of just lof alleles
+lof_snpeff = {} 
+with open(path + "SnpEff/SnpEff_coding_tidy.txt","r") as input_file:
+    input_file.readline()
+    for line in input_file:
+        line = line.rstrip("\n").split("\t")
+        if "NW" in line[0]:
+            next
+        if line[15] == "n":
+            next
+        else:
+            a = line[0] + ":" + line[1]
+            lof_snpeff[a] = line[10]
+lof_se = list(lof_snpeff.values())
+print(len(lof_se))
+print(lof_se.count("HIGH"))
+print(lof_se.count("MODERATE"))
+print(lof_se.count("LOW"))
+
+
+#same for annvoar
 annovar_dict = {}
 se_ann_exact = {}
 with open(path + "annovar/annovar_coding_tidy.txt","r") as input_file:
@@ -42,6 +63,25 @@ print(len(annovar_impact))
 print(annovar_impact.count("HIGH"))
 print(annovar_impact.count("MODERATE"))
 print(annovar_impact.count("LOW"))
+
+lof_annovar = {}
+with open(path + "annovar/annovar_coding_tidy.txt","r") as input_file:
+    input_file.readline()
+    for line in input_file:
+        line = line.rstrip("\n").split("\t")
+        if len(line) >1:
+            if "NW" in line[0]:
+                next
+            if line[15] == "n":
+                next
+            else:
+                a = line[0] + ":" + line[1]
+                lof_annovar[a] = line[10]
+lof_ann = list(lof_annovar.values())
+print(len(lof_ann))
+print(lof_ann.count("HIGH"))
+print(lof_ann.count("MODERATE"))
+print(lof_ann.count("LOW"))
 
 
 #Get number of variants in each category for intersect of combined high/mod (not necessarily an exact match)
@@ -95,6 +135,65 @@ print(se_ann_un.count("HIGH:annovar_only"))
 print(se_ann_un.count("MODERATE:annovar_only"))
 print(se_ann_un.count("LOW:annovar_only"))
 
+#Get number of LOF variants in each category for intersect of combined high/mod (not necessarily an exact match)
+lof_union = {}
+lof_intersect = {}
+
+for key in lof_snpeff.keys():
+    if key in lof_annovar.keys():
+        a = lof_snpeff[key] + ":" + lof_annovar[key]
+        lof_intersect[key] = a
+        lof_union[key] = a
+    else:
+        if key in annovar_dict.keys():
+            a = lof_snpeff[key] + ":snpeff_only:" + annovar_dict[key]
+        else:
+            a = lof_snpeff[key] + ":snpeff_only"
+        lof_union[key] = a
+print(len(lof_intersect))
+
+for key in lof_annovar.keys():
+    if key in lof_snpeff.keys():
+        continue
+    else:
+        if key in snpeff_dict.keys():
+            a = lof_annovar[key] + ":annovar_only:" + snpeff_dict[key]
+        else:
+            a = lof_annovar[key] + ":annovar_only"
+        lof_union[key] = a
+print(len(lof_union))
+
+#Only high impact in lof variants
+lof_int= list(lof_intersect.values())
+print(lof_int.count("HIGH:HIGH"))
+
+lof_un= list(lof_union.values())
+print(lof_un.count("HIGH:HIGH"))
+print(lof_un.count("HIGH:snpeff_only:HIGH"))
+print(lof_un.count("HIGH:snpeff_only:MODERATE"))
+print(lof_un.count("MODERATE:snpeff_only:HIGH"))
+print(lof_un.count("MODERATE:snpeff_only:MODERATE"))
+print(lof_un.count("HIGH:snpeff_only:LOW"))
+print(lof_un.count("MODERATE:snpeff_only:LOW"))
+print(lof_un.count("LOW:snpeff_only:LOW"))
+print(lof_un.count("LOW:snpeff_only:HIGH"))
+print(lof_un.count("LOW:snpeff_only:MODERATE"))
+print(lof_un.count("HIGH:annovar_only:HIGH"))
+print(lof_un.count("HIGH:annovar_only:MODERATE"))
+print(lof_un.count("MODERATE:annovar_only:HIGH"))
+print(lof_un.count("MODERATE:annovar_only:MODERATE"))
+print(lof_un.count("HIGH:annovar_only:LOW"))
+print(lof_un.count("MODERATE:annovar_only:LOW"))
+print(lof_un.count("LOW:annovar_only:LOW"))
+print(lof_un.count("LOW:annovar_only:HIGH"))
+print(lof_un.count("LOW:annovar_only:MODERATE"))
+print(lof_un.count("HIGH:snpeff_only"))
+print(lof_un.count("MODERATE:snpeff_only"))
+print(lof_un.count("LOW:snpeff_only"))
+print(lof_un.count("HIGH:annovar_only"))
+print(lof_un.count("MODERATE:annovar_only"))
+print(lof_un.count("LOW:annovar_only"))
+
 #Extract just chrom/pos of the high/moderate impact variants
 with open("snpeff_annovar_combined_intersect_high_mod_chrom_pos.txt", "w") as output_file:
     for key in se_ann_intersect.keys():
@@ -102,6 +201,15 @@ with open("snpeff_annovar_combined_intersect_high_mod_chrom_pos.txt", "w") as ou
             a = key.split(":")
             b = se_ann_intersect[key].split(":")
             print(a[0], a[1], b[0], b[1], sep = "\t", file = output_file)
+
+#Extract all lof variants called lof by both or lof by one and high by the other
+with open("../lof/lof_combined_intersect_lof_high_chrom_pos.txt", "w") as output_file:
+    for key in lof_union.keys():
+        if lof_union[key] == "HIGH:HIGH" or lof_union[key] == "HIGH:annovar_only:HIGH":
+            a = key.split(":")
+            b = lof_union[key].split(":")
+            print(a[0], a[1], b[0], b[1], sep = "\t", file = output_file)
+
 
 #Intersect of variants
 with open("snpeff_annovar_intersect.txt", "w") as output_file:
