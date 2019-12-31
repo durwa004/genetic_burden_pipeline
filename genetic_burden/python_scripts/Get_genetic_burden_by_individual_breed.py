@@ -2,7 +2,7 @@ import gzip
 import os
 
 #Will need to figure out the exact paths for this script
-path = "/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/gb_analysis/high_moderate_variants/"
+path = "/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/lof/"
 #Get list of horse ids in order of vcf.
 het = {}
 hom = {}
@@ -29,7 +29,7 @@ with open("../../../horse_genomes_breeds_all.txt", "r") as input_file:
 horse_breed['TWILIGHT'] = "TB"
             
 #Get genetic burden per individual (overall)
-with open(path + "/genetic_burden_535_horses.txt", "r") as input_file, open(path + "/ann_se_gb_by_individual_breed.txt", "w") as output_file:
+with open(path + "/lof.txt", "r") as input_file, open(path + "/lof_by_individual_breed.txt", "w") as output_file:
     for line in input_file:
         line = line.rstrip("\n").split("\t")
         line1 = line[9:]

@@ -12,7 +12,7 @@ import gzip
 #Get details about the type of variant,  etc.
             #Goals: Genes affected by GB
                 #LOF variants
-path = "/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/gb_analysis/high_moderate_variants/"
+path = "/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/lof/"
 #Get list of horse ids in order of vcf.
 het = {}
 hom = {}
@@ -31,7 +31,7 @@ with gzip.open("../../SnpEff/thesis_intersect_snpeff.ann.vcf.gz", "rt") as input
 
 #Get breed info
 horse_breed = {}
-with open("../../../horse_genomes_breeds_tidy.txt", "r") as input_file:
+with open("../../horse_genomes_breeds_tidy.txt", "r") as input_file:
     input_file.readline()
     for line in input_file:
         line = line.rstrip("\n").split("\t")
@@ -43,9 +43,8 @@ breeds = list(set(horse_breed.values()))
 header1 = header[9:]
 
 gb = {}
-with open(path + "/genetic_burden_535_horses.txt", "r") as input_file, open(path + "/genetic_burden_details.txt", "w") as output_file, open(path + "/lof_variants.txt", "w") as lof_file:
-    print("CHROM\tPOS\tREF\tALT\tAC\tAF\tconsequence\timpact\tgene\tcoding\tprotein\tlof", "\t".join(header[9:]), sep = "\t", file = output_file)
-    print("CHROM\tPOS\tREF\tALT\tAC\tAF\tconsequence\timpact\tgene\tcoding\tprotein\tlof", "\t".join(header[9:]), sep = "\t", file = lof_file)
+with open(path + "/lof.txt", "r") as input_file, open(path + "/lof_details.txt", "w") as output_file:
+    print("CHROM\tPOS\tREF\tALT\tAC\tAF\tconsequence\timpact\tgene\tcoding\tprotein", "\t".join(header[9:]), sep = "\t", file = output_file)
     for line in input_file:
         line = line.rstrip("\n").split("\t")
         c_p = line[0] + ":" + line[1]
@@ -84,12 +83,7 @@ with open(path + "/genetic_burden_535_horses.txt", "r") as input_file, open(path
                     gene = gene[2]
                 else:
                     gene = gene[1]
-        if "frameshift" in consequence or "start_lost" in consequence or "stop_gained" in consequence or "stop_lost" in consequence:
-            lof = "y"
-            print(line[0], line[1], line[3],line[4], AC, AF, consequence, impact, gene, coding, protein, lof,"\t".join(line[9:]), sep = "\t", file = lof_file)
-        else:
-            lof = "n"
-        print(line[0], line[1], line[3],line[4], AC, AF, consequence, impact, gene, coding, protein, lof,"\t".join(line[9:]), sep = "\t", file = output_file)
+        print(line[0], line[1], line[3],line[4], AC, AF, consequence, impact, gene, coding, protein,"\t".join(line[9:]), sep = "\t", file = output_file)
         line1 = line[9:]
         for i in range(len(line1)):
             if "0/1" in line1[i] or "1/1" in line1[i] or "0/2" in line1[i] or "1/2" in line1[i] or "2/2" in line1[i] or "2/1" in line1[i] or "1/3" in line1[i] or "0/3" in line1[i] or "2/3" in line1[i]:
@@ -105,8 +99,8 @@ for item in gb.keys():
         unique.append(item)
         u_b.append(a[1])
 
-with open(path + "/genetic_burden_details.txt", "r") as input_file, open(path + "/unique_gb.txt", "w") as output_file:
-    print("Breed\tCHROM\tPOS\tREF\tALT\tAC\tAF\tconsequence\timpact\tgene\tcoding\tprotein\tlof", "\t".join(header[9:]), sep = "\t", file = output_file)
+with open(path + "/lof_details.txt", "r") as input_file, open(path + "/unique_lof.txt", "w") as output_file:
+    print("Breed\tCHROM\tPOS\tREF\tALT\tAC\tAF\tconsequence\timpact\tgene\tcoding\tprotein", "\t".join(header[9:]), sep = "\t", file = output_file)
     input_file.readline()
     for line in input_file:
         line = line.rstrip("\n").split("\t")
