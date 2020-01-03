@@ -2,7 +2,7 @@ import gzip
 
 #Goal is to convert the snpeff output to a useable text file for analysis, so that we can get a union file of snpeff and annovar output.
 with gzip.open("thesis_intersect_snpeff.coding.ann.vcf.gz", "rt") as input_file, open("SnpEff_variant_type_coding.txt", "w") as output_file:
-    print("#CHROM\tPOS\tAC\tAF\tConsequence\tImpact\tGene", file = output_file)
+    print("#CHROM\tPOS\tAC\tAF\tConsequence\tImpact\tGene\tlof", file = output_file)
     for line in input_file:
         line = line.rstrip("\n").split("\t")
         if "#" in line[0]:
@@ -38,6 +38,12 @@ with gzip.open("thesis_intersect_snpeff.coding.ann.vcf.gz", "rt") as input_file,
                     consequence = "stop_lost"
                 elif "gene_fusion" in consequence:
                     consequence = "gene_fusion"
-                print(line[0], line[1], AC, AF, consequence, impact, gene, file = output_file, sep = "\t")
+                for i in range(len(ab)):
+                    ef = ab[i].split("LOF=")
+                    if len(ef) > 1:
+                        lof = ab[i]
+                    else:
+                        lof = "n"
+                print(line[0], line[1], AC, AF, consequence, impact, gene,lof, file = output_file, sep = "\t")
             else:
                 next

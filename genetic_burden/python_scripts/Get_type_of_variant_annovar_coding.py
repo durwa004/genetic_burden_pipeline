@@ -1,5 +1,5 @@
-with open("thesis_intersect.exonic_variant_function", "r") as input_file, open("../annovar_variant_type_coding.txt", "w") as output_file:
-    print("#CHROM\tPOS\tAC\tAF\tConsequence\tImpact\tGene", file = output_file)
+with open("../annovar/annovar_exonic_variant_function/thesis_intersect.exonic_variant_function", "r") as input_file, open("annovar_variant_type_coding.txt", "w") as output_file:
+    print("#CHROM\tPOS\tAC\tAF\tConsequence\tImpact\tGene\tlof", file = output_file)
     for line in input_file:
         line = line.rstrip("\n").split("\t")
         if "NC_" in line[3]:
@@ -16,6 +16,11 @@ with open("thesis_intersect.exonic_variant_function", "r") as input_file, open("
                 impact = "LOW"
             else:
                 impact = "UNKNOWN"
-            print(line[3], line[4],AC,line[8],line[1],impact, gene, file = output_file, sep  = "\t")
+            de = line[1].split(" ")
+            if "frameshift" == de[0] or "stopgain" == line[1] or "splice" in line[1]:
+                lof = "y"
+            else:
+                lof = "n"
+            print(line[3], line[4],AC,line[8],line[1],impact, gene, lof, file = output_file, sep  = "\t")
         else:
             continue
