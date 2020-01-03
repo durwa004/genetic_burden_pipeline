@@ -17,7 +17,7 @@ with gzip.open("../SnpEff/thesis_intersect_snpeff.coding.ann.vcf.gz", "rt") as i
             for i in range(len(ef)):
                 fe = ef[i].split("LOF=")
                 if len(fe) > 1:
-                    lof = fe[1]
+                    lof = "y"
                 else:
                     lof = "n"
             if bc[0] == line[4]:
@@ -58,13 +58,15 @@ with gzip.open("../SnpEff/thesis_intersect_snpeff.coding.ann.vcf.gz", "rt") as i
             print("\t".join(line[0:7]), AC, AF, consequence, impact, gene, where, coding, protein,lof, "\t".join(line[9:]), file = output_file, sep = "\t")
 
 #Extract annovar variants into same format as snpeff variants
-with open("../annovar/annovar_exonic_variant_function/thesis_intersect.exonic_variant_function", "r") as input_file, open("../SnpEff/SnpEff_coding_tidy.txt", "r") as header, open("../annovar/annovar_coding_tidy.txt", "w") as output_file:
+with open("../annovar/annovar_exonic_variant_function/thesis_intersect.exonic_variant_function", "r") as input_file, open("../SnpEff/SnpEff_coding_tidy.txt", "r") as header, open("../annovar/annovar_coding_tidy.txt", "w") as output_file, open("../annovar/annovar_coding_tidy_lof.txt", "w") as output:
     info = header.readline()
     print(info, file = output_file)
+    print(info, file = output)
     for line in input_file:
         line = line.rstrip("\n").split("\t")
         consequence = line[1]
-        if "frameshift" in line[1] or "stopgain" in line[1] or "stoplost" in line[1]:
+        de = line[1].split (" ")
+        if "frameshift" ==de[0] or "stopgain" in line[1] or "stoploss" in line[1] or "splice" in line[1]:
             impact = "HIGH"
         elif "nonframeshift" in line[1] or "nonsynonymous" in line[1]:
             impact = "MODERATE"
@@ -72,48 +74,35 @@ with open("../annovar/annovar_exonic_variant_function/thesis_intersect.exonic_va
             impact = "LOW"
         elif "unknown" in line[1]:
             impact = "UNKNOWN"
-        if "frameshift" in line[1] or "stopgain" in line[1] or "splice" in line[1]:
+        else:
+            print(line[1])
+        if "frameshift" == de[0] or "stopgain" == line[1] or "splice" in line[1]:
             lof = "y"
         else:  
             lof = "n"
+        AF = line[8] 
+        ab = line[18].split("AC=")
+        bc = ab[1].split(";")
+        AC = bc[0]
+        cd = line[2].split(",")
+        gene = cd[0]
         if line[2] == "UNKNOWN":
-            b = line[18].split("AC=")
-            c = b[1].split(";")
-            AC = c[0]
-            if "AF_" in line[18]:
-                e = line[18].split("AF=")
-                f = e[1].split(";")
-                AF = f[0]
-            else:
-                AF = "NA"
             print("\t".join(line[11:18]), AC, AF, consequence, impact, "NA", "NA", "NA", "NA", lof, "\t".join(line[20:]), file = output_file, sep = "\t")
+            if lof == "y":
+                print("\t".join(line[11:18]), AC, AF, consequence, impact, "NA", "NA", "NA", "NA", lof, "\t".join(line[20:]), file = output, sep = "\t")
         else:
             a = line[2].split(":")
             if a[2] == "wholegene,":
                 gene = a[0]
                 coding = "NA"
                 protein = "NA"
-                b = line[18].split("AC=")
-                c = b[1].split(";")
-                AC = c[0]
-                if "AF_" in line[18]:
-                    e = line[18].split("AF=")
-                    f = e[1].split(";")
-                    AF = f[0]
-                else:
-                    AF = "NA"
                 print("\t".join(line[11:18]), AC, AF, consequence, impact, gene, "NA", coding, protein,lof, "\t".join(line[20:]), file = output_file, sep = "\t")
+                if lof == "y":
+                    print("\t".join(line[11:18]), AC, AF, consequence, impact, gene, "NA", coding, protein,lof, "\t".join(line[20:]), file = output, sep = "\t")
             else:
                 gene = a[0]
                 coding = a[3]
                 protein = a[4]
-                b = line[18].split("AC=")
-                c = b[1].split(";")
-                AC = c[0]
-                if "AF_" in line[18]:
-                    e = line[18].split("AF=")
-                    f = e[1].split(";")
-                    AF = f[0]
-                else:
-                    AF = "NA"
                 print("\t".join(line[11:18]), AC, AF, consequence, impact, gene, "NA", coding, protein, lof, "\t".join(line[20:]), file = output_file, sep = "\t")
+                if lof == "y":
+                    print("\t".join(line[11:18]), AC, AF, consequence, impact, gene, "NA", coding, protein, lof, "\t".join(line[20:]), file = output, sep = "\t")

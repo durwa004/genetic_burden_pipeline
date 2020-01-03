@@ -29,7 +29,7 @@ with open("../../horse_genomes_breeds_tidy.txt", "r") as input_file:
 horse_breed['TWILIGHT'] = "TB"
             
 #Get genetic burden per individual (overall)
-with open(path + "/lof.txt", "r") as input_file, open(path + "/lof_by_individual.txt", "w") as output_file:
+with open(path + "/lof_snpeff.txt", "r") as input_file, open(path + "/lof_by_individual.txt", "w") as output_file:
     for line in input_file:
         line = line.rstrip("\n").split("\t")
         for i in range(len(line)):
