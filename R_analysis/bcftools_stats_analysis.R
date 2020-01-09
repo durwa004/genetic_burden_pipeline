@@ -8,6 +8,7 @@ library(scales)
 
 #Only include autosomes and chr X (not MT and unplaced contigs)
 setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/bcftools_stats_output/")
+
 ###bcftools
 bcftools <- read.table("bcftools_number_of_variants.txt", header=T)
 bcf_v <- sum(bcftools$no_records)
