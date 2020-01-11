@@ -238,6 +238,18 @@ $ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject
 DAVID 6.8 (use horse and human as species) - results in poster = functional clustering
 https://david.ncifcrf.gov/summary.jsp
 
+#Need to convert gene symbols to Gene description to convert LOC1 genes
+Get gene details: #Use https://biodbnet-abcc.ncifcrf.gov/db/db2db.php to convert ids
+        #gene symbol to Gene description
+        #Helpful info https://www.biostars.org/p/345074/
+```
+$ Get_lof_gene_unfo.py
+$ sh lof_high_AF_for_Uniprot.txt
+$ Get_lof_gene_unfo.py
+```
+        http://www.ensembl.org/biomart/martview
+        Details: https://www.biostars.org/p/179914/
+
 # Need to find possible DCVs (probably falls in lof analysis)  
 - Pull out all variants with no homozygotes
 ```
