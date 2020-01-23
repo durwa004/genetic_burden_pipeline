@@ -448,12 +448,29 @@ Selected the peak SNP to investigate = 1,730 QTLs (1,559 unique)
 679 mapped uniquely, 549 mapped to multiple places in the genome
 633 were present in at least one horse
 - Tidy up variant locations (from my computer and create shell script)
+- For some reason the OMIA download file got screwed up and so created new table to rerun this (known_variants_tables.xls)
+Move variant locations to MSI
 ```
+$ scp /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/2020/known_variants_locations.txt  durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/known_variants/
 $ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/Tidy_known_variants_for_extraction.py 
 ```
-- Get variant locations - on my laptop
+- Get variant locations
 ```
 $ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/Get_known_causal_variants.py
+```
+- Move back to my laptop to double check locations
+```
+$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/known_variants/known_disease_locations_2020/No_variants_present.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/2020/
+$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/known_variants/known_disease_locations_2020/known_variants_present.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/2020/
+```
+- Send back to MSI to get number per indidivual
+```
+$ scp /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/2020/known_variants_present_exact_locations.txt durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/known_variants/known_disease_locations_2020/
+```
+- Move back to my laptop for analysis
+```
+$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/known_variants/known_disease_locations_2020/variants_bt_indvidual.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/2020/
+$ known_causal_variants.R
 ```
 - Pull out QTLs from dbsnp
 ```
