@@ -215,6 +215,7 @@ $ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject
 $ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/lof/lof_details_brief.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/gb_analysis/lof/
 $ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/lof/unique_lof.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/gb_analysis/lof/
 $ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/lof/unique_lof_brief.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/gb_analysis/lof/
+$ sed -i -- 's/#/_/g' lof_details*
 $ lof_by_individual.R
 ```
 Look at gene info
@@ -236,6 +237,18 @@ $ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject
 ```
 DAVID 6.8 (use horse and human as species) - results in poster = functional clustering
 https://david.ncifcrf.gov/summary.jsp
+
+#Need to convert gene symbols to Gene description to convert LOC1 genes
+Get gene details: #Use https://biodbnet-abcc.ncifcrf.gov/db/db2db.php to convert ids
+        #gene symbol to Gene description
+        #Helpful info https://www.biostars.org/p/345074/
+```
+$ Get_lof_gene_unfo.py
+$ sh lof_high_AF_for_Uniprot.txt
+$ Get_lof_gene_unfo.py
+```
+        http://www.ensembl.org/biomart/martview
+        Details: https://www.biostars.org/p/179914/
 
 # Need to find possible DCVs (probably falls in lof analysis)  
 - Pull out all variants with no homozygotes
@@ -435,14 +448,31 @@ Selected the peak SNP to investigate = 1,730 QTLs (1,559 unique)
 679 mapped uniquely, 549 mapped to multiple places in the genome
 633 were present in at least one horse
 - Tidy up variant locations (from my computer and create shell script)
+- For some reason the OMIA download file got screwed up and so created new table to rerun this (known_variants_tables.xls)
+Move variant locations to MSI
 ```
+$ scp /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/2020/known_variants_locations.txt  durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/known_variants/
 $ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/Tidy_known_variants_for_extraction.py 
 ```
-- Get variant locations - on my laptop
+- Get variant locations
 ```
 $ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/Get_known_causal_variants.py
 ```
-- Pull out QTLs from dbsnp **WORKING ON**
+- Move back to my laptop to double check locations
+```
+$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/known_variants/known_disease_locations_2020/No_variants_present.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/2020/
+$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/known_variants/known_disease_locations_2020/known_variants_present.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/2020/
+```
+- Send back to MSI to get number per indidivual
+```
+$ scp /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/2020/known_variants_present_exact_locations.txt durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/known_variants/known_disease_locations_2020/
+```
+- Move back to my laptop for analysis
+```
+$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/known_variants/known_disease_locations_2020/variants_bt_indvidual.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/2020/
+$ known_causal_variants.R
+```
+- Pull out QTLs from dbsnp
 ```
 $ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/Tidy_known_variants_for_extraction.py
 $ scp /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/grep_get_rs_chrom_pos.sh durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/dbsnp/EVD_dbsnp/known_qtls/
