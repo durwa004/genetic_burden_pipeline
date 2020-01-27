@@ -12,7 +12,9 @@ import gzip
 #Get details about the type of variant,  etc.
             #Goals: Genes affected by GB
                 #LOF variants
-path = "/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/lof/"
+#path = "/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/lof/"
+path = "/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/gb_analysis/"
+
 #Get list of horse ids in order of vcf.
 header = []
 with gzip.open(path + "../SnpEff/thesis_intersect_snpeff.ann.vcf.gz", "rt") as input_file:
@@ -38,15 +40,16 @@ header = header[9:]
 
 #Get list of variants from the annovar/snpeff intersect and just from annovar
 variant_caller = {}
-with open(path + "/lof_combined_intersect_lof_high_chrom_pos.txt", "r") as input_file:
+#with open(path + "/lof_combined_intersect_lof_high_chrom_pos.txt", "r") as input_file:
+with open(path + "/snpeff_annovar_combined_intersect_high_mod_chrom_pos.txt", "r") as input_file:
     for line in input_file:
         line = line.rstrip("\n").split("\t")
         ab = line[0] + ":" + line[1]
         variant_caller[ab] = line[2]
 
 gb = {}
-with open(path + "/lof_snpeff.txt", "r") as input_file, open(path + "/lof_snpeff_tidy.txt", "w") as output_file:    
-    print("VEP\tCHROM\tPOS\tREF\tALT\tAC\tAF\tSNP\tconsequence\timpact\tgene\tcoding\tprotein", "\t".join(header), sep = "\t", file = output_file)
+with open(path + "/lof_snpeff.txt", "r") as input_file:#, open(path + "/lof_snpeff_tidy.txt", "w") as output_file:    
+    #print("VEP\tCHROM\tPOS\tREF\tALT\tAC\tAF\tSNP\tconsequence\timpact\tgene\tcoding\tprotein", "\t".join(header), sep = "\t", file = output_file)
     for line in input_file:
         line = line.rstrip("\n").split("\t")
         c_p = line[0] + ":" + line[1]
@@ -118,15 +121,15 @@ with open(path + "/lof_snpeff.txt", "r") as input_file, open(path + "/lof_snpeff
                 line[i] = "missing"
             elif "0/0" in line[i]:
                 line[i] = "ref"
-        print(variant_caller[c_p], line[0], line[1], REF,ALT,AC, AF, SNP_se, consequence, impact, gene, coding, protein, "\t".join(line[9:]), sep = "\t", file = output_file)
+        #print(variant_caller[c_p], line[0], line[1], REF,ALT,AC, AF, SNP_se, consequence, impact, gene, coding, protein, "\t".join(line[9:]), sep = "\t", file = output_file)
         line1 = line[9:]
         for i in range(len(line1)):
             if "het" in line1[i] or "hom" in line1[i]:
                 de = gb[c_p] + ":" + horse_breed[header[i]]
                 gb[c_p] = de
 
-with open(path + "/lof_annovar.txt", "r") as annovar_file, open(path + "/lof_annovar_tidy.txt", "w") as output_file:
-    print("VEP\tCHROM\tPOS\tREF\tALT\tAC\tAF\tSNP\tconsequence\timpact\tgene\tcoding\tprotein", "\t".join(header), sep = "\t", file = output_file)
+with open(path + "/lof_annovar.txt", "r") as annovar_file:#, open(path + "/lof_annovar_tidy.txt", "w") as output_file:
+    #print("VEP\tCHROM\tPOS\tREF\tALT\tAC\tAF\tSNP\tconsequence\timpact\tgene\tcoding\tprotein", "\t".join(header), sep = "\t", file = output_file)
     for line in annovar_file:
         line = line.rstrip("\n").split("\t")
         c_p = line[0] + ":" + line[1]
@@ -173,15 +176,15 @@ with open(path + "/lof_annovar.txt", "r") as annovar_file, open(path + "/lof_ann
                 line[i] = "missing"
             elif "0/0" in line[i]:
                 line[i] = "ref"
-        print(variant_caller[c_p], line[0], line[1], REF,ALT,AC, AF, SNP_ann, consequence, impact_ann,gene_ann, coding_ann, protein_ann,"\t".join(line[9:]), sep = "\t", file = output_file)
+       # print(variant_caller[c_p], line[0], line[1], REF,ALT,AC, AF, SNP_ann, consequence, impact_ann,gene_ann, coding_ann, protein_ann,"\t".join(line[9:]), sep = "\t", file = output_file)
 
 #Get details about shared variants
 ann = {}
 se = {}
 ij = 0
-with open(path + "/lof_annovar_tidy.txt", "r") as ann_in, open(path + "/../annovar/annovar_coding_tidy.txt", "r") as ann_tidy, open(path + "/lof_snpeff_tidy.txt", "r") as se_in, open(path + "/lof_details.txt", "w") as output_file, open(path + "/lof_details_brief.txt", "w") as output_b:
-    print("group\tchrom\tpos\tref\talt\tAC\tAF\tSNP\tconsequence\timpact\tgene\tcoding\tprotein\tSNP_ann\tconsequence_ann\timpact_ann\tgene_ann\tcoding_ann\tprotein_ann", "\t".join(header),sep = "\t",file = output_file)
-    print("group\tchrom\tpos\tref\talt\tAC\tAF\tSNP\tconsequence\timpact\tgene\tcoding\tprotein\tSNP_ann\tconsequence_ann\timpact_ann\tgene_ann\tcoding_ann\tprotein_ann", file = output_b)
+with open(path + "/lof_annovar_tidy.txt", "r") as ann_in, open(path + "/../annovar/annovar_coding_tidy.txt", "r") as ann_tidy, open(path + "/lof_snpeff_tidy.txt", "r") as se_in:#, open(path + "/lof_details.txt", "w") as output_file, open(path + "/lof_details_brief.txt", "w") as output_b:
+    #print("group\tchrom\tpos\tref\talt\tAC\tAF\tSNP\tconsequence\timpact\tgene\tcoding\tprotein\tSNP_ann\tconsequence_ann\timpact_ann\tgene_ann\tcoding_ann\tprotein_ann", "\t".join(header),sep = "\t",file = output_file)
+    #print("group\tchrom\tpos\tref\talt\tAC\tAF\tSNP\tconsequence\timpact\tgene\tcoding\tprotein\tSNP_ann\tconsequence_ann\timpact_ann\tgene_ann\tcoding_ann\tprotein_ann", file = output_b)
     ann_in.readline()
     se_in.readline()
     for line in ann_in:
@@ -194,8 +197,8 @@ with open(path + "/lof_annovar_tidy.txt", "r") as ann_in, open(path + "/../annov
         ab = line[1] + ":" + line[2]
         if ab in ann.keys():
             cd = ann[ab].split(":")
-            print("\t".join(line[:13]), "\t".join(cd), "\t".join(line[13:]), sep = "\t", file = output_file)
-            print("\t".join(line[:13]), "\t".join(cd), sep = "\t", file = output_b)
+     #       print("\t".join(line[:13]), "\t".join(cd), "\t".join(line[13:]), sep = "\t", file = output_file)
+      #      print("\t".join(line[:13]), "\t".join(cd), sep = "\t", file = output_b)
         else:
             se[ab] = ":".join(line)
     for line in ann_tidy:
@@ -250,8 +253,8 @@ with open(path + "/lof_annovar_tidy.txt", "r") as ann_in, open(path + "/../annov
                             line[i] = "missing"
                         elif "0/0" in line[i]:
                             line[i] = "ref"
-                    print("\t".join(ghi[:13]), SNP_ann, consequence, impact_ann,gene_ann, coding_ann, protein_ann, "\t".join(line[9:]), sep = "\t", file = output_file)
-                    print("\t".join(ghi[:13]), SNP_ann, consequence, impact_ann,gene_ann, coding_ann, protein_ann, file = output_b, sep = "\t")
+       #             print("\t".join(ghi[:13]), SNP_ann, consequence, impact_ann,gene_ann, coding_ann, protein_ann, "\t".join(line[9:]), sep = "\t", file = output_file)
+        #            print("\t".join(ghi[:13]), SNP_ann, consequence, impact_ann,gene_ann, coding_ann, protein_ann, file = output_b, sep = "\t")
                     ij = ef
 
 #find variants unique to breeds  
