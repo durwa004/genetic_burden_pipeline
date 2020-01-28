@@ -33,18 +33,22 @@ with open(path + "/lof_snpeff.txt", "r") as input_file, open(path + "/lof_by_ind
     for line in input_file:
         line = line.rstrip("\n").split("\t")
         for i in range(len(line)):
-            if "0/1" in line[i] or "0/2" in line[i] or "0/3" in line[i]:
-                a = het[header[i]]
-                b = int(a) + 1
-                het[header[i]] = b
-            elif "1/1" in line[i] or "2/2" in line[i] or "1/2" in line[i] or "1/3" in line[i] or "2/3" in line[i] or "2/1" in line[i]:
-                a = hom[header[i]]
-                b = int(a) + 1
-                hom[header[i]] = b
-            elif "./." in line[i]:
-                a = missing[header[i]]
-                b = int(a) + 1
-                missing[header[i]] = b
+            a = line1[i].split(":")
+            if "/" in a[0]:
+                b = a[0].split("/")
+            elif "|" in a[0]:
+                b = a[0].split("|")
+            if b[0] == ".":
+                miss +=1
+            elif b[0] == "0":
+                if int(b[1]) > 0:
+                c = het[header[i]]
+                d = int(c) + 1
+                het[header[i]] = d                   
+            elif int(b[0]) >0:
+                c = hom[header[i]]
+                d = int(c) + 1
+                hom[header[i]] = d
     for key in het.keys():
         if key in horse_breed.keys():
             print(key, horse_breed[key], het[key], hom[key], missing[key],sep = "\t", file = output_file)
