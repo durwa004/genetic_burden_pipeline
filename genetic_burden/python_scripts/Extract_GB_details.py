@@ -3,126 +3,111 @@ import gzip
 from statistics import mean  
 
 #This is a very long script and likely can be tidied up at some point!!
-path = "/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/gb_analysis"
+path = "/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/gb_analysis/nature_genetics_paper/"
 
 #Need to get header from vcf file
-horse_breed = {}
-with gzip.open(path + "/../bcftools_stats_output/NC_001640_1.genotyped.vcf.gz", "rt") as input_file:
+header = []
+with gzip.open(path + "/../../bcftools_stats_output/NC_001640_1.genotyped.vcf.gz", "rt") as input_file:
     for line in input_file:
         line = line.rstrip("\n").split("\t")
         if line[0] == "#CHROM":
             for i in range(len(line)):
-                horse_breed[line[i]] = "A"
+                header.append(line[i])
+header = header[9:]
 
 #Add in breed
-with open(path + "/../bcftools_stats_output/horse_genomes_breeds_tidy.txt", "r") as input_file:
+horse_breed = {}
+with open(path + "/../../bcftools_stats_output/horse_genomes_breeds_tidy.txt", "r") as input_file:
+    input_file.readline()
     for line in input_file:
         line = line.rstrip("\n").split("\t")
-        for key in horse_breed.keys():
-            if line[0] == key:
-                horse_breed[key] = line[1]
-#0-8 are not horses
+        horse_breed[line[0]] = line[1] 
                 
-#Get unique GB  gene details
-with open(path + "/unique_gb.txt", "r") as input_file, open(path + "/unique_gb_genes.txt", "w") as output_file:
+#Get GB  gene details
+with open(path + "/genetic_burden_details_brief.txt", "r") as input_file, open(path + "/genetic_burden_genes.txt", "w") as output_file:
     for line in input_file:
         line = line.rstrip("\n").split("\t")
-        print(line[9], file = output_file)
+        print(line[10], file = output_file)
 
 #Use https://biodbnet-abcc.ncifcrf.gov/db/db2db.php to convert ids
         #RefSeq mRNA accession to gene symbol
 
 #Create accession/gene symbol dictionary
-genes_unique = {}
-with open(path + "/unique_gb.txt", "r") as input_file:
+genes_gb = {}
+with open(path + "/genetic_burden_details_brief.txt", "r") as input_file:
     for line in input_file:
         line = line.rstrip("\n").split("\t")
-        old = line[9].split(".")
-        genes_unique[old[0]] = "A"
-with open(path + "/unique_gb_genes_with_symbols.txt", "r") as genes_file:
+        old = line[10].split(".")
+        genes_gb[old[0]] = "A"
+with open(path + "/genetic_burden_genes_with_symbols.txt", "r") as genes_file:
    for line1 in genes_file:
        line1 = line1.rstrip("\n").split("\t")
-       for key in genes_unique.keys():
+       for key in genes_gb.keys():
            if key == line1[0]:
-               genes_unique[key] = line1[1]
+               genes_gb[key] = line1[1]
+           
 
-#Print out the unique variants and which horse they are present in
-#0-12 not horses
-with open(path + "/unique_gb.txt", "r") as input_file, open(path + "/unique_gb_individuals.txt", 
-         "w") as output_file, open(path + "/unique_gb_genes.txt", "w") as output2:
-    header = input_file.readline()
-    header = header.split("\t")
+#Update genetic_burden_details_brief file with the gene names from the dictionary above and get details about AF and number of variants per gene
+with open (path + "/genetic_burden_details_brief.txt", "r") as input_file, open(path + "/genetic_burden_details_brief_tidy.txt", "w") as output_file:
+    input_file.readline()
     for line in input_file:
         line = line.rstrip("\n").split("\t")
-        ind = []
-        for i in range(len(line)):
-            if "0/0" in line[i] or "./." in line[i]:
-                next
+        if line[0] == "group":
+            print("\t".join(line), file = output_file)
+        else:
+            a = line[10].split(".")
+            if a[0] in genes_gb.keys():
+                if genes_gb[a[0]] == "-":
+                    print("\t".join(line[:10]), a[0], "\t".join(line[11:]), sep = "\t", file = output_file)
+                else:
+                    print("\t".join(line[:10]), genes_gb[a[0]], "\t".join(line[11:]), sep = "\t", file = output_file)
             else:
-                for key in horse_breed.keys():
-                    if horse_breed[key] == "A":
-                        next
-                    elif header[i] == key:
-                        a = key + ":" + horse_breed[key]
-                        ind.append(a)
-        c = line[9].split(".")
-        print("\t".join(line[0:9]),genes_unique[c[0]], line[10],
-                  line[11], line[12], "\t".join(ind), sep = "\t", file = output_file)
-        print(genes_unique[c[0]], file = output2)
+                print("\t".join(line), file = output_file)
 
-#               
-#Do for all GB variants
-with open(path + "/genetic_burden_details.txt", "r") as input_file, open(path + "/gb_genes.txt", "w") as output_file:
-    input_file.readline()
-    for line in input_file:
-        line = line.rstrip("\n").split("\t")
-        print(line[8], file = output_file)
-#Use https://biodbnet-abcc.ncifcrf.gov/db/db2db.php to convert ids
-        #RefSeq mRNA accession to gene symbol
-
-#Create accession/gene symbol dictionary
+#Get number of variants for each gene
+#Get AF for each gene/transcript and number of variants per gene 
 genes = {}
-with open(path + "/gb_genes_symbols.txt", "r") as genes_file:
-   genes_file.readline()
-   for line1 in genes_file:
-       line1 = line1.rstrip("\n").split("\t")
-       a = line1[0].split(".")
-       if "-" in line1[1]:
-           if line1[0] in genes.keys():
-               genes[line1[0]][line1[0]] = {}
-           else:
-               genes[line1[0]] = {}
-               genes[line1[0]][line1[0]] = {}
-       else:
-           if line1[1] in genes.keys():
-               genes[line1[1]][line1[0]] = {}
-           else:
-               genes[line1[1]] = {}
-               genes[line1[1]][line1[0]] = {}
-print(len(genes))
+single = 0
+multiple = 0
 
-count = 0
-for key in genes.keys():
-    for key1 in genes[key].keys():
-        count +=1
-print(count)
-
-#Add in AC and AF to gene/transcript dictionary
-with open(path + "/genetic_burden_details.txt", "r") as input_file:
-    input_file.readline()
+with open(path + "/genetic_burden_details_brief_tidy.txt", "r") as input_file:
     for line in input_file:
         line = line.rstrip("\n").split("\t")
-        a = line[8].split(".")
-        for gene in genes.keys():
-            for transcript in genes[gene].keys():
-                if transcript == a[0]:
-                    if "," in genes[gene][a[0]]:
-                        b = genes[gene][a[0]] + line[0] + ":" + line[1] + ":" + line[4] + ":" + line[5] + ":" + line[11] + ","
-                        genes[gene][a[0]] = b
-                    else:
-                        b = line[0] + ":" + line[1] + ":" + line[4] + ":" + line[5] + ":" + line[11] + ","
-                        genes[gene][a[0]] = b
-                        
+        if line[10] in genes.keys():
+            a = genes[line[10]].split("/")
+            AF = float(a[0]) + float(line[6])
+            n = int(a[1]) + 1
+            b = str(AF) + "/" + str(n)
+            genes[line[10]] = b
+        else:
+            AF = float(line[6])  
+            n = 1
+            b = str(AF) + "/" + str( n)
+            genes[line[10]] = b 
+
+count_nv = 0
+count_AF = 0
+with open(path + "/genetic_burden_genes_details.txt", "w") as output_file, open(path + "/genetic_burden_genes_over_5_variants.txt", "w") as freq_v, open(path + "/genetic_burden_genes_AF_over_50.txt", "w") as AF_v:
+    print("gene\tmean_AF\tn_variants", file = output_file)
+    for key, value in genes.items():
+        a = value.split("/")
+        true_AF = float(a[0]) / int(a[1])
+        if float(true_AF) > 0.50:
+            print(key, file = AF_v)
+            count_AF +=1
+        print(key, true_AF, a[1], file = output_file, sep = "\t")
+        if a[1] == "1":
+            single +=1
+        else:
+            multiple +=1
+            if int(a[1]) > 5:
+                print(key, file = freq_v)
+                count_nv +=1
+
+
+###################################################
+##################################################
+#Not sure if this is useful                         
 # number of genes affected by GB variants
 n_variants = []
 single = 0
@@ -244,6 +229,36 @@ print(AF_list_sort[0])
 print(AF_list_sort[-1])
 
 #############################################################################
+#Print out the unique variants and which horse they are present in
+#0-12 not horses
+with open(path + "/unique_gb.txt", "r") as input_file, open(path + "/unique_gb_individuals.txt",
+         "w") as output_file, open(path + "/unique_gb_genes.txt", "w") as output2:
+    header = input_file.readline()
+    header = header.split("\t")
+    for line in input_file:
+        line = line.rstrip("\n").split("\t")
+        ind = []
+        for i in range(len(line)):
+            if "0/0" in line[i] or "./." in line[i]:
+                next
+            else:
+                for key in horse_breed.keys():
+                    if horse_breed[key] == "A":
+                        next
+                    elif header[i] == key:
+                        a = key + ":" + horse_breed[key]
+                        ind.append(a)
+        c = line[9].split(".")
+        print("\t".join(line[0:9]),genes_unique[c[0]], line[10],
+                  line[11], line[12], "\t".join(ind), sep = "\t", file = output_file)
+        print(genes_unique[c[0]], file = output2)
+
+
+
+
+
+
+
 # Get number of genes affected by lof 
 # number of lof variants per transcript
 
