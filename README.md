@@ -95,10 +95,13 @@ $ cd /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_bur
 $ source activate snakemake
 $ python ../../python_scripts/Generate_get_bcftools_stats_region.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect_without_Prze/split_chromosomes/ -v /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect_without_Prze/thesis_intersect.vcf.gz -l /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/GCF_002863925.1_EquCab3.0_genomic/GCF_002863925.1_EquCab3.0_genomic_NC.fna.bed 
 $ for i in /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/pbs_scripts/bcftools_view_regions/*; do qsub $i; done
+$ python ../../python_scripts/Extract_bcftools_stats_region.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect_without_Prze/split_chromosomes/
 ```
-2) get average varation across the genome
-
-3) Find regions with more than double/half of the average variation
+2) get average varation across the genome and find regions with more than double/half of the average variation
+```
+$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect_without_Prze/split_chromosomes/regions_number_of_variants.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/bcftools_stats_output/
+$ bcftools_stats_analysis.R
+```
 
 
 
