@@ -87,6 +87,21 @@ NB - will need to re-estimate for the individual calls as well.
 
 **All python scripts that run from command line need source activate snakemake to get the correct python version**
 
+- Look at variants across the region
+1) Run bcftools stats on regions of 10,000 bp across the genome
+```
+$ qsub -I -l nodes=1:ppn=1,mem=4g,walltime=12:00:00
+$ cd /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/pbs_scripts/bcftools_view_regions/
+$ source activate snakemake
+$ python ../../python_scripts/Generate_get_bcftools_stats_region.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect_without_Prze/split_chromosomes/ -v /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect_without_Prze/thesis_intersect.vcf.gz -l /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/GCF_002863925.1_EquCab3.0_genomic/GCF_002863925.1_EquCab3.0_genomic_NC.fna.bed 
+$ for i in /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/pbs_scripts/bcftools_view_regions/*; do qsub $i; done
+```
+2) get average varation across the genome
+
+3) Find regions with more than double/half of the average variation
+
+
+
 # SnpEff/Annovar analysis
 #Annotate intersect using annovar by chromosome (won't work on concatenated file)
 #If need to get by chromosome from intersect file: qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/variant_annotation/ANNOVAR/bcftools_view_by_chr.pbs 
