@@ -102,8 +102,17 @@ $ python ../../python_scripts/Extract_bcftools_stats_region.py -d /home/mccuem/s
 $ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect_without_Prze/split_chromosomes/regions_number_of_variants.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/bcftools_stats_output/
 $ bcftools_stats_analysis.R
 ```
-
-
+3) pull out high/low regions from snpeff vcf file
+```
+$ scp /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/bcftools_stats_output/High_variation_regions.txt durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect_without_Prze/split_chromosomes/
+$ scp /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/bcftools_stats_output/Low_variation_regions.txt durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect_without_Prze/split_chromosomes/
+$  python ../../python_scripts/Generate_bcftools_view_regions.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect_without_Prze/high_low_regions/ -v /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/SnpEff/thesis_intersect_snpeff.ann.vcf.gz -l /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect_without_Prze/split_chromosomes/High_variation_regions.txt
+$ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/pbs_scripts/bcftools_view_regions/Extract_variants_High_variation_regions.pbs
+$  python ../../python_scripts/Generate_bcftools_view_regions.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect_without_Prze/high_low_regions/ -v /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/SnpEff/thesis_intersect_snpeff.ann.vcf.gz -l /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect_without_Prze/split_chromosomes/High_variation_regions.txt
+$ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/pbs_scripts/bcftools_view_regions/Extract_variants_Low_variation_regions.pbs
+$ ../../python_scripts/Get_type_of_variant_SnpEff.py 
+```
+Probably want a figure of impact and or consequence of variant - plus what genes are involved
 
 # SnpEff/Annovar analysis
 #Annotate intersect using annovar by chromosome (won't work on concatenated file)
