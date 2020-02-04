@@ -110,7 +110,25 @@ $  python ../../python_scripts/Generate_bcftools_view_regions.py -d /home/mccuem
 $ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/pbs_scripts/bcftools_view_regions/Extract_variants_High_variation_regions.pbs
 $  python ../../python_scripts/Generate_bcftools_view_regions.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect_without_Prze/high_low_regions/ -v /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/SnpEff/thesis_intersect_snpeff.ann.vcf.gz -l /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect_without_Prze/split_chromosomes/High_variation_regions.txt
 $ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/pbs_scripts/bcftools_view_regions/Extract_variants_Low_variation_regions.pbs
-$ ../../python_scripts/Get_type_of_variant_SnpEff.py 
+$ python_scripts/Get_high_low_regions_details.py
+```
+4) Get genes information
+```
+$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect_without_Prze/high_low_regions/High_low_variation_regions_genes.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/bcftools_stats_output/
+$ scp /Users/durwa004/Downloads/bioDBnet_db2db_200131120203_835324622.txt durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect_without_Prze/high_low_regions/
+$ ../python_scripts/Extract_high_low_regions_details.py 
+```
+5) Move back to my laptop for analysis:
+```
+$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect_without_Prze/high_low_regions/Low_variation_regions_regions_brief.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/bcftools_stats_output/
+$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect_without_Prze/high_low_regions/High_variation_regions_regions_brief.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/bcftools_stats_output/
+$ sed -i -e 's/#/_/g' High_variation_regions_regions_brief.txt
+$ sed -i -e 's/#/_/g' Low_variation_regions_regions_brief.txt
+$ High_low_region_variation_gene_analysis.R
+$ python ../../python_scripts/Get_constraint_metrics_high_low_genes.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect_without_Prze/high_low_regions/ -t /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect_without_Prze/high_low_regions/Low_variation_regions_regions_brief.txt 
+$ python ../../python_scripts/Get_constraint_metrics_high_low_genes.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect_without_Prze/high_low_regions/ -t /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect_without_Prze/high_low_regions/High_variation_regions_regions_brief.txt 
+$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect_without_Prze/high_low_regions/Low_variation_regions_regions_brief_constraint.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/bcftools_stats_output/
+$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect_without_Prze/high_low_regions/High_variation_regions_regions_brief_constraint.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/bcftools_stats_output/
 ```
 Probably want a figure of impact and or consequence of variant - plus what genes are involved
 
