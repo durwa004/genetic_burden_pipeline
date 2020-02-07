@@ -78,6 +78,8 @@ first_row <- plot_grid(bp1,bp2, labels = c("A", "B"), ncol = 1)
 #Save as dual plot
 save_plot("../../Paper_2019/Nature_genetics/Useful_figures/associated_variants.tiff", first_row, base_height = 12,base_width = 24)
 
+#Need to get tidy table of variants
+
 ################################################################################
 ###############################################################################
 #QTLs

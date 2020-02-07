@@ -10,55 +10,7 @@ library(dvmisc)
 library(tidyr)
 
 ####Figure out differences in the number of variants per breed
-intersect_stats_br <- intersect_doc %>% 
-  filter(!grepl('Other', breed))
-fit1 <- (lm(nvariants ~ breed, data=intersect_stats_br))
-fit2 <- (lm(nvariants ~ breed + nuclear_placed_DOC, data=intersect_stats_br))
-anova(fit1,fit2)
 
-#Need to combine the nvariants, nhet, nNonRefHom into one column, with a different variable
-#to explain what
-i_stats_hom <- intersect_stats_br[c(1,2,4,16)]
-colnames(i_stats_hom) <- c("Sample", "breed", "variants", "nuclear_placed_DOC")
-i_stats_het <- intersect_stats_br[c(1,2,5,16)]
-colnames(i_stats_het) <- c("Sample", "breed", "variants", "nuclear_placed_DOC")
-i_stats_nv <- intersect_stats_br[c(1,2,10,16)]
-colnames(i_stats_nv) <- c("Sample", "breed", "variants", "nuclear_placed_DOC")
-
-i_stats <- bind_rows(i_stats_hom, i_stats_nv, .id = "v_type")
-i_stats$v_type <- as.factor(i_stats$v_type)
-
-variants_m <- (lm(variants ~ v_type + breed + nuclear_placed_DOC,data=i_stats))
-
-#Get EMMEANs
-nvariants_emm <- emmeans(variants_m, specs = "breed", weights = "proportional", 
-                         type = "response", by = "v_type")
-
-####Plot EMMEANS
-#Number of variants
-labels <- c("1" = "Homozygous", "2" = "Genetic burden")
-x1 <- plot(nvariants_emm) + geom_boxplot() + theme_bw() + xlab("EMMEAN of number of variants") + 
-  ylab("Breed") +scale_x_continuous(labels=comma) + 
-  facet_grid(v_type~., labeller=labeller(v_type = labels)) +
-  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
-        axis.line.y = element_line(), axis.text.x = element_text(), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("../Paper_2019/Figures/nvariants_nhom_EMMEANS.tiff", x1, base_height = 3.5, base_width = 8)
-
-#split DOC into quartiles
-i_stats$DOC <- with(i_stats,cut(nuclear_placed_DOC, breaks=quantile(nuclear_placed_DOC,
-                                                                    probs=seq(0,1,by=0.25)),include.lowest = TRUE))
-levels(i_stats$DOC) <- c("Q1", "Q2", "Q3", "Q4")
-
-#Show interaction between nvariants and DOC
-variants_DOC <- (lm(variants ~ v_type + breed + DOC,data=i_stats))
-
-x = emmip(variants_DOC, breed ~ DOC, cov.reduce = FALSE, 
-      type = "response") + theme_bw() + xlab("DOC quantiles") + 
-  ylab("Number of variants") +scale_y_continuous(labels=comma, limits= c(2500000,4500000)) +
-  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
-        axis.line.y = element_line(), axis.text.x = element_text(), axis.text = element_text(size=10), 
-        axis.title = element_text(size=12,face="bold")) 
-save_plot("../Paper_2019/Figures/Relationship_between_nvariants_DOC.tiff", x, base_height = 3.5, base_width = 8)
 
 
 ###Individual GB
