@@ -3,11 +3,12 @@ import gzip
 from statistics import mean  
 
 #This is a very long script and likely can be tidied up at some point!!
-path = "/panfs/roc/groups/3/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/lof"
+#path = "/panfs/roc/groups/3/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/lof"
+path = "/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/gb_analysis/lof/"
 
 #Need to get header from vcf file
 horse_breed = {}
-with gzip.open(path + "/../joint_intersect_without_Prze/thesis_intersect.vcf.gz", "rt") as input_file:
+with open(path + "lof_details.txt", "r") as input_file:
     for line in input_file:
         line = line.rstrip("\n").split("\t")
         if line[0] == "#CHROM":

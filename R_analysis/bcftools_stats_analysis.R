@@ -5,6 +5,9 @@ library(forcats)
 library(devtools)
 library(ggpubr)
 library(scales)
+library(emmeans)
+library(dvmisc)
+library(tidyr)
 
 #Only include autosomes and chr X (not MT and unplaced contigs)
 setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/bcftools_stats_output/")
@@ -149,49 +152,58 @@ summary(intersect_doc$nuclear_placed_DOC)
 intersect_doc$HetNRHomratio <- intersect_doc$nHets/intersect_doc$nNonRefHom
 
 table(intersect_doc$breed)
-#Details by breed
-sum(intersect_doc[intersect_doc$breed == "Arabian",]$nvariants)
-mean(intersect_doc[intersect_doc$breed == "Arabian",]$nvariants)
-mean(intersect_doc[intersect_doc$breed == "Arabian",]$HetNRHomratio)
-mean(intersect_doc[intersect_doc$breed == "Arabian",]$tstv)
-
-mean(intersect_doc[intersect_doc$breed == "Belgian",]$nvariants)
-mean(intersect_doc[intersect_doc$breed == "Belgian",]$HetNRHomratio)
-mean(intersect_doc[intersect_doc$breed == "Belgian",]$tstv)
-
-mean(intersect_doc[intersect_doc$breed == "Clydesdale",]$nvariants)
-mean(intersect_doc[intersect_doc$breed == "Clydesdale",]$HetNRHomratio)
-mean(intersect_doc[intersect_doc$breed == "Clydesdale",]$tstv)
-
-mean(intersect_doc[intersect_doc$breed == "Icelandic",]$nvariants)
-mean(intersect_doc[intersect_doc$breed == "Icelandic",]$HetNRHomratio)
-mean(intersect_doc[intersect_doc$breed == "Icelandic",]$tstv)
-
-mean(intersect_doc[intersect_doc$breed == "Morgan",]$nvariants)
-mean(intersect_doc[intersect_doc$breed == "Morgan",]$HetNRHomratio)
-mean(intersect_doc[intersect_doc$breed == "Morgan",]$tstv)
-
-mean(intersect_doc[intersect_doc$breed == "QH",]$nvariants)
-mean(intersect_doc[intersect_doc$breed == "QH",]$HetNRHomratio)
-mean(intersect_doc[intersect_doc$breed == "QH",]$tstv)
-
-mean(intersect_doc[intersect_doc$breed == "Shetland",]$nvariants)
-mean(intersect_doc[intersect_doc$breed == "Shetland",]$HetNRHomratio)
-mean(intersect_doc[intersect_doc$breed == "Shetland",]$tstv)
-
-mean(intersect_doc[intersect_doc$breed == "STB",]$nvariants)
-mean(intersect_doc[intersect_doc$breed == "STB",]$HetNRHomratio)
-mean(intersect_doc[intersect_doc$breed == "STB",]$tstv)
-
-mean(intersect_doc[intersect_doc$breed == "TB",]$nvariants)
-mean(intersect_doc[intersect_doc$breed == "TB",]$HetNRHomratio)
-mean(intersect_doc[intersect_doc$breed == "TB",]$tstv)
-
-mean(intersect_doc[intersect_doc$breed == "WP",]$nvariants)
-mean(intersect_doc[intersect_doc$breed == "WP",]$HetNRHomratio)
-mean(intersect_doc[intersect_doc$breed == "WP",]$tstv)
 
 kruskal.test(intersect_doc$HetNRHomratio, intersect_doc$breed)
+kruskal.test(intersect_doc$tstv, intersect_doc$nuclear_placed_DOC)
+
+intersect_br <- intersect_doc %>% 
+  filter(!grepl('Other', breed))
+
+kruskal.test(intersect_br$HetNRHomratio, intersect_br$breed)
+kruskal.test(intersect_br$tstv, intersect_br$breed)
+
+summary(lm(intersect_br$tstv ~ intersect_br$breed))
+gb_m <- (lm(tstv ~ breed + nuclear_placed_DOC,data=intersect_br))
+n_hom_gb_m <- (lm(HetNRHomratio ~ breed + nuclear_placed_DOC,data=intersect_br))
+n_var_m <- (lm(nvariants ~ breed + nuclear_placed_DOC,data=intersect_br))
+summary(gb_m)
+summary(n_hom_gb_m)
+summary(n_var_m)
+
+#Get EMMEANs
+gb_emm <- emmeans(gb_m, "breed", weights = "proportional", type = "response")
+gb_emm
+n_hom_gb_emm <- emmeans(n_hom_gb_m, "breed", weights = "proportional", type = "response")
+n_hom_gb_emm
+n_var_emm <- emmeans(n_var_m, "breed", weights = "proportional", type = "response")
+n_var_emm
+
+#Add in effective population size (from Sam's paper)
+intersect_br$ne <- "NA"
+intersect_br$ne[intersect_br$breed == "Arabian"] <- 3561
+intersect_br$ne[intersect_br$breed == "Belgian"] <- 3570
+intersect_br$ne[intersect_br$breed == "Icelandic"] <- 2736
+intersect_br$ne[intersect_br$breed == "Morgan"] <- 4481
+intersect_br$ne[intersect_br$breed == "Icelandic"] <- 2736
+intersect_br$ne[intersect_br$breed == "QH"] <- 6516
+intersect_br$ne[intersect_br$breed == "STB"] <- 2528
+intersect_br$ne[intersect_br$breed == "TB"] <- 1784
+intersect_br$ne[intersect_br$breed == "WP"] <- 5625
+
+intersect_br$ne <- as.numeric(intersect_br$ne)
+summary(lm(nvariants ~ ne, data = intersect_br))
+
+#Add in effective population size (from Sam's paper)
+intersect_br$ne <- "NA"
+intersect_br$ne[intersect_br$breed == "Arabian"] <- 3561
+intersect_br$ne[intersect_br$breed == "Belgian"] <- 3570
+intersect_br$ne[intersect_br$breed == "Icelandic"] <- 2736
+intersect_br$ne[intersect_br$breed == "Morgan"] <- 4481
+intersect_br$ne[intersect_br$breed == "Icelandic"] <- 2736
+intersect_br$ne[intersect_br$breed == "QH"] <- 6516
+intersect_br$ne[intersect_br$breed == "STB"] <- 2528
+intersect_br$ne[intersect_br$breed == "TB"] <- 1784
+intersect_br$ne[intersect_br$breed == "WP"] <- 5625
 
 #Plot DOC histogram
 x = ggplot(intersect_doc, aes(x=nuclear_placed_DOC)) + theme_bw() + ylab("Frequency") + 
@@ -208,6 +220,24 @@ x = ggplot(intersect_doc, aes(x=nuclear_placed_DOC,y=nvariants)) + theme_bw() + 
         axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
 save_plot("535_individuals_DOC_nvariants.tiff", x, base_height = 3.5, base_width = 6)
 
+#split DOC into quartiles
+i_stats$DOC <- with(i_stats,cut(nuclear_placed_DOC, breaks=quantile(nuclear_placed_DOC,
+                                                                    probs=seq(0,1,by=0.25)),include.lowest = TRUE))
+levels(i_stats$DOC) <- c("Q1", "Q2", "Q3", "Q4")
+
+#Show interaction between nvariants and DOC
+variants_DOC <- (lm(variants ~ v_type + breed + DOC,data=i_stats))
+
+x = emmip(variants_DOC, breed ~ DOC, cov.reduce = FALSE, 
+          type = "response") + theme_bw() + xlab("DOC quantiles") + 
+  ylab("Number of variants") +scale_y_continuous(labels=comma, limits= c(2500000,4500000)) +
+  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
+        axis.line.y = element_line(), axis.text.x = element_text(), axis.text = element_text(size=10), 
+        axis.title = element_text(size=12,face="bold"),
+        legend.title = element_blank()) 
+save_plot("../Paper_2019/Chapter_1_genetic_variation/Figures/Relationship_between_nvariants_DOC.tiff", x, base_height = 3.5, base_width = 8)
+
+
 #Add in breed colors
 x = ggplot(intersect_doc, aes(x=nuclear_placed_DOC,y=nvariants)) + theme_bw() + ylab("Number of variants") + 
   xlab("Depth of coverage") + geom_point(aes(color=breed)) + scale_x_continuous(limits = c(0,50))+
@@ -216,6 +246,38 @@ x = ggplot(intersect_doc, aes(x=nuclear_placed_DOC,y=nvariants)) + theme_bw() + 
         axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
 save_plot("535_individuals_DOC_nvariants_breed.tiff", x, base_height = 3.5, base_width = 6)
 
+fit1 <- (lm(nvariants ~ breed, data=intersect_stats_br))
+fit2 <- (lm(nvariants ~ breed + nuclear_placed_DOC, data=intersect_stats_br))
+anova(fit1,fit2)
+
+#Need to combine the nvariants, nhet, nNonRefHom into one column, with a different variable
+#to explain what
+i_stats_hom <- intersect_stats_br[c(1,2,4,16)]
+colnames(i_stats_hom) <- c("Sample", "breed", "variants", "nuclear_placed_DOC")
+i_stats_het <- intersect_stats_br[c(1,2,5,16)]
+colnames(i_stats_het) <- c("Sample", "breed", "variants", "nuclear_placed_DOC")
+i_stats_nv <- intersect_stats_br[c(1,2,10,16)]
+colnames(i_stats_nv) <- c("Sample", "breed", "variants", "nuclear_placed_DOC")
+
+i_stats <- bind_rows(i_stats_hom, i_stats_nv, .id = "v_type")
+i_stats$v_type <- as.factor(i_stats$v_type)
+
+variants_m <- (lm(variants ~ v_type + breed + nuclear_placed_DOC,data=i_stats))
+
+#Get EMMEANs
+nvariants_emm <- emmeans(variants_m, specs = "breed", weights = "proportional", 
+                         type = "response", by = "v_type")
+
+####Plot EMMEANS
+#Number of variants
+labels <- c("1" = "Homozygous", "2" = "Number of variants")
+x1 <- plot(nvariants_emm) + geom_boxplot() + theme_bw() + xlab("EMMEAN of number of variants") + 
+  ylab("Breed") + scale_x_continuous(labels=comma, breaks = c(2000000, 4000000,6000000)) + 
+  facet_grid(v_type~., labeller=labeller(v_type = labels)) +
+  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
+        axis.line.y = element_line(), axis.text.x = element_text(), 
+        axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
+save_plot("../Paper_2019/Chapter_1_genetic_variation/Figures/nvariants_nhom_EMMEANS.tiff", x1, base_height = 6, base_width = 8)
 
 
 #Non linear association therefore pearson's correlation isn't useful
@@ -268,9 +330,27 @@ x = ggplot(intersect_stats_br, aes(x=breed, y=tstv)) + theme_bw() + ylab("Number
         axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
 save_plot("../bcftools_stats_output/10_breeds_tstv.tiff", x, base_height = 3.5, base_width = 6)
 
+#Get number of variants shared by breed figure
+#May need to do a Venn diagram
+setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/bcftools_stats_output/")
+shared = read.table("breed_breed_shared_unique_variants.txt ", header=T)
+
+rowMeans("Arabian", na.rm=T)
+
+library(reshape2)
+df$row.names<-rownames(df)
+long.df<-melt(df,id=c("row.names"))
+plotted<-ggplot(long.df,aes(x=row.names,y=variable,color=value))+geom_point()
+
+x = ggplot(shared, aes(x=breed, y=tstv)) + theme_bw() + ylab("Number of indels") + 
+  xlab("Breed") + geom_boxplot(fill=rgb(122/255,0/255,25/255,1)) +
+  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
+        axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
+save_plot("../bcftools_stats_output/10_breeds_tstv.tiff", x, base_height = 3.5, base_width = 6)
 
 
-####AF differences by breed
+
+####AF differences by breed - not sure if this works?
 setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/bcftools_stats_output/")
 #Categorize AF: Using python
 AF_data <- read.table("all_horses_AF_freq_info.txt",header=T)
@@ -319,3 +399,44 @@ read <- read.table("../DOC/reads_by_horse.txt")
 summary(read$V2)
 #Mean number of pairs that mapped
 summary(read$V3)
+
+
+#Get EMMEANS of number of variants
+#Get regions with more/less variation
+setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/bcftools_stats_output/")
+
+#Read in number of variants for each region
+regions <- read.table("regions_number_of_variants.txt", header=T)
+regions_v <- sum(regions$no_records)
+regions_snp <- sum(regions$no_SNPs)
+regions_mnp <- sum(regions$no_MNPs)
+regions_indel <- sum(regions$no_indels)
+regions_ma <- sum(regions$no_multiallelic_sites)
+regions_ma_snp <- sum(regions$no_nultiallelic_SNPs)
+regions_tstv <- mean(regions$tstv)
+
+mean(regions$no_records)
+mean(regions$no_SNPs)
+mean(regions$no_indels)
+range(regions$no_records)
+range(regions$no_SNPs)
+range(regions$no_indels)
+#High variation regions:
+regions_high <- regions %>% filter(no_records > (mean(regions$no_records))*2)
+str(regions_high)
+mean(regions_high$no_records)
+mean(regions_high$no_SNPs)
+mean(regions_high$no_indels)
+mean(regions_high$tstv)
+#Print out high variation chrom/pos1/pos2 regions
+write.table(regions_high, file = "High_variation_regions.txt", quote=F,sep = "\t")
+
+#Low variation regions:
+regions_low <- regions %>% filter(no_records < (mean(regions$no_records))/2)
+str(regions_low)
+mean(regions_low$no_records)
+mean(regions_low$no_SNPs)
+mean(regions_low$no_indels)
+mean(regions_low$tstv)
+#Print out low variation chrom/pos1/pos2 regions
+write.table(regions_low, file = "Low_variation_regions.txt", quote=F,sep = "\t")

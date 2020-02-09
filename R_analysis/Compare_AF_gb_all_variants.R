@@ -11,3 +11,4 @@ gb_variants <- merge(gb,variants, by="")
 t.test(gb$GB_AF, variants$all_AF)
 range(gb$GB_AF)
 range(variants$all_AF)
+
