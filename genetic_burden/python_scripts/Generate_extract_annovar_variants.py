@@ -50,7 +50,8 @@ if __name__ == '__main__':
             ab = line[0] + ":" + line[1]
             chrom_pos[ab] = line[2]
 
-    with open(input_file) as in_file, open(data + "/lof_annovar.txt", "w") as output_file:
+#    with open(input_file) as in_file, open(data + "/lof_annovar.txt", "w") as output_file:
+    with open(input_file) as in_file, open(data + "/genetic_burden_annovar.txt", "w") as output_file:
         a = 0
         for line in in_file:
             line = line.rstrip("\n").split("\t")
@@ -61,8 +62,8 @@ if __name__ == '__main__':
                 else:
                     a = line[0] + ":" + line[1]
                     if a in chrom_pos.keys():
-                        if line[15] == "y":
+                       # if line[15] == "y":
                             print("\t".join(line), file = output_file)
-                        else:
-                            if chrom_pos[a] == "se_only": 
-                                print("\t".join(line), file = output_file) 
+                       # else:
+                       #     if chrom_pos[a] == "se_only": 
+                       #         print("\t".join(line), file = output_file) 

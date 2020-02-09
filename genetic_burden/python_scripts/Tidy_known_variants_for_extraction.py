@@ -48,3 +48,27 @@ with open("QTL_EC2_chrom_pos.txt", "w") as f:
                 for line in input_file:
                     line = line.rstrip("\n").split("\t")
                     print(line[0], ":", line[1], sep = "", file = f)
+
+#Tidy up table of known variants that are present
+path = "/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/known_variants/known_disease_locations_2020/"
+
+exact_l = {}
+with open(path + "/known_variants_present_exact_locations.txt", "r") as input_file:
+    input_file.readline()
+    input_file.readline()
+    for line in input_file:
+        line = line.rstrip("\n").split("\t")
+        a = line[0]
+        b = line[1] + ":" + line[2] + ":" + line[3] + ":" + line[4] + ":" + line[7] + ":" + line[8]
+        exact_l[a] = b
+
+with open(path + "/known_variants_locations.txt", encoding = "ISO-8859-1") as input_file, open(path + "/known_variants_present_exact_locations_tidy.txt", "w") as output_file:
+    print("Phenotype\tPhenotype_abb\tDisease\tCausative\tGene\tChromosome\tPosition\tReference\tAlternate\tAC\tAF\tReference", file = output_file)
+    input_file.readline()
+    for line in input_file:
+        line = line.rstrip("\n").split("\t")
+        if line[1] in exact_l.keys():
+            c = exact_l[line[1]].split(":")
+            print(line[0], line[1], line[2], line[3], line[4], "\t".join(c), line[-2], sep = "\t", file = output_file)
+        else:
+            print("\t".join(line[:9]), "NA", "NA", line[-2], sep = "\t", file = output_file)

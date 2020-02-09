@@ -6,7 +6,6 @@
 
 cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/
 
-((ANN[*].IMPACT = 'HIGH') | (ANN[*].IMPACT = 'MODERATE'))
 
 java -Djava.io.tmpdir=/home/mccuem/shared/Projects/HorseGenomeProject/Data/temp_files -Xmx12g -jar /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/variant_annotation/SnpEff/snpEff/SnpSift.jar filter "((ANN[0].IMPACT has 'HIGH') | (ANN[*].IMPACT = 'MODERATE') | (ANN[*].IMPACT = 'LOW'))" ibio_union.snpeff.ann.vcf.gz > ibio_union.high_mod_low.snpeff.ann.vcf
 

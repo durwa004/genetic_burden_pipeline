@@ -1,0 +1,14 @@
+#!/bin/bash -l
+#PBS -l nodes=1:ppn=1,walltime=12:00:00,mem=4g
+#PBS -m abe
+#PBS -M durwa004@umn.edu
+#PBS -o $PBS_JOBID.Extract_variants_High_variation_regions.out
+#PBS -e $PBS_JOBID.Extract_variants_High_variation_regions.err
+#PBS -N Extract_variants_High_variation_regions.pbs
+#PBS -q small
+module load bcftools
+
+
+cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect_without_Prze/high_low_regions
+
+bcftools view -R High_variation_regions_regions.txt /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/SnpEff/thesis_intersect_snpeff.ann.vcf.gz -o High_variation_regions_snpeff.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip High_variation_regions_snpeff.vcf &&  /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix High_variation_regions_snpeff.vcf.gz && java -Djava.io.tmpdir=/home/mccuem/shared/Projects/HorseGenomeProject/Data/temp_files -Xmx12g -jar /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/variant_annotation/SnpEff/snpEff/SnpSift.jar filter "((ANN[0].IMPACT has 'HIGH') | (ANN[*].IMPACT = 'MODERATE') | (ANN[*].IMPACT = 'LOW'))" High_variation_regions_snpeff.vcf.gz > High_variation_regions_snpeff.coding.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip High_variation_regions_snpeff.coding.vcf &&  /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix High_variation_regions_snpeff.codingvcf.gz

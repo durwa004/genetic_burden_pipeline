@@ -67,14 +67,15 @@ with open("/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibi
                         b = chrom_pos[a].split(",")
                         if len(b) >1:
                             count +=1
+                            del chrom_pos[a]
                         else:
                             count_2 +=1
                             ab = chrom_pos[a].split(":")
                             print("/home/mccuem/shared/.local/bin/tabix /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/joint_intersect_without_Prze/thesis_intersect.vcf.gz ", chrom_pos[a], "-", ab[1], " > ", fn[0], ".txt", sep = "", file =f)
 
 
-################################################################################
-
+#Get dictionary of phenotype and original chrom/pos
+path = "/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/known_variants/known_QTLs_from_tabix/"
 
 #Get breed info
 horse_breed = {}
@@ -101,14 +102,31 @@ for i in range(len(header)):
     if header[i] in horse_breed.keys():
         breed.append(horse_breed[header[i]])
 
+#Get detailed names and symbol
+detailed = {} 
+with open(path +"/../animalgenomeQTL_for_extraction.txt", encoding = "ISO-8859-1") as input_file:
+    input_file.readline()
+    for line in input_file:
+        line = line.rstrip("\n").split("\t")
+        a = line[0] + ":" + line[1] + ":" + line[2] + ":" + line[5]
+        detailed[line[8]] = a
+
+#Get rsid from grep file
+rs = {}
+with open(path + "/../../dbsnp/EVD_dbsnp/known_qtls/grep_get_rs_chrom_pos.sh", "r") as input_file:
+    for line in input_file:
+        line = line.rstrip("\n").split()
+        rs[line[-1]] = line[1]
 #Get variant details for each horse
-with open("known_QTL_locations/No_QTLs_present.txt", "w") as output_file, open("known_QTL_locations/known_QTLs_present.txt", "w") as output2:
-    print("Phenotype", "chrom", "pos", "ref", "alt", "AC", "AF", "\t".join(header[9:]), sep = "\t", file = output2)
-    print("NA", "NA", "NA", "NA", "NA", "NA", "NA", "\t".join(breed), sep = "\t", file = output2)
-    for filename in os.listdir():
+#with open("known_QTL_locations/No_QTLs_present.txt", "w") as output_file, open("known_QTL_locations/known_QTLs_present.txt", "w") as output2:
+with open(path + "/../QTLs_table_tidy.txt", "w") as output2:
+#    print("Phenotype", "chrom", "pos", "ref", "alt", "AC", "AF", "\t".join(header[9:]), sep = "\t", file = output2)
+#    print("NA", "NA", "NA", "NA", "NA", "NA", "NA", "\t".join(breed), sep = "\t", file = output2)
+    print("Phenotype", "Phenotype_abb", "QTL_id", "chrom", "pos", "SNP_EC2", "SNP_EC3","ref", "alt", "AC", "AF", sep = "\t", file = output2)
+    for filename in os.listdir(path):
         if filename.endswith(".txt"):
-            with open(filename, "r") as input_file:
-                if os.stat(filename).st_size !=0:
+            with open(path + "/" + filename, "r") as input_file:
+                if os.stat(path + "/" + filename).st_size !=0:
                     for line in input_file:
                         genotype = []
                         count = 0
@@ -132,9 +150,14 @@ with open("known_QTL_locations/No_QTLs_present.txt", "w") as output_file, open("
                             if genotype[i] == "1" or genotype[i] == "2":
                                 AC += int(genotype[i])
                         AF = AC/(count*2)
-                        print(filename, line[0], line[1],line[3], line[4],AC,AF, "\t".join(genotype),sep = "\t", file = output2)
-                elif os.stat(filename).st_size == 0:
-                    print(filename, file = output_file)
+                        rsid = rs[filename]
+                        ab = detailed[rsid].split(":")
+                        print(ab[2], ab[1], ab[0], line[0], line[1],line[2], rsid, line[3], line[4],AC,AF,sep = "\t", file = output2)
+                elif os.stat(path + "/" + filename).st_size == 0:
+                    AF = AC/(count*2)
+                    rsid = rs[filename]
+                    ab = detailed[rsid].split(":")
+                    print(ab[2], ab[1], ab[0], ab[3], "NA", "NA", rsid_id, "NA", "NA", "NA", "NA", file = output2, sep = "\t") 
 
 header = []
 breed = []
@@ -143,8 +166,7 @@ count = 0
 AF = 0
 max_AF = 0
 min_AF = 100
-with open("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/known_QTLs_present.txt", 
-          "r") as input_file, open("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/QTLs_table.txt", "w") as f:
+with open("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/known_QTLs_present.txt", "r") as input_file, open("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/QTLs_table.txt", "w") as f:
     print("Phenotype\thorse\tbreed\tgenotype", file = f)
     for line in input_file:
         line = line.rstrip("\n").split("\t")

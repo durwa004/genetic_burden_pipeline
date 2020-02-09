@@ -48,143 +48,144 @@ with open(path + "/snpeff_annovar_combined_intersect_high_mod_chrom_pos.txt", "r
         variant_caller[ab] = line[2]
 
 gb = {}
-with open(path + "/lof_snpeff.txt", "r") as input_file:#, open(path + "/lof_snpeff_tidy.txt", "w") as output_file:    
-    #print("VEP\tCHROM\tPOS\tREF\tALT\tAC\tAF\tSNP\tconsequence\timpact\tgene\tcoding\tprotein", "\t".join(header), sep = "\t", file = output_file)
+with open(path + "/tabix_output/genetic_burden.txt", "r") as input_file, open(path + "/genetic_burden_tidy.txt", "w") as output_file:    
+    print("VEP\tCHROM\tPOS\tREF\tALT\tAC\tAF\tSNP\tconsequence\timpact\tgene\tcoding\tprotein", "\t".join(header), sep = "\t", file = output_file)
     for line in input_file:
         line = line.rstrip("\n").split("\t")
         c_p = line[0] + ":" + line[1]
-        ab = line[7].split(";")
-        cd = ab[1].split("AF=")
-        AF = cd[1]
-        REF = line[3]
-        ALT = line[4]
-        if "," in ALT:
-            abcd = ALT.split(",")
-            ALT = abcd[0]
-        if len(REF) == len(ALT):
-            SNP_se = "SNP"
-        else:
-            SNP_se = "indel"
-        if "," in AF:
-            ef = AF.split(",")
-            AF = ef[0]
-        else:
-            pass
-        bc = ab[0].split("AC=")
-        AC = bc[1]
-        if "," in AC:
-            gh = AC.split(",")
-            AC = gh[0]
-        else:
-            pass
-        gb[c_p] = AC
-        de = line[7].split("ANN=")
-        bc = de[1].split("|")
-        consequence = bc[1]
-        if "splice" in consequence:
-            consequence = "splice_region_variant"
-        elif "5_prime" in consequence:
-            consequence = "5_prime_UTR_variant"
-        elif "frameshift" in consequence:
-            consequence = "frameshift_variant"
-        elif "stop_gained" in consequence:
-            consequence = "stop_gained"
-        elif "start_lost" in consequence:
-            consequence = "start_lost"
-        elif "stop_gained" in consequence:
-            consequence = "stop_gained"
-        elif "stop_lost" in consequence:
-            consequence = "stop_lost"
-        elif "gene_fusion" in consequence:
-            consequence = "gene_fusion"
-        coding = bc[9]
-        protein = bc[10]
-        impact = bc[2]
-        gene = bc[3]
-        gene = gene.split("-")
-        if "CHR_START" in gene[0]:
-            gene = gene[-1]
-        else:
-            if "exon" not in gene[0]:
-                gene = gene[0]
+        if c_p in variant_caller.keys():
+            ab = line[7].split(";")
+            cd = ab[1].split("AF=")
+            AF = cd[1]
+            REF = line[3]
+            ALT = line[4]
+            if "," in ALT:
+                abcd = ALT.split(",")
+                ALT = abcd[0]
+            if len(REF) == len(ALT):
+                SNP_se = "SNP"
             else:
-                if "id" in gene[1]:
-                    gene = gene[2]
+                SNP_se = "indel"
+            if "," in AF:
+                ef = AF.split(",")
+                AF = ef[0]
+            else:
+                pass
+            bc = ab[0].split("AC=")
+            AC = bc[1]
+            if "," in AC:
+                gh = AC.split(",")
+                AC = gh[0]
+            else:
+                pass
+            gb[c_p] = AC
+            de = line[7].split("ANN=")
+            bc = de[1].split("|")
+            consequence = bc[1]
+            if "splice" in consequence:
+                consequence = "splice_region_variant"
+            elif "5_prime" in consequence:
+                consequence = "5_prime_UTR_variant"
+            elif "frameshift" in consequence:
+                consequence = "frameshift_variant"
+            elif "stop_gained" in consequence:
+                consequence = "stop_gained"
+            elif "start_lost" in consequence:
+                consequence = "start_lost"
+            elif "stop_gained" in consequence:
+                consequence = "stop_gained"
+            elif "stop_lost" in consequence:
+                consequence = "stop_lost"
+            elif "gene_fusion" in consequence:
+                consequence = "gene_fusion"
+            coding = bc[9]
+            protein = bc[10]
+            impact = bc[2]
+            gene = bc[3]
+            gene = gene.split("-")
+            if "CHR_START" in gene[0]:
+                gene = gene[-1]
+            else:
+                if "exon" not in gene[0]:
+                    gene = gene[0]
                 else:
-                    gene = gene[1]
-        for i in range(len(line)):
-            if "0/1" in line[i] or "0/2" in line[i] or "0/3" in line[i]:
-                line[i] = "het"
-            elif "1/1" in line[i] or "2/2" in line[i] or "1/2" in line[i] or "1/3" in line[i] or "2/3" in line[i] or "2/1" in line[i]:
-                line[i] = "hom"
-            elif "./." in line[i]:
-                line[i] = "missing"
-            elif "0/0" in line[i]:
-                line[i] = "ref"
-        #print(variant_caller[c_p], line[0], line[1], REF,ALT,AC, AF, SNP_se, consequence, impact, gene, coding, protein, "\t".join(line[9:]), sep = "\t", file = output_file)
-        line1 = line[9:]
-        for i in range(len(line1)):
-            if "het" in line1[i] or "hom" in line1[i]:
-                de = gb[c_p] + ":" + horse_breed[header[i]]
-                gb[c_p] = de
+                    if "id" in gene[1]:
+                        gene = gene[2]
+                    else:
+                        gene = gene[1]
+            line1 = line[9:]
+            for i in range(len(line1)):
+                a = line1[i].split(":")
+                if "/" in a[0]:
+                    b = a[0].split("/")
+                elif "|" in a[0]:
+                    b = a[0].split("|")
+                if b[0] == ".":
+                    line1[i] = "missing"
+                elif b[0] == "0":
+                    if b[1] == "0":
+                        line1[i] = "hom_WT"
+                    if int(b[1]) > 0:
+                        line1[i] = "het"
+                        de = gb[c_p] + ":" + horse_breed[header[i]]
+                        gb[c_p] = de
+                elif int(b[0]) >0:
+                    line1[i] = "hom"
+                    de = gb[c_p] + ":" + horse_breed[header[i]]
+                    gb[c_p] = de
+            print(variant_caller[c_p], line[0], line[1], REF,ALT,AC, AF, SNP_se, consequence, impact, gene, coding, protein, "\t".join(line1), sep = "\t", file = output_file)
 
-with open(path + "/lof_annovar.txt", "r") as annovar_file:#, open(path + "/lof_annovar_tidy.txt", "w") as output_file:
-    #print("VEP\tCHROM\tPOS\tREF\tALT\tAC\tAF\tSNP\tconsequence\timpact\tgene\tcoding\tprotein", "\t".join(header), sep = "\t", file = output_file)
+#with open(path + "/lof_annovar.txt", "r") as annovar_file:#, open(path + "/lof_annovar_tidy.txt", "w") as output_file:
+with open(path + "/genetic_burden_annovar.txt", "r") as annovar_file, open(path + "/genetic_burden_annovar_tidy.txt", "w") as output_file:
+    print("VEP\tCHROM\tPOS\tREF\tALT\tAC\tAF\tSNP\tconsequence\timpact\tgene\tcoding\tprotein", "\t".join(header), sep = "\t", file = output_file)
     for line in annovar_file:
         line = line.rstrip("\n").split("\t")
         c_p = line[0] + ":" + line[1]
-        REF = line[3]
-        ALT = line[4]
-        if "," in ALT:
-            abcd = ALT.split(",")
-            ALT = abcd[0]
-        if len(REF) == len(ALT):
-            SNP_ann = "SNP"
-        else:
-            SNP_ann = "indel"
-        AF = line[8]
-        if "," in AF:
-            ef = AF.split(",")
-            AF = ef[0]
-        else:
-            pass
-        AC = line[7]
-        if "," in AC:
-            gh = AC.split(",")
-            AC = gh[0]
-        else:
-            pass
-        consequence = line[9]
-        if "splice" in consequence:
-            consequence = "splice_region_variant"
-        elif "frameshift deletion" == consequence or "frameshift insertion" == consequence:
-            consequence = "frameshift_variant"
-        elif "stopgain" == consequence:
-            consequence = "stop_gained"
-        impact_ann = line[10]
-        gene_ann = line[11].split("-")
-        gene_ann = gene_ann[1]
-        coding_ann = line[13]
-        protein_ann = line[14].split(",")
-        protein_ann = protein_ann[0]
-        for i in range(len(line)):
-            if "0/1" in line[i] or "0/2" in line[i] or "0/3" in line[i]:
-                line[i] = "het"
-            elif "1/1" in line[i] or "2/2" in line[i] or "1/2" in line[i] or "1/3" in line[i] or "2/3" in line[i] or "2/1" in line[i]:
-                line[i] = "hom"
-            elif "./." in line[i]:
-                line[i] = "missing"
-            elif "0/0" in line[i]:
-                line[i] = "ref"
-       # print(variant_caller[c_p], line[0], line[1], REF,ALT,AC, AF, SNP_ann, consequence, impact_ann,gene_ann, coding_ann, protein_ann,"\t".join(line[9:]), sep = "\t", file = output_file)
+        if c_p in variant_caller.keys():
+            REF = line[3]
+            ALT = line[4]
+            if "," in ALT:
+                abcd = ALT.split(",")
+                ALT = abcd[0]
+            if len(REF) == len(ALT):
+                SNP_ann = "SNP"
+            else:
+                SNP_ann = "indel"
+            AF = line[8]
+            if "," in AF:
+                ef = AF.split(",")
+                AF = ef[0]
+            else:
+                pass
+            AC = line[7]
+            if "," in AC:
+                gh = AC.split(",")
+                AC = gh[0]
+            else:
+                pass
+            consequence = line[9]
+            if "splice" in consequence:
+                consequence = "splice_region_variant"
+            elif "frameshift deletion" == consequence or "frameshift insertion" == consequence:
+                consequence = "frameshift_variant"
+            elif "stopgain" == consequence:
+                consequence = "stop_gained"
+            impact_ann = line[10]
+            gene_ann = line[11].split("-")
+            gene_ann = gene_ann[1]
+            coding_ann = line[13]
+            protein_ann = line[14].split(",")
+            protein_ann = protein_ann[0]
+            print(variant_caller[c_p], line[0], line[1], REF,ALT,AC, AF, SNP_ann, consequence, impact_ann,gene_ann, coding_ann, protein_ann, sep = "\t", file = output_file)
 
 #Get details about shared variants
 ann = {}
 se = {}
 ij = 0
-with open(path + "/lof_annovar_tidy.txt", "r") as ann_in, open(path + "/../annovar/annovar_coding_tidy.txt", "r") as ann_tidy, open(path + "/lof_snpeff_tidy.txt", "r") as se_in:#, open(path + "/lof_details.txt", "w") as output_file, open(path + "/lof_details_brief.txt", "w") as output_b:
-    #print("group\tchrom\tpos\tref\talt\tAC\tAF\tSNP\tconsequence\timpact\tgene\tcoding\tprotein\tSNP_ann\tconsequence_ann\timpact_ann\tgene_ann\tcoding_ann\tprotein_ann", "\t".join(header),sep = "\t",file = output_file)
-    #print("group\tchrom\tpos\tref\talt\tAC\tAF\tSNP\tconsequence\timpact\tgene\tcoding\tprotein\tSNP_ann\tconsequence_ann\timpact_ann\tgene_ann\tcoding_ann\tprotein_ann", file = output_b)
+#with open(path + "/lof_annovar_tidy.txt", "r") as ann_in, open(path + "/../annovar/annovar_coding_tidy.txt", "r") as ann_tidy, open(path + "/lof_snpeff_tidy.txt", "r") as se_in:#, open(path + "/lof_details.txt", "w") as output_file, open(path + "/lof_details_brief.txt", "w") as output_b:
+with open(path + "/genetic_burden_annovar_tidy.txt", "r") as ann_in, open(path + "/genetic_burden_tidy.txt", "r") as se_in, open(path + "/genetic_burden_details.txt", "w") as output_file, open(path + "/genetic_burden_details_brief.txt", "w") as output_b:
+    print("group\tchrom\tpos\tref\talt\tAC\tAF\tSNP\tconsequence\timpact\tgene\tcoding\tprotein\tSNP_ann\tconsequence_ann\timpact_ann\tgene_ann\tcoding_ann\tprotein_ann", "\t".join(header),sep = "\t",file = output_file)
+    print("group\tchrom\tpos\tref\talt\tAC\tAF\tSNP\tconsequence\timpact\tgene\tcoding\tprotein\tSNP_ann\tconsequence_ann\timpact_ann\tgene_ann\tcoding_ann\tprotein_ann", file = output_b)
     ann_in.readline()
     se_in.readline()
     for line in ann_in:
@@ -197,65 +198,10 @@ with open(path + "/lof_annovar_tidy.txt", "r") as ann_in, open(path + "/../annov
         ab = line[1] + ":" + line[2]
         if ab in ann.keys():
             cd = ann[ab].split(":")
-     #       print("\t".join(line[:13]), "\t".join(cd), "\t".join(line[13:]), sep = "\t", file = output_file)
-      #      print("\t".join(line[:13]), "\t".join(cd), sep = "\t", file = output_b)
+            print("\t".join(line[:13]), "\t".join(cd), "\t".join(line[13:]), sep = "\t", file = output_file)
+            print("\t".join(line[:13]), "\t".join(cd), sep = "\t", file = output_b)
         else:
             se[ab] = ":".join(line)
-    for line in ann_tidy:
-        line = line.rstrip("\n").split("\t")
-        if len(line) >1:
-            ef = line[0] + ":" + line[1]
-            if ef != ij:
-                if ef in se.keys():
-                    ghi = se[ef].split(":")
-                    REF = line[3]
-                    ALT = line[4]
-                    if "," in ALT:
-                        abcd = ALT.split(",")
-                        ALT = abcd[0]
-                    if len(REF) == len(ALT):
-                        SNP_ann = "SNP"
-                    else:
-                        SNP_ann = "indel"
-                    AF = line[8]
-                    if "," in AF:
-                        ef = AF.split(",")
-                        AF = ef[0]
-                    else:
-                        pass
-                    AC = line[7]
-                    if "," in AC:
-                        gh = AC.split(",")
-                        AC = gh[0]
-                    else:
-                        pass
-                    consequence = line[9]
-                    if "splice" in consequence:
-                        consequence = "splice_region_variant"
-                    elif "frameshift deletion" == consequence or "frameshift insertion" == consequence:
-                        consequence = "frameshift_variant"
-                    elif "stopgain" == consequence:
-                        consequence = "stop_gained"
-                    elif "stoploss" == consequence:
-                        consequence = "stop_lost"
-                    impact_ann = line[10]
-                    gene_ann = line[11].split("-")
-                    gene_ann = gene_ann[1]
-                    coding_ann = line[13]
-                    protein_ann = line[14].split(",")
-                    protein_ann = protein_ann[0]
-                    for i in range(len(line)):
-                        if "0/1" in line[i] or "0/2" in line[i] or "0/3" in line[i]:
-                            line[i] = "het"
-                        elif "1/1" in line[i] or "2/2" in line[i] or "1/2" in line[i] or "1/3" in line[i] or "2/3" in line[i] or "2/1" in line[i]:
-                            line[i] = "hom"
-                        elif "./." in line[i]:
-                            line[i] = "missing"
-                        elif "0/0" in line[i]:
-                            line[i] = "ref"
-       #             print("\t".join(ghi[:13]), SNP_ann, consequence, impact_ann,gene_ann, coding_ann, protein_ann, "\t".join(line[9:]), sep = "\t", file = output_file)
-        #            print("\t".join(ghi[:13]), SNP_ann, consequence, impact_ann,gene_ann, coding_ann, protein_ann, file = output_b, sep = "\t")
-                    ij = ef
 
 #find variants unique to breeds  
 unique = []
@@ -266,7 +212,8 @@ for item in gb.keys():
         unique.append(item)
         u_b.append(a[1])
 
-with open(path + "/lof_details.txt", "r") as input_file, open(path + "/unique_lof.txt", "w") as output_file, open(path + "/unique_lof_brief.txt", "w") as output_b:
+#with open(path + "/lof_details.txt", "r") as input_file, open(path + "/unique_lof.txt", "w") as output_file, open(path + "/unique_lof_brief.txt", "w") as output_b:
+with open(path + "/genetic_burden_details.txt", "r") as input_file, open(path + "/unique_gb.txt", "w") as output_file, open(path + "/unique_gb_brief.txt", "w") as output_b:
     print("Breed\tgroup\tchrom\tpos\tref\talt\tAC\tAF\tSNP\tconsequence\timpact\tgene\tcoding\tprotein\tSNP_ann\tconsequence_ann\timpact_ann\tgene_ann\tcoding_ann\tprotein_ann", "\t".join(header[9:]), sep = "\t", file = output_file)
     print("Breed\tgroup\tchrom\tpos\tref\talt\tAC\tAF\tSNP\tconsequence\timpact\tgene\tcoding\tprotein\tSNP_ann\tconsequence_ann\timpact_ann\tgene_ann\tcoding_ann\tprotein_ann", sep = "\t", file = output_b)
     input_file.readline()

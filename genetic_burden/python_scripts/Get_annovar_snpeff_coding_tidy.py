@@ -2,7 +2,9 @@ import gzip
 import os
 
 #Goal is to convert the snpeff output to a useable text file for analysis, so that we can get a union file of snpeff and annovar output.
-with gzip.open("../SnpEff/thesis_intersect_snpeff.coding.ann.vcf.gz", "rt") as input_file, open("../SnpEff/SnpEff_coding_tidy.txt", "w") as output_file:
+#with gzip.open("../SnpEff/thesis_intersect_snpeff.coding.ann.vcf.gz", "rt") as input_file, open("../SnpEff/SnpEff_coding_tidy.txt", "w") as output_file:
+#with gzip.open("High_variation_regions_snpeff.vcf.gz", "rt") as input_file, open("High_variation_regions_tidy.txt", "w") as output_file:
+with gzip.open("Low_variation_regions_snpeff.vcf.gz", "rt") as input_file, open("Low_variation_regions_tidy.txt", "w") as output_file:
     for line in input_file:
         line = line.rstrip("\n").split("\t")
         if "#CHROM" in line:
@@ -24,7 +26,7 @@ with gzip.open("../SnpEff/thesis_intersect_snpeff.coding.ann.vcf.gz", "rt") as i
                 a = line[7].split("AC=")
                 b = a[1].split(";")
                 AC = b[0]
-                if "AF_" in line[7]:
+                if "AF" in line[7]:
                     c = line[7].split("AF=")
                     d = c[1].split(";")
                     AF = d[0]
@@ -41,7 +43,7 @@ with gzip.open("../SnpEff/thesis_intersect_snpeff.coding.ann.vcf.gz", "rt") as i
                 b = a[1].split(";")
                 cd = b[0].split(",")
                 AC =cd[0]
-                if "AF_" in line[7]:
+                if "AF" in line[7]:
                     c = line[7].split("AF=")
                     d = c[1].split(";")
                     de = d[0].split(",")
