@@ -29,7 +29,8 @@ if __name__ == '__main__':
 
     data = os.path.abspath(args.data)
 
-    with open(data + "/breed_pop_rare_common_number_of_variants_unique.txt", "w") as info_file, open("bcftools_query_pop_chrom_pos.sh", "w") as output_f, open(data + "/breed_rare_pop_common_number_of_variants_shared", "w") as info_file2, open(data + "/breed_common_pop_rare_number_of_variants_shared", "w") as info_file3:
+    with open(data + "/breed_pop_rare_common_number_of_variants_unique.txt", "w") as info_file, open("bcftools_query_pop_chrom_pos.sh", "w") as output_f, open(data + "/breed_rare_pop_common_number_of_variants_shared", "w") as info_file2, open(data + "/breed_common_pop_rare_number_of_variants_shared", "w") as info_file3:i
+#    with open(data + "/breed_pop_rare_common_number_of_variants_shared.txt", "w") as info_file, open("bcftools_query_pop_chrom_pos_shared.sh", "w") as output_f, open(data + "/breed_pop_number_of_variants_shared", "w") as info_file2:
         print("Breed\tno_samples\tno_records\tno_SNPs\tno_MNPs\tno_indels\tno_others\tno_multiallelic_sites\tno_nultiallelic_SNPs\tts\ttv\ttstv", file= info_file)
         print("Breed\tno_samples\tno_records\tno_SNPs\tno_MNPs\tno_indels\tno_others\tno_multiallelic_sites\tno_nultiallelic_SNPs\tts\ttv\ttstv", file= info_file2)
         print("Breed\tno_samples\tno_records\tno_SNPs\tno_MNPs\tno_indels\tno_others\tno_multiallelic_sites\tno_nultiallelic_SNPs\tts\ttv\ttstv", file= info_file3)
