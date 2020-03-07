@@ -361,16 +361,16 @@ $ module load bcftools
 $ bcftools stats shared_pop_snpeff.vcf.gz > shared_pop_snpeff.vcf.gz.stats
 $ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/pbs_scripts/SnpSift_filter_shared.pbs
 ```
-- Extract the breed details from the output vcf for breed rare/common variants **RUNNING**
+- Extract the breed details from the output vcf for breed rare/common variants
 - Need to pull in info re which breed rare/common
 ```
 $ qsub -I -l nodes=1:ppn=8,walltime=12:00:00,mem=40g
 $ python  /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/split_by_breed/python_scripts/Extract_shared_variant_information.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs/breed_pop_rare_common_snpeff/ -l /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs/breed_pop_rare_common_chrom_pos/shared_pop_chrom_pos.txt
+$ Get_rare_breed_common_breed_info.py
 ```
 - Move files back to my laptop 
 ```
 $ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs/breed_pop_rare_common_snpeff/shared_variants.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/breed_pop_variants/
-$ Get_breed_rare_breed_common_details.py
 ```
 - Get genes details
 https://biodbnet-abcc.ncifcrf.gov/db/db2db.php
