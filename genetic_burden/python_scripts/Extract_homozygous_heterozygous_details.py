@@ -192,4 +192,18 @@ with open(path + "/variants_present_in_all_not_homozygous_in_all.txt", "r") as i
 
 
 
-                    
+#Get number of variants with AFs >=0.50
+over = []
+under = []
+count_over = 0
+count_under = 0
+with open(path + "/no_homozygotes_details.txt", "r") as input_file:
+    input_file.readline()
+    for line in input_file:
+        line = line.rstrip("\n").split("\t")
+        if float(line[5]) >= 0.5:
+           over.append(line[5])
+           count_over +=1
+        else:
+           under.append(line[5])
+           count_under +=1    

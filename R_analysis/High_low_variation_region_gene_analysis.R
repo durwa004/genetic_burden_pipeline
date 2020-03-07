@@ -53,17 +53,26 @@ write.table(low_genes$gene, file = "Low_variation_regions_gene_symbols.txt", quo
 #Compare the means
 t.test(high_genes$AF, low_genes$AF)
 
-
-high_constraint<- read.table("High_variation_regions_all_brief_constraint.txt", header=F,sep="\t")
-low_constraint<- read.table("Low_variation_regions_all_brief_constraint.txt", header=F,sep="\t")
+#Just coding regions
+high_constraint<- read.table("High_variation_regions_regions_brief_constraint.txt", header=F,sep="\t")
+low_constraint<- read.table("Low_variation_regions_regions_brief_constraint.txt", header=F,sep="\t")
 
 mean(high_constraint$V2, na.rm=T)
 mean(low_constraint$V2, na.rm=T)
 mean(high_constraint$V3, na.rm=T)
 mean(low_constraint$V3, na.rm=T)
 
-t.test(high_constraint$V2, low_constraint$V2)
-t.test(high_constraint$V3, low_constraint$V3)
+sum(is.na(high_constraint$V2)) #1296
+sum(is.na(high_constraint$V3)) #1305
+sum(is.na(low_constraint$V2)) #574
+sum(is.na(low_constraint$V3)) #600
+length(low_constraint$V1)
+length(high_constraint$V1)
+
+t.test(is.na(high_constraint$V2), is.na(low_constraint$V2))
+t.test(high_constraint$V2, low_constraint$V2, na.rm=T)
+t.test(is.na(high_constraint$V3), is.na(low_constraint$V3))
+t.test(high_constraint$V3, low_constraint$V3, na.rm = T)
 
 #Average breakdown of variants
 x = length(high_genes$impact[high_genes$impact == "HIGH"])
