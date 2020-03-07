@@ -49,7 +49,7 @@ with gzip.open(path + "Low_variation_regions_snpeff.vcf.gz", "rt") as input_file
             gene = bc[3]
             gene = gene.split("-")
             if "CHR_START" in gene[0]:
-                gene = gene[-1]
+                gene = gene[-2]
             else:
                 if "exon" not in gene[0]:
                     gene = gene[0]
@@ -71,7 +71,7 @@ with gzip.open(path + "High_variation_regions_snpeff.vcf.gz", "rt") as input_fil
             gene = bc[3]
             gene = gene.split("-")
             if "CHR_START" in gene[0]:
-                gene = gene[-1]
+                gene = gene[-2]
             else:
                 if "exon" not in gene[0]:
                     gene = gene[0]
@@ -87,6 +87,7 @@ with open("High_low_variation_regions_all_genes.txt", "w") as output_file:
         print(key, file = output_file)
 
 #Add genes back in 
+with open(path + "/bioDBnet_db2db_200131120203_835324622.txt", "r") as genes_file:
    for line1 in genes_file:
        line1 = line1.rstrip("\n").split("\t")
        a = line1[0].split(".")
@@ -100,9 +101,9 @@ with open("High_low_variation_regions_all_genes.txt", "w") as output_file:
 
 gb = {}
 #with gzip.open(path + "High_variation_regions_snpeff.coding.vcf.gz", "rt") as input_file, open(path + "/High_variation_regions_regions.txt", "w") as output_file,  open(path + "/High_variation_regions_regions_brief.txt", "w") as brief_f:
-#with gzip.open(path + "Low_variation_regions_snpeff.coding.vcf.gz", "rt") as input_file, open(path + "/Low_variation_regions_regions.txt", "w") as output_file,  open(path + "/Low_variation_regions_regions_brief.txt", "w") as brief_f:
+with gzip.open(path + "Low_variation_regions_snpeff.coding.vcf.gz", "rt") as input_file, open(path + "/Low_variation_regions_regions.txt", "w") as output_file,  open(path + "/Low_variation_regions_regions_brief.txt", "w") as brief_f:
 #with gzip.open(path + "High_variation_regions_snpeff.vcf.gz", "rt") as input_file, open(path + "/High_variation_regions_all.txt", "w") as output_file,  open(path + "/High_variation_regions_all_brief.txt", "w") as brief_f:
-with gzip.open(path + "Low_variation_regions_snpeff.vcf.gz", "rt") as input_file, open(path + "/Low_variation_regions_all.txt", "w") as output_file,  open(path + "/Low_variation_regions_all_brief.txt", "w") as brief_f:
+#with gzip.open(path + "Low_variation_regions_snpeff.vcf.gz", "rt") as input_file, open(path + "/Low_variation_regions_all.txt", "w") as output_file,  open(path + "/Low_variation_regions_all_brief.txt", "w") as brief_f:
     print("CHROM\tPOS\tREF\tALT\tAC\tAF\tSNP\tconsequence\timpact\tgene\tcoding\tprotein", sep = "\t", file = brief_f)  
     print("CHROM\tPOS\tREF\tALT\tAC\tAF\tSNP\tconsequence\timpact\tgene\tcoding\tprotein", "\t".join(header), sep = "\t", file = output_file)
     for line in input_file:

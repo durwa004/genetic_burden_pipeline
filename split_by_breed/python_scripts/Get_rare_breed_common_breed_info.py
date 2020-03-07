@@ -66,3 +66,14 @@ with open("rare_breed_common_breed.txt", "w") as output_file:
                 for item,value in enumerate(chrom_c):
                     if v == value and pos_r[i] == pos_c[item]:
                         print(breed_r,breed_c,v,pos_r[i],ref[i],alt[i],AC_r[i],AC_c[item],AF[i],ma[i], file = output_file)
+
+path = "/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_rare_common_vcfs/breed_rare_common_chrom_pos/all_shared_variants/"
+different = []
+with open(path + "/rare_common_breed_chrom_pos_with_breed_details.txt", "r") as input_file:
+    for line in input_file:
+        line = line.rstrip("\n").split("\t")
+        a = line[2].split(":")
+        if item == "rare_common_breed_chrom_pos":
+            next
+        else:
+            different.append(len(a))
