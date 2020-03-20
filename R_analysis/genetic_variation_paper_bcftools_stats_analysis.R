@@ -107,13 +107,6 @@ gb_t$ne <- as.numeric(gb_t$ne)
 cor.test(x=gb_t$ne,y=gb_t$nvariants, method = "pearson", use='complete.obs')
 cor.test(x=gb_t$ne,y=gb_t$nhom, method = "pearson", use='complete.obs')
 
-#Plot DOC histogram
-x = ggplot(intersect_doc, aes(x=nuclear_placed_DOC)) + theme_bw() + ylab("Frequency") + 
-  xlab("Depth of coverage") + geom_histogram() +scale_y_continuous(labels=comma) + 
-  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
-        axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("535_individuals_DOC.tiff", x, base_height = 3.5, base_width = 6)
-
 #Look for correlation between number of variants and DOC with line of best fit 
 x = ggplot(intersect_doc, aes(x=nuclear_placed_DOC,y=nvariants)) + theme_bw() + ylab("Number of variants") + 
   xlab("Depth of coverage") + geom_point() + scale_x_continuous(limits = c(0,50))+
@@ -152,38 +145,38 @@ x = ggplot(intersect_doc, aes(x=nuclear_placed_DOC,y=nvariants)) + theme_bw() + 
         legend.title = element_blank())
 save_plot("../Paper_2019/Chapter_1_genetic_variation/Figures/DOC_nvariants_breed.tiff", x, base_height = 3.5, base_width = 6)
 
-fit1 <- (lm(nvariants ~ breed, data=intersect_stats_br))
-fit2 <- (lm(nvariants ~ breed + nuclear_placed_DOC, data=intersect_stats_br))
+fit1 <- (lm(nvariants ~ breed, data=intersect_br))
+fit2 <- (lm(nvariants ~ breed + nuclear_placed_DOC, data=intersect_br))
 anova(fit1,fit2)
 
-#Need to combine the nvariants, nhet, nNonRefHom into one column, with a different variable
-#to explain what
-i_stats_hom <- intersect_stats_br[c(1,2,4,16)]
-colnames(i_stats_hom) <- c("Sample", "breed", "variants", "nuclear_placed_DOC")
-i_stats_het <- intersect_stats_br[c(1,2,5,16)]
-colnames(i_stats_het) <- c("Sample", "breed", "variants", "nuclear_placed_DOC")
-i_stats_nv <- intersect_stats_br[c(1,2,10,16)]
-colnames(i_stats_nv) <- c("Sample", "breed", "variants", "nuclear_placed_DOC")
-
-i_stats <- bind_rows(i_stats_hom, i_stats_nv, .id = "v_type")
-i_stats$v_type <- as.factor(i_stats$v_type)
-
-variants_m <- (lm(variants ~ v_type + breed + nuclear_placed_DOC,data=i_stats))
+variants_m <- (lm(nvariants ~ breed + nuclear_placed_DOC,data=intersect_br))
+variants_h_m <- (lm(nNonRefHom ~ breed + nuclear_placed_DOC,data=intersect_br))
 
 #Get EMMEANs
 nvariants_emm <- emmeans(variants_m, specs = "breed", weights = "proportional", 
-                         type = "response", by = "v_type")
+                         type = "response")
+nvariants_hom_emm <- emmeans(variants_h_m, specs = "breed", weights = "proportional", 
+                         type = "response")
 
 ####Plot EMMEANS
 #Number of variants
-labels <- c("1" = "Homozygous", "2" = "Number of variants")
-x1 <- plot(nvariants_emm) + geom_boxplot() + theme_bw() + xlab("EMMEAN of number of variants") + 
-  ylab("Breed") + scale_x_continuous(labels=comma, breaks = c(2000000, 4000000,6000000)) + 
-  facet_grid(v_type~., labeller=labeller(v_type = labels)) +
+x1 <- plot(nvariants_emm) + geom_boxplot() + theme_bw() + 
+  xlab("EMMEAN of number of variants") + ylab("Breed") + 
+  scale_x_continuous(labels=comma) + 
   theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
         axis.line.y = element_line(), axis.text.x = element_text(), 
         axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("../Paper_2019/Chapter_1_genetic_variation/Figures/nvariants_nhom_EMMEANS.tiff", x1, base_height = 6, base_width = 8)
+x2 <- plot(nvariants_hom_emm) + geom_boxplot() + theme_bw() + 
+  xlab("EMMEAN of number of homozygous variants") + ylab("Breed") + 
+  scale_x_continuous(labels=comma) + 
+  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
+        axis.line.y = element_line(), axis.text.x = element_text(), 
+        axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
+
+#Save as combined plot
+first_row <- plot_grid(x1,x2, labels = c("A", "B"), ncol=1)
+#Save as dual plot
+save_plot("../../Papers_for_publication/Nature_genetics/Figures/nvariants_nhom_EMMEANS.tiff", first_row, base_height = 6,base_width = 12)
 
 
 #Non linear association therefore pearson's correlation isn't useful

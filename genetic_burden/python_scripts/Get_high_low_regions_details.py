@@ -216,3 +216,22 @@ with gzip.open(path + "Low_variation_regions_snpeff.coding.vcf.gz", "rt") as inp
             print(line[0], line[1], REF,ALT,AC, AF, SNP_se, consequence, impact, genes[gene], coding, protein, "\t".join(line1), sep = "\t", file = output_file)
             print(line[0], line[1], REF,ALT,AC, AF, SNP_se, consequence, impact, genes[gene], coding, protein, sep = "\t", file = brief_f)
 
+
+#Get number of "LOC" genes in each type
+high = 0
+low = 0
+count_h = 0
+count_l = 0
+with open(path + "/High_variation_regions_regions_brief_constraint.txt", "r") as input_file:
+    for line in input_file:
+        line = line.rstrip("\n").split("\t")
+        count_h +=1
+        if "LOC" in line[0]:
+            high +=1
+
+with open(path + "/Low_variation_regions_regions_brief_constraint.txt", "r") as input_file:
+    for line in input_file:
+        line = line.rstrip("\n").split("\t")
+        count_l +=1
+        if "LOC" in line[0]:
+            low +=1

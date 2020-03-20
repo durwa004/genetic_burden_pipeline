@@ -184,3 +184,37 @@ print(min_AF_cau)
 print(non_cau_AF/count_non_cau)
 print(max_AF_non_cau)
 print(min_AF_non_cau)
+
+#Convert variants_bt_indvidual.txt to a version for R disease/breed/genotype/count
+dz_dict = {}
+dz_details = {}
+with open("variants_bt_indvidual.txt", "r") as input_file, open("variants_by_indvidual_R.txt", "w") as f:
+    input_file.readline()
+    print("Phenotype\tbreed\tgenotype\tcount\tAF\tdisease\tcausative", file = f)
+    for line in input_file:
+        line = line.rstrip("\n").split("\t")
+        if line[0] in dz_details.keys():
+            next
+        else:
+            dz_details[line[0]] = line[4] + ":" + line[5] + ":" + line[6] 
+        if line[0] in dz_dict.keys():
+            if line[2] in dz_dict[line[0]].keys():
+                if line[3] in dz_dict[line[0]][line[2]].keys():
+                    b = dz_dict[line[0]][line[2]][line[3]] + ":" + line[1]
+                    dz_dict[line[0]][line[2]][line[3]] = b
+                else:
+                    dz_dict[line[0]][line[2]][line[3]] = line[1]
+            else:
+                dz_dict[line[0]][line[2]] = {}
+                dz_dict[line[0]][line[2]][line[3]] = line[1]
+        else:
+            dz_dict[line[0]] = {}
+            dz_dict[line[0]][line[2]] = {}
+            dz_dict[line[0]][line[2]][line[3]] = line[1]
+    for pheno in dz_dict.keys():
+        for breed in dz_dict[pheno].keys():
+            for genotype in dz_dict[pheno][breed].keys():
+                a = dz_dict[pheno][breed][genotype].split(":")
+                b = dz_details[pheno].split(":") 
+                print(pheno, breed, genotype, len(a), "\t".join(b), sep = "\t", file = f)
+            

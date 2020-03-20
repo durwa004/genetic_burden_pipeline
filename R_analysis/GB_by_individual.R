@@ -13,6 +13,7 @@ range(data$total)
 mean(data$V3)
 range(data$V3)
 mean(data$V4)
+
 range(data$V4)
 
 mean(data$total[data$V2 == "Arabian"]) #3874
