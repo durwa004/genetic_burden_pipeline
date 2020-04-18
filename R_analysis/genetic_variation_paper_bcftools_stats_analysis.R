@@ -12,117 +12,6 @@ library(tidyr)
 #Only include autosomes and chr X (not MT and unplaced contigs)
 setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/bcftools_stats_output/")
 
-###bcftools
-bcftools <- read.table("bcftools_number_of_variants.txt", header=T)
-bcf_v <- sum(bcftools$no_records)
-bcf_snp <- sum(bcftools$no_SNPs)
-bcf_mnp <- sum(bcftools$no_MNPs)
-bcf_indel <- sum(bcftools$no_indels)
-bcf_ma <- sum(bcftools$no_multiallelic_sites)
-bcf_ma_snp <- sum(bcftools$no_nultiallelic_SNPs)
-bcf_tstv <- mean(bcftools$tstv)
-
-###gatk
-gatk <- read.table("gatk_number_of_variants.txt", header=T)
-gatk_v <- sum(gatk$no_records)
-gatk_snp <- sum(gatk$no_SNPs)
-gatk_mnp <- sum(gatk$no_MNPs)
-gatk_indel <- sum(gatk$no_indels)
-gatk_ma <- sum(gatk$no_multiallelic_sites)
-gatk_ma_snp <- sum(gatk$no_nultiallelic_SNPs)
-gatk_tstv <- mean(gatk$tstv)
-
-###union
-union <- read.table("union_number_of_variants.txt", header=T)
-union_snp <- sum(union$no_SNPs)
-union_indel <- sum(union$no_indels)
-union_tstv <- mean(union$tstv)
-
-###intersect
-intersect <- read.table("intersect_number_of_variants.txt", header=T)
-sum(intersect$no_records)
-intersect_snp <- sum(intersect$no_SNPs)
-intersect_indel <- sum(intersect$no_indels)
-intersect_tstv <- mean(intersect$tstv)
-intersect$variant_ratio <- intersect$no_records/intersect$chrom_length
-intersect$snp_ratio <- intersect$no_SNPs/intersect$chrom_length
-intersect$indel_ratio <- intersect$no_indels/intersect$chrom_length
-
-#Number of variants by chromosome length
-x = ggplot(intersect, aes(x=CHROM, y=variant_ratio)) + theme_bw() + ylab("Variant:chr length") + 
-  xlab("Chromosome") + geom_boxplot(fill=rgb(122/255,0/255,25/255,1)) + 
-  scale_x_discrete(labels = c(1:31, "X")) + 
-  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
-        axis.line.y = element_line(), axis.text.x = element_text(), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("intersect_variants.tiff", x, base_height = 3.5, base_width = 6)
-x = ggplot(intersect, aes(x=CHROM, y=snp_ratio)) + theme_bw() + ylab("SNP:chr length") + 
-  xlab("Chromosome") + geom_boxplot(fill=rgb(122/255,0/255,25/255,1)) +
-  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
-        axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("intersect_SNPs.tiff", x, base_height = 3.5, base_width = 6)
-
-x = ggplot(intersect, aes(x=CHROM, y=indel_ratio)) + theme_bw() + ylab("indel:chr length") + 
-  xlab("Chromosome") + geom_boxplot(fill=rgb(122/255,0/255,25/255,1)) +
-  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
-        axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("intersect_indels.tiff", x, base_height = 3.5, base_width = 6)
-
-#Create venn diagram
-source("http://bioconductor.org/biocLite.R"); biocLite(c("RBGL","graph"))
-library(devtools)
-install_github("js229/Vennerable")
-library(Vennerable)
-
-#Get plot for genetic burden
-vcombo <- Venn(SetNames=c("ANNOVAR", "SnpEff"),Weight = c(0,2999,735,4993))
-jpeg("ANNOVAR_SnpEff_venn.jpeg",width=6,height=6,units="in",res=1350)
-plot(vcombo,show=list(SetLabels=FALSE,FaceText=FALSE, Faces=FALSE))
-dev.off()
-
-#SNPs
-vcombo <- Venn(SetNames=c("gatk","bcftools"),Weight=c(0,gatk_snp-intersect_snp,bcf_snp-intersect_snp,intersect_snp))
-plot(vcombo)
-
-##This works to remove text:
-
-jpeg("HC_bcftools_intersect_venn.jpeg",width=6,height=6,units="in",res=1350)
-plot(vcombo,show=list(SetLabels=FALSE,FaceText=FALSE,Faces=FALSE))
-dev.off()
-
-#indels
-vcombo <- Venn(SetNames=c("gatk","bcftools"),Weight=c(0,gatk_indel-intersect_indel,bcf_indel-intersect_indel,intersect_indel))
-plot(vcombo)
-
-##This works to remove text:
-jpeg("HC_bcftools_intersect_indel_venn.jpeg",width=6,height=6,units="in",res=1350)
-plot(vcombo,show=list(SetLabels=FALSE,FaceText=FALSE,Faces=FALSE))
-dev.off()
-
-####Figure out number of variants per individual for bcftools/gatk
-bcftools_stats <- read.table("bcftools_ind_number_of_variants.txt",header=T)
-bcftools_stats$nvariants <- bcftools_stats$nNonRefHom + bcftools_stats$nHets
-mean(bcftools_stats$nvariants)
-mean(bcftools_stats$nIndels)
-mean(bcftools_stats$nNonRefHom)
-mean(bcftools_stats$nHets)
-bcftools_stats$tstv <- bcftools_stats$Ts/bcftools_stats$Tv
-mean(bcftools_stats$tstv)
-mean(bcftools_stats$nHets/bcftools_stats$nNonRefHom)
-
-gatk_stats <- read.table("gatk_ind_number_of_variants.txt",header=T)
-gatk_stats$nvariants <- gatk_stats$nNonRefHom + gatk_stats$nHets
-mean(gatk_stats$nvariants)
-mean(gatk_stats$nIndels)
-mean(gatk_stats$nNonRefHom)
-mean(gatk_stats$nHets)
-gatk_stats$tstv <- gatk_stats$Ts/gatk_stats$Tv
-mean(gatk_stats$tstv)
-mean(gatk_stats$nHets/gatk_stats$nNonRefHom)
-
-####Union
-union_stats <- read.table("union_by_ind_number_of_variants.txt",header=T)
-mean(union_stats$nHets/union_stats$nNonRefHom)
-
 ####Figure out number of variants per individual
 intersect_stats <- read.table("intersect_by_ind_number_of_variants.txt",header=T)
 intersect_stats$nvariants <- intersect_stats$nNonRefHom + intersect_stats$nHets
@@ -181,7 +70,7 @@ n_var_emm
 n_hom_var_emm <- emmeans(n_hom_var_m, "breed", weights = "proportional", type = "response")
 n_hom_var_emm
 
-gb_t <- as.data.frame(table(gb_br$breed))
+gb_t <- as.data.frame(table(intersect_br$breed))
 colnames(gb_t) <- c("breed", "nvariants")
 gb_t$nvariants <- c(5504169,6247468,5834602,6214390,5625180,"NA",5562870,5641106,5612116,4858946,5948175)
 gb_t$nvariants <- as.numeric(gb_t$nvariants)
@@ -218,32 +107,27 @@ gb_t$ne <- as.numeric(gb_t$ne)
 cor.test(x=gb_t$ne,y=gb_t$nvariants, method = "pearson", use='complete.obs')
 cor.test(x=gb_t$ne,y=gb_t$nhom, method = "pearson", use='complete.obs')
 
-#Plot DOC histogram
-x = ggplot(intersect_doc, aes(x=nuclear_placed_DOC)) + theme_bw() + ylab("Frequency") + 
-  xlab("Depth of coverage") + geom_histogram() +scale_y_continuous(labels=comma) + 
-  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
-        axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("535_individuals_DOC.tiff", x, base_height = 3.5, base_width = 6)
-
 #Look for correlation between number of variants and DOC with line of best fit 
 x = ggplot(intersect_doc, aes(x=nuclear_placed_DOC,y=nvariants)) + theme_bw() + ylab("Number of variants") + 
   xlab("Depth of coverage") + geom_point() + scale_x_continuous(limits = c(0,50))+
   scale_y_continuous(labels=comma, limits = c(0,8000000)) + geom_smooth() +
   theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
         axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("../Paper_2019/Chapter_1_genetic_variation/Figures/DOC_nvariants_breed.tiff", x, base_height = 3.5, base_width = 6)
+save_plot("DOC_nvariants_breed.tiff", x, base_height = 3.5, base_width = 6)
 
 #split DOC into quartiles
+i_stats <- intersect_doc
 i_stats$DOC <- with(i_stats,cut(nuclear_placed_DOC, breaks=quantile(nuclear_placed_DOC,
                                                                     probs=seq(0,1,by=0.25)),include.lowest = TRUE))
 levels(i_stats$DOC) <- c("Q1", "Q2", "Q3", "Q4")
+summary(intersect_doc$nuclear_placed_DOC)
 
 #Show interaction between nvariants and DOC
-variants_DOC <- (lm(variants ~ v_type + breed + DOC,data=i_stats))
+variants_DOC <- (lm(nvariants ~ breed + DOC,data=i_stats))
 
 x = emmip(variants_DOC, breed ~ DOC, cov.reduce = FALSE, 
           type = "response") + theme_bw() + xlab("DOC quantiles") + 
-  ylab("Number of variants") +scale_y_continuous(labels=comma, limits= c(2500000,4500000)) +
+  ylab("Number of variants") +scale_y_continuous(labels=comma) +
   theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
         axis.line.y = element_line(), axis.text.x = element_text(), axis.text = element_text(size=10), 
         axis.title = element_text(size=12,face="bold"),
@@ -256,41 +140,43 @@ x = ggplot(intersect_doc, aes(x=nuclear_placed_DOC,y=nvariants)) + theme_bw() + 
   xlab("Depth of coverage") + geom_point(aes(color=breed)) + scale_x_continuous(limits = c(0,50))+
   scale_y_continuous(labels=comma, limits = c(0,8000000)) + geom_smooth() +
   theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
-        axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("535_individuals_DOC_nvariants_breed.tiff", x, base_height = 3.5, base_width = 6)
+        axis.line.y = element_line(), axis.text.x = element_text(angle=90), 
+        axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"),
+        legend.title = element_blank())
+save_plot("../Paper_2019/Chapter_1_genetic_variation/Figures/DOC_nvariants_breed.tiff", x, base_height = 3.5, base_width = 6)
 
-fit1 <- (lm(nvariants ~ breed, data=intersect_stats_br))
-fit2 <- (lm(nvariants ~ breed + nuclear_placed_DOC, data=intersect_stats_br))
+fit1 <- (lm(nvariants ~ breed, data=intersect_br))
+fit2 <- (lm(nvariants ~ breed + nuclear_placed_DOC, data=intersect_br))
 anova(fit1,fit2)
 
-#Need to combine the nvariants, nhet, nNonRefHom into one column, with a different variable
-#to explain what
-i_stats_hom <- intersect_stats_br[c(1,2,4,16)]
-colnames(i_stats_hom) <- c("Sample", "breed", "variants", "nuclear_placed_DOC")
-i_stats_het <- intersect_stats_br[c(1,2,5,16)]
-colnames(i_stats_het) <- c("Sample", "breed", "variants", "nuclear_placed_DOC")
-i_stats_nv <- intersect_stats_br[c(1,2,10,16)]
-colnames(i_stats_nv) <- c("Sample", "breed", "variants", "nuclear_placed_DOC")
-
-i_stats <- bind_rows(i_stats_hom, i_stats_nv, .id = "v_type")
-i_stats$v_type <- as.factor(i_stats$v_type)
-
-variants_m <- (lm(variants ~ v_type + breed + nuclear_placed_DOC,data=i_stats))
+variants_m <- (lm(nvariants ~ breed + nuclear_placed_DOC,data=intersect_br))
+variants_h_m <- (lm(nNonRefHom ~ breed + nuclear_placed_DOC,data=intersect_br))
 
 #Get EMMEANs
 nvariants_emm <- emmeans(variants_m, specs = "breed", weights = "proportional", 
-                         type = "response", by = "v_type")
+                         type = "response")
+nvariants_hom_emm <- emmeans(variants_h_m, specs = "breed", weights = "proportional", 
+                         type = "response")
 
 ####Plot EMMEANS
 #Number of variants
-labels <- c("1" = "Homozygous", "2" = "Number of variants")
-x1 <- plot(nvariants_emm) + geom_boxplot() + theme_bw() + xlab("EMMEAN of number of variants") + 
-  ylab("Breed") + scale_x_continuous(labels=comma, breaks = c(2000000, 4000000,6000000)) + 
-  facet_grid(v_type~., labeller=labeller(v_type = labels)) +
+x1 <- plot(nvariants_emm) + geom_boxplot() + theme_bw() + 
+  xlab("EMMEAN of number of variants") + ylab("Breed") + 
+  scale_x_continuous(labels=comma) + 
   theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
         axis.line.y = element_line(), axis.text.x = element_text(), 
         axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("../Paper_2019/Chapter_1_genetic_variation/Figures/nvariants_nhom_EMMEANS.tiff", x1, base_height = 6, base_width = 8)
+x2 <- plot(nvariants_hom_emm) + geom_boxplot() + theme_bw() + 
+  xlab("EMMEAN of number of homozygous variants") + ylab("Breed") + 
+  scale_x_continuous(labels=comma) + 
+  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
+        axis.line.y = element_line(), axis.text.x = element_text(), 
+        axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
+
+#Save as combined plot
+first_row <- plot_grid(x1,x2, labels = c("A", "B"), ncol=1)
+#Save as dual plot
+save_plot("../../Papers_for_publication/Nature_genetics/Figures/nvariants_nhom_EMMEANS.tiff", first_row, base_height = 6,base_width = 12)
 
 
 #Non linear association therefore pearson's correlation isn't useful

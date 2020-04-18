@@ -152,6 +152,50 @@ gb_hist <- ggplot(gb_br, aes(x = total,fill = DOC,color = DOC)) +
 save_plot("../../../Abstracts/PAG_2020/Poster/LOF_histogram.jpeg", gb_hist, base_height = 10, base_width = 4)
 
 
+#GET INFORMATION RE Ne
+
+#Get values from emmeans
+gb_emm
+n_hom_gb_emm
+
+gb_t <- as.data.frame(table(gb_br$breed))
+colnames(gb_t) <- c("breed", "nvariants")
+gb_t$nvariants <- c(755,807,752,817,615,"NA",744,706,709,626,729)
+gb_t$nvariants <- as.numeric(gb_t$nvariants)
+gb_t$nhom <- c(180,192,199,199,127,"NA",159,161,155,128,165)
+gb_t$nhom <- as.numeric(gb_t$nhom)
+
+# Add in Ne from Jessica's paper
+gb_t$ne1 <- "NA"
+gb_t$ne1[gb_t$breed == "Arabian"] <- 346
+gb_t$ne1[gb_t$breed == "Belgian"] <- 431
+gb_t$ne1[gb_t$breed == "Icelandic"] <- 555
+gb_t$ne1[gb_t$breed == "Morgan"] <- 448
+gb_t$ne1[gb_t$breed == "QH"] <- 426
+gb_t$ne1[gb_t$breed == "STB"] <- 290
+gb_t$ne1[gb_t$breed == "TB"] <- 190
+gb_t$ne1 <- as.numeric(gb_t$ne1)
+
+cor.test(x=gb_t$ne1,y=gb_t$nvariants, method = "pearson", use='complete.obs')
+cor.test(x=gb_t$ne1,y=gb_t$nhom, method = "pearson", use='complete.obs')
+
+#Add in effective population size (from Sam's paper)
+gb_t$ne <- "NA"
+gb_t$ne[gb_t$breed == "Arabian"] <- 3561
+gb_t$ne[gb_t$breed == "Belgian"] <- 3570
+gb_t$ne[gb_t$breed == "Icelandic"] <- 2736
+gb_t$ne[gb_t$breed == "Morgan"] <- 4481
+gb_t$ne[gb_t$breed == "Icelandic"] <- 2736
+gb_t$ne[gb_t$breed == "QH"] <- 6516
+gb_t$ne[gb_t$breed == "STB"] <- 2528
+gb_t$ne[gb_t$breed == "TB"] <- 1784
+gb_t$ne[gb_t$breed == "WP"] <- 5625
+
+gb_t$ne <- as.numeric(gb_t$ne)
+cor.test(x=gb_t$ne,y=gb_t$nvariants, method = "pearson", use='complete.obs')
+cor.test(x=gb_t$ne,y=gb_t$nhom, method = "pearson", use='complete.obs')
+
+
 ####Plot EMMEANS
 gb_hom <- gb_br[c(1,2,4,8)]
 colnames(gb_hom) <- c("Sample", "breed", "variants", "nuclear_placed_DOC")

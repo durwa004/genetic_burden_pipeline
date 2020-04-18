@@ -13,6 +13,7 @@ range(data$total)
 mean(data$V3)
 range(data$V3)
 mean(data$V4)
+
 range(data$V4)
 
 mean(data$total[data$V2 == "Arabian"]) #3874
@@ -71,6 +72,50 @@ second_col <- plot_grid(x3,x4, labels = c("C", "D"), rel_widths = 1,rel_heights 
 x_c <- plot_grid(first_col,second_col, ncol = 1, rel_widths = 1, rel_heights = 1)
 
 save_plot("../../Paper_2019/Nature_genetics/Figures/gb_gb_hom_EMMEANS.tiff", x_c, base_height = 12, base_width = 6)
+
+#GET INFORMATION RE Ne
+
+#Get values from emmeans
+gb_emm
+n_hom_gb_emm
+gb_t <- as.data.frame(table(gb_br$breed))
+colnames(gb_t) <- c("breed", "nvariants")
+gb_t$nvariants <- c(918,983,927,992,770,"NA",908,871,875,766,899)
+gb_t$nvariants <- as.numeric(gb_t$nvariants)
+gb_t$nhom <- c(230,245,262,256,172,"NA",203,212,204,165,216)
+gb_t$nhom <- as.numeric(gb_t$nhom)
+
+# Add in Ne from Jessica's paper
+gb_t$ne1 <- "NA"
+gb_t$ne1[gb_t$breed == "Arabian"] <- 346
+gb_t$ne1[gb_t$breed == "Belgian"] <- 431
+gb_t$ne1[gb_t$breed == "Icelandic"] <- 555
+gb_t$ne1[gb_t$breed == "Morgan"] <- 448
+gb_t$ne1[gb_t$breed == "QH"] <- 426
+gb_t$ne1[gb_t$breed == "STB"] <- 290
+gb_t$ne1[gb_t$breed == "TB"] <- 190
+gb_t$ne1 <- as.numeric(gb_t$ne1)
+
+cor.test(x=gb_t$ne1,y=gb_t$nvariants, method = "pearson", use='complete.obs')
+cor.test(x=gb_t$ne1,y=gb_t$nhom, method = "pearson", use='complete.obs')
+
+#Add in effective population size (from Sam's paper)
+gb_t$ne <- "NA"
+gb_t$ne[gb_t$breed == "Arabian"] <- 3561
+gb_t$ne[gb_t$breed == "Belgian"] <- 3570
+gb_t$ne[gb_t$breed == "Icelandic"] <- 2736
+gb_t$ne[gb_t$breed == "Morgan"] <- 4481
+gb_t$ne[gb_t$breed == "Icelandic"] <- 2736
+gb_t$ne[gb_t$breed == "QH"] <- 6516
+gb_t$ne[gb_t$breed == "STB"] <- 2528
+gb_t$ne[gb_t$breed == "TB"] <- 1784
+gb_t$ne[gb_t$breed == "WP"] <- 5625
+
+gb_t$ne <- as.numeric(gb_t$ne)
+cor.test(x=gb_t$ne,y=gb_t$nvariants, method = "pearson", use='complete.obs')
+cor.test(x=gb_t$ne,y=gb_t$nhom, method = "pearson", use='complete.obs')
+
+
 
 #########################################
 
@@ -224,6 +269,3 @@ un_hist <- ggplot(un, aes(x = Breed)) +
         axis.ticks.x = element_blank(), axis.title = element_text(size=12,face="bold"),
         axis.text.x = element_text(angle = 90), plot.margin=unit(c(0,0,0,0), "null"))
 save_plot("../../../Abstracts/PAG_2020/Presentation/unique_LOF_breed.jpeg", un_hist, base_height = 2, base_width = 4.5)
-
-
-
