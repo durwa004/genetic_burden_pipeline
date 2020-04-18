@@ -72,3 +72,16 @@ with open(path + "/known_variants_locations.txt", encoding = "ISO-8859-1") as in
             print(line[0], line[1], line[2], line[3], line[4], "\t".join(c), line[-2], sep = "\t", file = output_file)
         else:
             print("\t".join(line[:9]), "NA", "NA", line[-2], sep = "\t", file = output_file)
+
+#Convert CC_ to coat_col_
+with open(path + "/known_variants_present_exact_locations_tidy.txt","r") as input_file, open(path + "/known_variants_present_exact_locations_tidy_april_2020.txt", "w") as output_file:
+    print("Phenotype\tPhenotype_abb\tDisease\tCausative\tGene\tChromosome\tPosition\tReference\tAlternate\tAC\tAF\tReference", file = output_file)
+    input_file.readline()
+    for line in input_file:
+        line = line.rstrip("\n").split("\t")
+        if "CC_" in line[1]:
+           ID = line[1].split("CC_")
+           ID ="coat_col_" + ID[1]
+        else:
+           ID = line[1]
+        print(line[0], ID, "\t".join(line[2:]), sep = "\t", file = output_file)
