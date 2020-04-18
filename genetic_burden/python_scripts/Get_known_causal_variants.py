@@ -78,7 +78,7 @@ disease = {}
 disease["y"] = {}
 disease["n"] = {}
 
-with open(directory + "/../known_variants_locations.txt", encoding = "ISO-8859-1") as input_file:
+with open(directory + "/../known_disease_locations_2020/known_variants_locations.txt", encoding = "ISO-8859-1") as input_file:
     input_file.readline()
     for line in input_file:
         line = line.rstrip("\n").split("\t")
@@ -119,7 +119,7 @@ min_AF_non_cau = 0
 max_AF_non_cau = 0
 cau_AF = 0
 non_cau_AF = 0
-with open(directory + "/../known_disease_locations_2020/known_variants_present_exact_locations.txt", "r") as input_file, open(directory + "/../known_disease_locations_2020/variants_bt_indvidual.txt", "w") as dz_file:
+with open(directory + "/../known_disease_locations_2020/known_variants_present_exact_locations.txt", "r") as input_file, open(directory + "/../known_disease_locations_2020/variants_by_indvidual.txt", "w") as dz_file:
     print("Phenotype\thorse\tbreed\tgenotype\tAF\tdisease\tcausative", file = dz_file)
     for line in input_file:
         line = line.rstrip("\n").split("\t")
@@ -186,35 +186,25 @@ print(max_AF_non_cau)
 print(min_AF_non_cau)
 
 #Convert variants_bt_indvidual.txt to a version for R disease/breed/genotype/count
-dz_dict = {}
 dz_details = {}
-with open("variants_bt_indvidual.txt", "r") as input_file, open("variants_by_indvidual_R.txt", "w") as f:
+with open(directory + "/../known_disease_locations_2020/variants_bt_indvidual.txt", "r") as input_file:
     input_file.readline()
-    print("Phenotype\tbreed\tgenotype\tcount\tAF\tdisease\tcausative", file = f)
     for line in input_file:
         line = line.rstrip("\n").split("\t")
         if line[0] in dz_details.keys():
-            next
+            if line[3] == "het":
+                dz_details[line[0]] +=1
+            elif line[3] == "hom":
+                dz_details[line[0]] +=2
         else:
-            dz_details[line[0]] = line[4] + ":" + line[5] + ":" + line[6] 
-        if line[0] in dz_dict.keys():
-            if line[2] in dz_dict[line[0]].keys():
-                if line[3] in dz_dict[line[0]][line[2]].keys():
-                    b = dz_dict[line[0]][line[2]][line[3]] + ":" + line[1]
-                    dz_dict[line[0]][line[2]][line[3]] = b
-                else:
-                    dz_dict[line[0]][line[2]][line[3]] = line[1]
-            else:
-                dz_dict[line[0]][line[2]] = {}
-                dz_dict[line[0]][line[2]][line[3]] = line[1]
-        else:
-            dz_dict[line[0]] = {}
-            dz_dict[line[0]][line[2]] = {}
-            dz_dict[line[0]][line[2]][line[3]] = line[1]
-    for pheno in dz_dict.keys():
-        for breed in dz_dict[pheno].keys():
-            for genotype in dz_dict[pheno][breed].keys():
-                a = dz_dict[pheno][breed][genotype].split(":")
-                b = dz_details[pheno].split(":") 
-                print(pheno, breed, genotype, len(a), "\t".join(b), sep = "\t", file = f)
+            if line[3] == "het":
+                dz_details[line[0]] = 1
+            elif line[3] == "hom":
+                dz_details[line[0]] = 2
+with open(directory + "/../known_disease_locations_2020/variants_bt_indvidual.txt", "r") as input_file, open(directory + "/../known_disease_locations_2020/variants_by_individual_R.txt", "w") as f:
+    print(input_file.readline().split("\t"))
+    print("Phenotype\tindividual\tbreed\tgenotype\tcount\tAF\tdisease\tcausative", file = f)
+    for line in input_file:
+        line = line.rstrip("\n").split("\t")
+        print(line[0], line[1], line[2], line[3], dz_details[line[0]], "\t".join(line[4:]), sep = "\t", file = f)
             
