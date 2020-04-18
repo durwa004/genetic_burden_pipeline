@@ -187,24 +187,38 @@ print(min_AF_non_cau)
 
 #Convert variants_bt_indvidual.txt to a version for R disease/breed/genotype/count
 dz_details = {}
-with open(directory + "/../known_disease_locations_2020/variants_bt_indvidual.txt", "r") as input_file:
+with open(directory + "/../known_disease_locations_2020/variants_bt_indvidual.txt", "r") as input_file,open(directory + "/../known_disease_locations_2020/variants_by_individual_R.txt", "w") as f:
     input_file.readline()
+    print("Phenotype\tbreed\tgenotype\tgenotype_count\tAC\tAF\tdisease\tcausative", file = f)
     for line in input_file:
         line = line.rstrip("\n").split("\t")
-        if line[0] in dz_details.keys():
-            if line[3] == "het":
-                dz_details[line[0]] +=1
-            elif line[3] == "hom":
-                dz_details[line[0]] +=2
+        a = line[0] + ":" + line[4] + ":" + line[5] + ":" + line[6]
+        if a in dz_details.keys():
+            if line[2] in dz_details[a].keys():
+                if line[3] == "het":
+                    dz_details[a][line[2]]["het"] +=1
+                else:
+                    dz_details[a][line[2]]["hom"] +=1
+            else:
+                dz_details[a][line[2]] = {}
+                if line[3] == "het":
+                    dz_details[a][line[2]]["het"] = 1
+                    dz_details[a][line[2]]["hom"] = 0  
+                else:
+                    dz_details[a][line[2]]["het"] = 0
+                    dz_details[a][line[2]]["hom"] = 1
         else:
+            dz_details[a] = {}
+            dz_details[a][line[2]] = {}
             if line[3] == "het":
-                dz_details[line[0]] = 1
-            elif line[3] == "hom":
-                dz_details[line[0]] = 2
-with open(directory + "/../known_disease_locations_2020/variants_bt_indvidual.txt", "r") as input_file, open(directory + "/../known_disease_locations_2020/variants_by_individual_R.txt", "w") as f:
-    print(input_file.readline().split("\t"))
-    print("Phenotype\tindividual\tbreed\tgenotype\tcount\tAF\tdisease\tcausative", file = f)
-    for line in input_file:
-        line = line.rstrip("\n").split("\t")
-        print(line[0], line[1], line[2], line[3], dz_details[line[0]], "\t".join(line[4:]), sep = "\t", file = f)
-            
+                dz_details[a][line[2]]["het"] = 1
+                dz_details[a][line[2]]["hom"] = 0
+            else:
+                dz_details[a][line[2]]["het"] = 0
+                dz_details[a][line[2]]["hom"] = 1
+    for phenotype in dz_details.keys():
+        phenotype1 = phenotype.split(":")
+        for breed in dz_details[phenotype].keys():
+            total = (dz_details[phenotype][breed]["het"] + 2*(dz_details[phenotype][breed]["hom"]))
+            print(phenotype1[0], breed, "het", dz_details[phenotype][breed]["het"],total, phenotype1[1], phenotype1[2], phenotype1[3], sep = "\t", file = f)
+            print(phenotype1[0], breed, "hom", dz_details[phenotype][breed]["hom"],total, phenotype1[1], phenotype1[2], phenotype1[3], sep = "\t", file = f)
