@@ -22,13 +22,24 @@ range(low_genes$AF)
 table(low_genes$impact)
 table(low_genes$SNP)
 table(low_genes$consequence)
-low_genes$group = "LOW"
-low_genes$group <- as.factor(low_genes$group)
 
-se_ann <- rbind(low_genes, high_genes)
 
-consequence_bar <- ggplot(se_ann, aes(x = consequence, fill = group,color = group)) +
-  geom_histogram(stat = "count",  position = "dodge2", width = 0.8, alpha = 1) + ylab("Count") + 
+#Eva recommended converting the total numbers to % to make it easier to see
+low_c <- as.data.frame(table(low_genes$consequence))
+low_c$percent <- (low_c$Freq/(length(low_genes$consequence)))*100
+low_c$group = "LOW"
+low_c$group <- as.factor(low_c$group)
+
+high_c <- as.data.frame(table(high_genes$consequence))
+high_c$percent <- (high_c$Freq/(length(high_genes$consequence)))*100
+high_c$group = "HIGH"
+high_c$group <- as.factor(high_c$group)
+
+se_ann <- rbind(low_c, high_c)
+
+consequence_bar <- ggplot(se_ann, aes(x = Var1, y=percent, fill = group,color = group)) +
+  geom_histogram(stat = "identity",  position = "dodge2", width = 0.8, alpha = 1) + 
+  ylab("Percentage of\ncoding variants") + 
   xlab("Type of variant") +  scale_y_continuous(labels=comma) +
   theme(panel.background = element_blank(), 
         plot.background = element_blank(),
@@ -41,7 +52,7 @@ consequence_bar <- ggplot(se_ann, aes(x = consequence, fill = group,color = grou
         axis.ticks.x = element_blank(), axis.title = element_text(size=12,face="bold"),
         axis.text.x = element_text(angle = 90))
 
-save_plot("../Paper_2019/Chapter_1_genetic_variation/Figures/high_low_consequence.jpeg", consequence_bar,
+save_plot("/Users/durwa004/Documents/PhD/Thesis/Papers_for_publication/chapt2_genetic_variation/high_low_consequence.jpeg", consequence_bar,
           base_height = 4, base_width = 8)
 
 write.table(high_genes$gene, file = "High_variation_regions_gene_symbols.txt", quote = FALSE, 

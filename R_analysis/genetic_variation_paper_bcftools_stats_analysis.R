@@ -143,7 +143,7 @@ x = ggplot(intersect_doc, aes(x=nuclear_placed_DOC,y=nvariants)) + theme_bw() + 
         axis.line.y = element_line(), axis.text.x = element_text(angle=90), 
         axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"),
         legend.title = element_blank())
-save_plot("../Paper_2019/Chapter_1_genetic_variation/Figures/DOC_nvariants_breed.tiff", x, base_height = 3.5, base_width = 6)
+save_plot("/Users/durwa004/Documents/PhD/Thesis/Thesis/Post_defense_edits/DOC_nvariants_breed.tiff", x, base_height = 3.5, base_width = 6)
 
 fit1 <- (lm(nvariants ~ breed, data=intersect_br))
 fit2 <- (lm(nvariants ~ breed + nuclear_placed_DOC, data=intersect_br))
