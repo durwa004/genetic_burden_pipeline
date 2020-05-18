@@ -515,8 +515,43 @@ https://david.ncifcrf.gov/gene2gene.jsp
 
 
 
-# known causal variants 
-Decided to do all variants on OMIA - download from: https://omia.org/results/?search_type=advanced&gb_species_id=9796 (12/11/2019) - 154 variants (also PSSM2 patent, and 88 horses paper) - IDENTIFIED 93 OF THEM
+# known causal variants #
+Decided to do all variants on OMIA - download from: https://omia.org/results/?search_type=advanced&gb_species_id=9796 
+05/14/2020 - 46 phenotypes have causative variants reported
+  - Download this table (copy and paste), then order by gene name and click on each OMIA ID and download each .csv file individually.
+  - 239 genetic traits and disorders
+  - 97 variants reported as causative for these 46 phenotypes.
+  - 14 variants (11 phenotypes) were reported as gross (>20 bp) structural variants and were excluded
+  - 83 variants (38 phenotypes) were SNPs or small (<= 20 bp) structural variants for investigation.
+  - 29/83 were present in this dataset
+  
+NB - add in PSSM2 patent, and 88 horses paper
+
+```
+$ scp /Users/durwa004/Documents/Postdoc/PhD_papers_for_publication/Nature_genetics/Post_thesis/OMIA_variants/OMIA_SNVs_05_14_20.txt durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/known_variants/known_variants_May_2020/
+$ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/Tidy_known_variants_for_extraction.py 
+```
+- Get variant locations
+```
+$ sh ../known_SNVs_tabix.sh
+$ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/Get_known_causal_variants.py
+```
+- Move back to my laptop to double check locations
+```
+$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/known_variants/known_variants_May_2020/No_variants_present.txt /Users/durwa004/Documents/Postdoc/PhD_papers_for_publication/Nature_genetics/Post_thesis/OMIA_variants/
+$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/known_variants/known_variants_May_2020/known_variants_present.txt /Users/durwa004/Documents/Postdoc/PhD_papers_for_publication/Nature_genetics/Post_thesis/OMIA_variants/
+```
+- Move back to MSI for additional analysis
+```
+$ scp /Users/durwa004/Documents/Postdoc/PhD_papers_for_publication/Nature_genetics/Post_thesis/OMIA_variants/known_variants_present_exact_locations_May_2020.txt  durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/known_variants/known_variants_May_2020/
+$ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/Get_known_causal_variants.py
+```
+- Move back to my laptop for analysis
+```
+$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/known_variants/known_disease_locations_2020/variants_by_individual_R.txt /Users/durwa004/Documents/Postdoc/PhD_papers_for_publication/Nature_genetics/Post_thesis/OMIA_variants/
+$ known_causal_variants.R
+```
+
 - Also pulled equine qtls from animal genome: https://www.animalgenome.org/cgi-bin/QTLdb/EC/download?tmpname=mapDwnLd&file=cM
 As of Release 39, there have been 2,260 horse QTLs released for public access on the Horse QTLdb. These data were curated from 88 publications and represent 54 different horse traits.
 Excluded QTLs without snp IDs/positions on the genome in the download
