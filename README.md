@@ -476,6 +476,8 @@ $ module load bcftools
 $ sh breed_pop_common_rare_tidy.sh 
 ```
 - Get chrom/pos list (no header) to extract variants that are rare in breed and common in other breed (0002.vcf.gz) these variants from the SnpEff file
+NB - to get AFs in the general population - need to use 0003.vcf.gz
+NB - to get AFs in the breed - need to use 0002.vcf.gz
 ```
 $ python ../../python_scripts//Extract_bcftools_stats_isec_po.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs/
 $ sed -i 's$ xxxxx$$g' *
