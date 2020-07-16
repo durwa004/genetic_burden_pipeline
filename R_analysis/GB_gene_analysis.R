@@ -6,12 +6,14 @@ library(reshape2)
 library(ggrepel)
 library(Gviz)
 
-setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/gb_analysis/nature_genetics_paper/")
+#setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/gb_analysis/nature_genetics_paper/")
+setwd("/Users/durwa004/Documents/Postdoc/PhD_papers_for_publication/Nature_genetics/Post_thesis/gb_analysis/")
 gb_genes<- read.table("genetic_burden_genes_details.txt", header=T,sep="\t")
 mean(gb_genes$mean_AF)
 range(gb_genes$mean_AF)
 mean(gb_genes$n_variants)
 range(gb_genes$n_variants)
+table(gb_genes$n_variants)
 
 #Get labels for genes with over 10 LOF variants
 y = gb_genes %>% filter(gb_genes$n_variants > 10)

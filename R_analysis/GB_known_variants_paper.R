@@ -66,6 +66,7 @@ x = ggplot(intersect_doc, aes(x=nuclear_placed_DOC,y=nvariants)) + theme_bw() + 
         legend.title = element_blank())
 save_plot("/Users/durwa004/Documents/Postdoc/Papers_for_publication/Nature_genetics/Post_thesis/Draft_April_6/Figures/Fig1_DOC_nvariants_breed.tiff", x, base_height = 3.5, base_width = 6, dpi = 300)
 
+
 ####GB estimation
 setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/gb_analysis/nature_genetics_paper")
 

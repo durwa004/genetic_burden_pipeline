@@ -39,7 +39,7 @@ se_ann <- rbind(low_c, high_c)
 
 consequence_bar <- ggplot(se_ann, aes(x = Var1, y=percent, fill = group,color = group)) +
   geom_histogram(stat = "identity",  position = "dodge2", width = 0.8, alpha = 1) + 
-  ylab("Percentage of\ncoding variants") + 
+  ylab("Percentage of\ngenic variants") + 
   xlab("Type of variant") +  scale_y_continuous(labels=comma) +
   theme(panel.background = element_blank(), 
         plot.background = element_blank(),
@@ -52,7 +52,7 @@ consequence_bar <- ggplot(se_ann, aes(x = Var1, y=percent, fill = group,color = 
         axis.ticks.x = element_blank(), axis.title = element_text(size=12,face="bold"),
         axis.text.x = element_text(angle = 90))
 
-save_plot("/Users/durwa004/Documents/PhD/Thesis/Papers_for_publication/chapt2_genetic_variation/high_low_consequence.jpeg", consequence_bar,
+save_plot("/Users/durwa004/Documents/Postdoc/Phd_papers_for_publication/chapt2_genetic_variation/Figures/high_low_consequence.jpeg", consequence_bar,
           base_height = 4, base_width = 8)
 
 write.table(high_genes$gene, file = "High_variation_regions_gene_symbols.txt", quote = FALSE, 

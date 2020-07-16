@@ -2,18 +2,20 @@ library(ggplot2)
 library(scales)
 library(cowplot)
 library(dplyr)
+library(reshape2)
 
-setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/gb_analysis/nature_genetics_paper")
+#setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/gb_analysis/nature_genetics_paper")
+setwd("/Users/durwa004/Documents/Postdoc/PhD_papers_for_publication/Nature_genetics/Post_thesis/gb_analysis/")
 
 #GB
 data = read.table("genetic_burden_by_individual.txt", header=F) # V3 = het, V4 = hom
+length(data$V3)
 data$total <- data$V3 + data$V4
 mean(data$total) 
 range(data$total)
 mean(data$V3)
 range(data$V3)
 mean(data$V4)
-
 range(data$V4)
 
 mean(data$total[data$V2 == "Arabian"]) #3874
@@ -31,7 +33,7 @@ mean(data$total[data$V2 == "WP"]) #3603
 #Look for association between breed and genetic burden accounting for DOC
 #Add in DOC info
 library(emmeans)
-DOC <- read.table("../../DOC/DOC_by_horse.txt", header=T)
+DOC <- read.table("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/DOC/DOC_by_horse.txt", header=T)
 colnames(DOC) <- c("Sample", "total_DOC", "nuclear_placed_DOC")
 colnames(data) = c("Sample", "breed", "het", "hom", "total")
 gb_doc <- merge(data,DOC, by="Sample")
@@ -71,7 +73,7 @@ first_col <- plot_grid(x,x1, labels = c("A", "B"),rel_widths = 1,rel_heights = 1
 second_col <- plot_grid(x3,x4, labels = c("C", "D"), rel_widths = 1,rel_heights = 1, ncol = 1)
 x_c <- plot_grid(first_col,second_col, ncol = 1, rel_widths = 1, rel_heights = 1)
 
-save_plot("../../Paper_2019/Nature_genetics/Figures/gb_gb_hom_EMMEANS.tiff", x_c, base_height = 12, base_width = 6)
+save_plot("gb_LOF_hom_EMMEANS.tiff", x_c, base_height = 12, base_width = 6)
 
 #GET INFORMATION RE Ne
 
@@ -80,9 +82,9 @@ gb_emm
 n_hom_gb_emm
 gb_t <- as.data.frame(table(gb_br$breed))
 colnames(gb_t) <- c("breed", "nvariants")
-gb_t$nvariants <- c(918,983,927,992,770,"NA",908,871,875,766,899)
+gb_t$nvariants <- c(755,807,752,817,615,"NA",744,706,709,626,729)
 gb_t$nvariants <- as.numeric(gb_t$nvariants)
-gb_t$nhom <- c(230,245,262,256,172,"NA",203,212,204,165,216)
+gb_t$nhom <- c(180,192,199,199,127,"NA",159,161,155,128,165)
 gb_t$nhom <- as.numeric(gb_t$nhom)
 
 # Add in Ne from Jessica's paper
@@ -122,9 +124,7 @@ cor.test(x=gb_t$ne,y=gb_t$nhom, method = "pearson", use='complete.obs')
 #Get type of variants
 #Have to go through and delete the # using sed
 gb <- read.table("genetic_burden_details_brief.txt", header=T,sep="\t")
-
 table(gb$group)
-
 mean(gb$AF)
 range(gb$AF)
 
