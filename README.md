@@ -189,6 +189,10 @@ $ Get_lof_gene_unfo.py
 Get number of common and rare variants GB and LOF variants.
 Then take 1% of each to determine % false positives
 
+# Validate 5% of GB variants (make sure it is 5% GB only and 5% LOF/GB variants)
+```
+$ genetic_burden/python_scripts/Get_variants_for_false_postive_analysis.py 
+```
 
 # Need to find possible DCVs (probably falls in lof analysis)  
 - Pull out all variants with no homozygotes
