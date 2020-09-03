@@ -1,0 +1,14 @@
+#!/bin/bash -l
+#PBS -l nodes=1:ppn=1,walltime=24:00:00,mem=2g
+#PBS -m abe
+#PBS -M durwa004@umn.edu
+#PBS -o $PBS_JOBID.bcftools_view_micro_M10656.out
+#PBS -e $PBS_JOBID.bcftools_view_micro_M10656.err
+#PBS -N bcftools_view_micro_M10656.pbs
+#PBS -q small
+module load bcftools
+
+cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/disease_case_analysis/dz_analysis_post_thesis/VAAST
+
+#bcftools view -s M10656 --min-ac 1 ../../../joint_union/thesis_union.vcf.gz > thesis_union_micro_M10656.vcf && 
+/home/mccuem/durwa004/bin/vt/vt decompose -s thesis_union_micro_M10656.vcf -o thesis_union_micro_M10656.decomposed.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_union_micro_M10656.decomposed.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_union_micro_M10656.decomposed.vcf.gz && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/bgzip thesis_union_micro_M10656.vcf && /home/mccuem/durwa004/.conda/envs/ensembl-vep/bin/tabix thesis_union_micro_M10656.vcf.gz

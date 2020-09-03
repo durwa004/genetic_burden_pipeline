@@ -28,8 +28,11 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     data = os.path.abspath(args.data)
-
-    with open(data + "/breed_pop_rare_common_number_of_variants_unique.txt", "w") as info_file, open("bcftools_query_pop_chrom_pos.sh", "w") as output_f, open(data + "/breed_rare_pop_common_number_of_variants_shared", "w") as info_file2, open(data + "/breed_common_pop_rare_number_of_variants_shared", "w") as info_file3:i
+    AFR = 0
+    AFR_n = 0
+    AFC = 0
+    AFC_n = 0
+    with open(data + "/breed_pop_rare_common_number_of_variants_unique.txt", "w") as info_file, open("bcftools_query_pop_chrom_pos.sh", "w") as output_f, open(data + "/breed_rare_pop_common_number_of_variants_shared", "w") as info_file2, open(data + "/breed_common_pop_rare_number_of_variants_shared", "w") as info_file3:
 #    with open(data + "/breed_pop_rare_common_number_of_variants_shared.txt", "w") as info_file, open("bcftools_query_pop_chrom_pos_shared.sh", "w") as output_f, open(data + "/breed_pop_number_of_variants_shared", "w") as info_file2:
         print("Breed\tno_samples\tno_records\tno_SNPs\tno_MNPs\tno_indels\tno_others\tno_multiallelic_sites\tno_nultiallelic_SNPs\tts\ttv\ttstv", file= info_file)
         print("Breed\tno_samples\tno_records\tno_SNPs\tno_MNPs\tno_indels\tno_others\tno_multiallelic_sites\tno_nultiallelic_SNPs\tts\ttv\ttstv", file= info_file2)
@@ -72,7 +75,7 @@ if __name__ == '__main__':
                         elif file_name == "0000.vcf.gz":
                             print(f"cd {data}/{entry}\n", file=output_f)
                             print(f"bcftools query -f '%CHROM\ xxxxxt%POS\ xxxxxn' {file_name} > {data}/breed_pop_rare_common_chrom_pos/{entry}_unique.txt", file = output_f)
-                    elif "rare_pop" in entry:
+                    elif "pop_rare" in entry:
                         if "0002.vcf.stats" in file_name:
                             with open(data + "/" + entry + "/" + file_name,"r") as f:
                                 for line in f:
@@ -104,11 +107,22 @@ if __name__ == '__main__':
                                             tv = line[3]
                                             tstv = line[4]
                             print(entry, sn, rn, snp, mnp, indel, other, ma, ma_snp, ts, tv, tstv, file = info_file2, sep = "\t")
-                        elif file_name == "0002.vcf.gz":
+                        elif file_name == "0003.vcf.gz":
+                            with gzip.open(data + "/" + entry + "/" + file_name,"rt") as f:
+                                for line in f:
+                                    line = line.rstrip("\n").split("\t")
+                                    if "#" in line[0]:
+                                        next
+                                    else:
+                                        info = line[7].split("AF=")
+                                        info = info[1].split(";")
+                                        info = info[0].split(",")
+                                        AFR += float(info[0])
+                                        AFR_n +=1
                             print(f"cd {data}/{entry}\n", file=output_f)
                             print(f"bcftools query -f '%CHROM\ xxxxxt%POS\ xxxxxn' {file_name} > {data}/breed_pop_rare_common_chrom_pos/{entry}_shared.txt", file = output_f)
-                    elif "common_pop" in entry:
-                        if "0002.vcf.stats" in file_name:
+                    elif "pop_common" in entry:
+                        if "0003.vcf.stats" in file_name:
                             with open(data + "/" + entry + "/" + file_name,"r") as f:
                                 for line in f:
                                     line = line.rstrip("\n").split("\t")
@@ -139,6 +153,19 @@ if __name__ == '__main__':
                                             tv = line[3]
                                             tstv = line[4]
                             print(entry, sn, rn, snp, mnp, indel, other, ma, ma_snp, ts, tv, tstv, file = info_file3, sep = "\t")
-                        elif file_name == "0002.vcf.gz":
+                        elif file_name == "0003.vcf.gz":
+                            with gzip.open(data + "/" + entry + "/" + file_name,"rt") as f:
+                                for line in f:
+                                    line = line.rstrip("\n").split("\t")
+                                    if "#" in line[0]:
+                                        next
+                                    else:
+                                        info = line[7].split("AF=")
+                                        info = info[1].split(";")
+                                        info = info[0].split(",") 
+                                        AFC += float(info[0])
+                                        AFC_n +=1
                             print(f"cd {data}/{entry}\n", file=output_f)
                             print(f"bcftools query -f '%CHROM\ xxxxxt%POS\ xxxxxn' {file_name} > {data}/breed_pop_rare_common_chrom_pos/{entry}_shared.txt", file = output_f)
+    print("AF population common = ", AFC/AFC_n)
+    print("AF population rare = ", AFR/AFR_n)

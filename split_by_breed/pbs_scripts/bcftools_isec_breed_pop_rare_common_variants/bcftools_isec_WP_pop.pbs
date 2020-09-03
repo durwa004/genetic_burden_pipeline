@@ -5,11 +5,9 @@
 #PBS -o $PBS_JOBID.bcftools_isec_WP_pop.out
 #PBS -e $PBS_JOBID.bcftools_isec_WP_pop.err
 #PBS -N bcftools_isec_WP_pop.pbs
-#PBS -q batch
+#PBS -q small
 module load bcftools
 
-cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs
+cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/rare_common_breed_pop/breed_pop_rare_common_vcfs
 
-bcftools isec -p WP_rare_pop_common ../breed_rare_common_vcfs/WP_rare.vcf.gz without_WP_common.vcf.gz
-bcftools isec -p WP_common_pop_rare ../breed_rare_common_vcfs/WP_common.vcf.gz without_WP_rare.vcf.gz
-bcftools isec -p unique_variants_WP ../thesis_intersect_WP.vcf.gz thesis_intersect_without_WP.vcf.gz
+bcftools isec -p WP_rare_pop_common breed_rare_common_vcfs/WP_rare.vcf.gz without_WP_common.vcf.gz

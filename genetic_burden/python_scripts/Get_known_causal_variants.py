@@ -3,7 +3,8 @@ import gzip
 
 #Get details of frequency of known variants
 
-directory = "/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/known_variants/OMIA_variants"
+#directory = "/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/known_variants/OMIA_variants"
+directory = "/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/known_variants/known_variants_May_2020/"
 #Get breed info
 horse_breed = {}
 with open(directory + "/../../../horse_genomes_breeds_tidy.txt", "r") as input_file:
@@ -30,13 +31,13 @@ for i in range(len(header)):
         breed.append(horse_breed[header[i]])
 
 #Get variant details for each horse
-with open(directory + "/../known_disease_locations_2020/No_variants_present.txt", "w") as output_file, open(directory + "/../known_disease_locations_2020/known_variants_present.txt", "w") as output2:
+with open(directory + "No_variants_present.txt", "w") as output_file, open(directory + "/known_variants_present.txt", "w") as output2:
     print("Phenotype", "chrom", "pos", "ref", "alt", "n_het", "n_hom","AC", "AF", "\t".join(header[9:]), sep = "\t", file = output2)
     print("NA", "NA", "NA", "NA", "NA", "NA", "NA","NA", "NA", "\t".join(breed), sep = "\t", file = output2)
-    for filename in os.listdir(directory):
+    for filename in os.listdir(directory + "/tabix_files/"):
         if filename.endswith(".txt"):
-            with open(directory + "/" + filename, "r") as input_file:
-                if os.stat(directory + "/" + filename).st_size !=0:
+            with open(directory + "/tabix_files/" + filename, "r") as input_file:
+                if os.stat(directory + "/tabix_files/" + filename).st_size !=0:
                     for line in input_file:
                         genotype = []
                         count = 0
@@ -64,7 +65,7 @@ with open(directory + "/../known_disease_locations_2020/No_variants_present.txt"
                         AF = (het + (hom*2))/((het + hom + WT)*2)
                         AC = het + (2*hom)
                         print(filename, line[0], line[1],line[3], line[4],het, hom, AC,AF, "\t".join(genotype),sep = "\t", file = output2)
-                elif os.stat(directory + "/" + filename).st_size == 0:
+                elif os.stat(directory + "/tabix_files/" + filename).st_size == 0:
                     print(filename, file = output_file)
 
 #Then need to double check that the variants are the exact position that they are supposed to be
@@ -78,18 +79,23 @@ disease = {}
 disease["y"] = {}
 disease["n"] = {}
 
-with open(directory + "/../known_disease_locations_2020/known_variants_locations.txt", encoding = "ISO-8859-1") as input_file:
+#with open(directory + "/../known_disease_locations_2020/known_variants_locations.txt", encoding = "ISO-8859-1") as input_file:
+with open(directory + "OMIA_SNVs_05_14_20.txt", encoding = "ISO-8859-1") as input_file:
     input_file.readline()
     for line in input_file:
         line = line.rstrip("\n").split("\t")
-        if line[2] == "y":
-            disease["y"][line[1]] = "NA"
-        elif line[2] == "n":
-            disease["n"][line[1]] = "NA"
-        if "ssociated" in line[3]:
-            causative["n"][line[1]] = "NA"
-        elif "ausative" in line[3]:
-            causative["y"][line[1]] = "NA"
+        if line[15] == "yes" or line[15] == "y":
+            disease["y"][line[11]] = "NA"
+        elif line[15] == "no" or line[15] == "n":
+            disease["n"][line[11]] = "NA"
+        else:
+            print(line[15])
+        if line[16] == "y":
+            causative["y"][line[11]] = "NA"
+        elif line[16] == "n":
+            causative["n"][line[11]] = "NA"
+        else:
+            print(line[16])
 
 print(len(disease["y"].keys()))
 print(len(disease["n"].keys()))
@@ -119,21 +125,22 @@ min_AF_non_cau = 0
 max_AF_non_cau = 0
 cau_AF = 0
 non_cau_AF = 0
-with open(directory + "/../known_disease_locations_2020/known_variants_present_exact_locations.txt", "r") as input_file, open(directory + "/../known_disease_locations_2020/variants_by_indvidual.txt", "w") as dz_file:
+with open(directory + "/known_variants_present_exact_locations_May_2020.txt", "r") as input_file, open(directory + "/variants_by_indvidual.txt", "w") as dz_file:
     print("Phenotype\thorse\tbreed\tgenotype\tAF\tdisease\tcausative", file = dz_file)
     for line in input_file:
         line = line.rstrip("\n").split("\t")
         if "Phenotype" in line[0]:
             for i in range(len(line)):
                 header.append(line[i])
-            next
         elif "NA" in line[0]:
             for i in range(len(line)):
                 breed.append(line[i])
             next
         else:
+            phen = line[0].split(".txt")
+            phen = phen[0]
             phenotype.append(line[0])
-            if line[0] in disease["y"].keys():
+            if phen in disease["y"].keys():
                 dz = "y"
                 AF_dz += float(line[8])
                 count_dz +=1
@@ -141,7 +148,7 @@ with open(directory + "/../known_disease_locations_2020/known_variants_present_e
                     max_AF_dz = line[8]
                 elif float(line[8]) < float(min_AF_dz):
                     min_AF_dz = line[8]
-            elif line[0] in disease["n"].keys():
+            elif phen in disease["n"].keys():
                 dz = "n"
                 AF_non_dz += float(line[8])
                 count_non_dz +=1
@@ -150,8 +157,8 @@ with open(directory + "/../known_disease_locations_2020/known_variants_present_e
                 elif float(line[8]) < float(min_AF_non_dz):
                     min_AF_non_dz = line[8]
             else:
-                print(line[0])
-            if line[0] in causative["y"].keys():
+                print(line)
+            if phen in causative["y"].keys():
                 cau = "y"
                 cau_AF += float(line[8])
                 count_cau +=1
@@ -159,7 +166,7 @@ with open(directory + "/../known_disease_locations_2020/known_variants_present_e
                     max_AF_cau = line[8]
                 elif float(line[8]) < float(min_AF_cau):
                     min_AF_cau = line[8]
-            elif line[0] in causative["n"].keys():
+            elif phen in causative["n"].keys():
                 cau = "n"
                 non_cau_AF += float(line[8])
                 count_non_cau += 1
@@ -169,7 +176,7 @@ with open(directory + "/../known_disease_locations_2020/known_variants_present_e
                     min_AF_non_cau = line[8]
             for i in range(len(line)):
                 if line[i] == "het" or line[i] == "hom":
-                    print(line[0], header[i], breed[i], line[i],line[8],dz,cau, sep = "\t", file = dz_file)
+                    print(phen, header[i], breed[i], line[i],line[8],dz,cau, sep = "\t", file = dz_file)
             
 
 print(AF_dz/count_dz)
@@ -187,7 +194,7 @@ print(min_AF_non_cau)
 
 #Convert variants_bt_indvidual.txt to a version for R disease/breed/genotype/count
 dz_details = {}
-with open(directory + "/../known_disease_locations_2020/variants_bt_indvidual.txt", "r") as input_file,open(directory + "/../known_disease_locations_2020/variants_by_individual_R.txt", "w") as f:
+with open(directory + "/variants_by_indvidual.txt", "r") as input_file,open(directory + "/variants_by_individual_R.txt", "w") as f:
     input_file.readline()
     print("Phenotype\tbreed\tgenotype\tgenotype_count\tAC\tAF\tdisease\tcausative", file = f)
     for line in input_file:

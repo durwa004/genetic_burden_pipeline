@@ -5,11 +5,9 @@
 #PBS -o $PBS_JOBID.bcftools_isec_QH_pop.out
 #PBS -e $PBS_JOBID.bcftools_isec_QH_pop.err
 #PBS -N bcftools_isec_QH_pop.pbs
-#PBS -q batch
+#PBS -q small
 module load bcftools
 
-cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/breed_intersect_files/breed_pop_rare_common_vcfs
+cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/rare_common_breed_pop/breed_pop_rare_common_vcfs
 
-bcftools isec -p QH_rare_pop_common ../breed_rare_common_vcfs/QH_rare.vcf.gz without_QH_common.vcf.gz
-bcftools isec -p QH_common_pop_rare ../breed_rare_common_vcfs/QH_common.vcf.gz without_QH_rare.vcf.gz
-bcftools isec -p unique_variants_QH ../thesis_intersect_QH.vcf.gz thesis_intersect_without_QH.vcf.gz
+bcftools isec -p QH_rare_pop_common breed_rare_common_vcfs/QH_rare.vcf.gz without_QH_common.vcf.gz
