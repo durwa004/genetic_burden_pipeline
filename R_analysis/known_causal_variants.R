@@ -5,14 +5,14 @@ library(ggthemes)
 library(reshape2)
 library(dplyr)
 
-setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/2020/")
+setwd("/Users/durwa004/Documents/Postdoc/PhD_papers_for_publication/Nature_genetics/Post_thesis/OMIA_variants/")
 #Need to restructure my data: disease/breed/genotype/count
-data1 <- read.table("variants_by_indvidual_R.txt", header=T)
+data1 <- read.table("variants_by_individual_R.txt", header=T)
 deleterious_causative <- data1 %>% 
   filter(!grepl('n', disease)) %>%
   filter(!grepl('n', causative))
 
-bp1 <- ggplot(deleterious_causative, aes(x = Phenotype, y = count, fill = breed, group = genotype)) + 
+bp1 <- ggplot(deleterious_causative, aes(x = Phenotype, y = genotype_count, fill = breed, group = genotype)) + 
   geom_bar(stat = "identity", aes(alpha = factor(genotype)),
            position = position_dodge(width = 1)) +
   scale_alpha_manual("Genotype", values = c(0.5,1)) +
@@ -27,7 +27,7 @@ non_deleterious_causative <- data1 %>%
   filter(!grepl('y', disease)) %>%
   filter(!grepl('n', causative))
 
-bp2 <- ggplot(non_deleterious_causative, aes(x = Phenotype, y = count, fill = breed, group = genotype)) + 
+bp2 <- ggplot(non_deleterious_causative, aes(x = Phenotype, y = genotype_count, fill = breed, group = genotype)) + 
   geom_bar(stat = "identity", aes(alpha = factor(genotype)),
            position = position_dodge(width = 1)) +
   scale_alpha_manual(values = c(0.5,1)) +
@@ -41,7 +41,7 @@ bp2 <- ggplot(non_deleterious_causative, aes(x = Phenotype, y = count, fill = br
 deleterious_assoc <- data1 %>%
   filter(!grepl('y', causative))
 
-bp3 <- ggplot(deleterious_assoc, aes(x = Phenotype, y = count, fill = breed, group = genotype)) + 
+bp3 <- ggplot(deleterious_assoc, aes(x = Phenotype, y = genotype_count, fill = breed, group = genotype)) + 
   geom_bar(stat = "identity", aes(alpha = factor(genotype)),
            position = position_dodge(width = 1)) +
   scale_alpha_manual("Genotype", values = c(0.5,1)) +
@@ -60,8 +60,46 @@ x_c <- plot_grid(first_row,second_row, third_row,
                  ncol = 1, rel_widths = 1, rel_heights = 1)
 
 #Save as dual plot
-save_plot("../../../Papers_for_publication/Nature_genetics/Figures/OMIA_variants.tiff", 
+save_plot("../Draft_May_14/OMIA_variants.tiff", 
           x_c, base_height = 12,base_width = 24)
+
+#Get stats for paper
+data_info <- read.table("known_variant_all_tidy.txt", header = T)
+deleterious_causative <- data_info %>% 
+  filter(!grepl('n', Deleterious)) %>%
+  filter(!grepl('n', Causative))
+
+mean(deleterious_causative$AF)
+range(deleterious_causative$AF)
+length(deleterious_causative$AF)
+table(deleterious_causative$AC)
+
+deleterious_associated <- data_info %>% 
+  filter(!grepl('n', Deleterious)) %>%
+  filter(!grepl('y', Causative))
+
+mean(deleterious_associated$AF)
+range(deleterious_associated$AF)
+length(deleterious_associated$AF)
+table(deleterious_associated$AC)
+
+non_deleterious_causative <- data_info %>% 
+  filter(!grepl('y', Deleterious)) %>%
+  filter(!grepl('n', Causative))
+
+mean(non_deleterious_causative$AF)
+range(non_deleterious_causative$AF)
+length(non_deleterious_causative$AF)
+table(non_deleterious_causative$AC)
+
+non_deleterious_associated <- data_info %>% 
+  filter(!grepl('y', Deleterious)) %>%
+  filter(!grepl('y', Causative))
+
+mean(non_deleterious_associated$AF)
+range(non_deleterious_associated$AF)
+length(non_deleterious_associated$AF)
+table(non_deleterious_associated$AC)
 
 # Pull out CLF variants for zoom
 CLF <- data1 %>%

@@ -21,6 +21,10 @@ mean(intersect_stats$nNonRefHom)
 mean(intersect_stats$nHets)
 intersect_stats$tstv <- intersect_stats$Ts/intersect_stats$Tv
 
+#Stuff for Lauren
+PPID <- as.data.frame(intersect_stats[175:210,c("Sample", "nvariants")])
+write.table(PPID, "/Users/durwa004/Desktop/PPID_nvariants.txt",quote=F)
+
 #Get number of heterozygous variants and number of homozygous variants per kb of sequence
 #taken from NCBI (2,474.93 Mb, 2,474,930 kb)
 intersect_stats$het_kb <- intersect_stats$nHets /2474930
@@ -56,6 +60,10 @@ gb_m <- (lm(tstv ~ breed + nuclear_placed_DOC,data=intersect_br))
 n_hom_gb_m <- (lm(HetNRHomratio ~ breed + nuclear_placed_DOC,data=intersect_br))
 n_var_m <- (lm(nvariants ~ breed + nuclear_placed_DOC,data=intersect_br))
 n_hom_var_m <- (lm(nNonRefHom ~ breed + nuclear_placed_DOC,data=intersect_br))
+n_var_m_all <- (lm(nvariants ~ nuclear_placed_DOC,data=intersect_br))
+n_hom_var_m_all <- (lm(nNonRefHom ~ nuclear_placed_DOC,data=intersect_br))
+n_indel_m_all <- (lm(nIndels ~ nuclear_placed_DOC,data=intersect_br))
+
 summary(gb_m)
 summary(n_hom_gb_m)
 summary(n_var_m)
@@ -63,12 +71,21 @@ summary(n_var_m)
 #Get EMMEANs
 gb_emm <- emmeans(gb_m, "breed", weights = "proportional", type = "response")
 gb_emm
+test(gb_emm, null = mean(intersect_br$tstv))
+
 n_hom_gb_emm <- emmeans(n_hom_gb_m, "breed", weights = "proportional", type = "response")
 n_hom_gb_emm
+test(n_hom_gb_emm, null = mean(intersect_br$HetNRHomratio))
 n_var_emm <- emmeans(n_var_m, "breed", weights = "proportional", type = "response")
 n_var_emm
 n_hom_var_emm <- emmeans(n_hom_var_m, "breed", weights = "proportional", type = "response")
 n_hom_var_emm
+n_var_emm_all <- emmeans(n_var_m_all, "nuclear_placed_DOC", weights = "proportional", type = "response")
+n_var_emm_all
+n_hom_var_emm_all <- emmeans(n_hom_var_m, "nuclear_placed_DOC", weights = "proportional", type = "response")
+n_hom_var_emm_all
+n_indel_emm_all <- emmeans(n_indel_m_all, "nuclear_placed_DOC", weights = "proportional", type = "response")
+n_indel_emm_all
 
 gb_t <- as.data.frame(table(intersect_br$breed))
 colnames(gb_t) <- c("breed", "nvariants")
@@ -108,12 +125,18 @@ cor.test(x=gb_t$ne,y=gb_t$nvariants, method = "pearson", use='complete.obs')
 cor.test(x=gb_t$ne,y=gb_t$nhom, method = "pearson", use='complete.obs')
 
 #Look for correlation between number of variants and DOC with line of best fit 
+####Figure 1
+cbPalette <- c("#999999", "#FFCCFF", "#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#CC6600")
 x = ggplot(intersect_doc, aes(x=nuclear_placed_DOC,y=nvariants)) + theme_bw() + ylab("Number of variants") + 
-  xlab("Depth of coverage") + geom_point() + scale_x_continuous(limits = c(0,50))+
+  xlab("Depth of coverage") + geom_point(aes(color=breed)) + scale_x_continuous(limits = c(0,50))+
   scale_y_continuous(labels=comma, limits = c(0,8000000)) + geom_smooth() +
+  scale_color_manual(values=cbPalette) +
   theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
-        axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("DOC_nvariants_breed.tiff", x, base_height = 3.5, base_width = 6)
+        axis.line.y = element_line(), axis.text.x = element_text(angle=90), 
+        axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"),
+        legend.title = element_blank())
+save_plot("/Users/durwa004/Documents/Postdoc/PhD_papers_for_publication/chapt2_genetic_variation/DOC_nvariants_breed.tiff", x, base_height = 3.5, base_width = 6, dpi = 300)
+
 
 #split DOC into quartiles
 i_stats <- intersect_doc
@@ -127,12 +150,13 @@ variants_DOC <- (lm(nvariants ~ breed + DOC,data=i_stats))
 
 x = emmip(variants_DOC, breed ~ DOC, cov.reduce = FALSE, 
           type = "response") + theme_bw() + xlab("DOC quantiles") + 
-  ylab("Number of variants") +scale_y_continuous(labels=comma) +
+  ylab("Number of variants") +scale_y_continuous(labels=comma) +  geom_point(aes(color=breed)) +
+  scale_color_manual(values=cbPalette) +
   theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
         axis.line.y = element_line(), axis.text.x = element_text(), axis.text = element_text(size=10), 
         axis.title = element_text(size=12,face="bold"),
         legend.title = element_blank()) 
-save_plot("../Paper_2019/Chapter_1_genetic_variation/Figures/Relationship_between_nvariants_DOC.tiff", x, base_height = 3.5, base_width = 8)
+save_plot("/Users/durwa004/Documents/Postdoc/PhD_papers_for_publication/chapt2_genetic_variation/Relationship_between_nvariants_DOC.tiff", x, base_height = 3.5, base_width = 8)
 
 
 #Add in breed colors
@@ -143,7 +167,7 @@ x = ggplot(intersect_doc, aes(x=nuclear_placed_DOC,y=nvariants)) + theme_bw() + 
         axis.line.y = element_line(), axis.text.x = element_text(angle=90), 
         axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"),
         legend.title = element_blank())
-save_plot("../Paper_2019/Chapter_1_genetic_variation/Figures/DOC_nvariants_breed.tiff", x, base_height = 3.5, base_width = 6)
+save_plot("/Users/durwa004/Documents/PhD/Thesis/Thesis/Post_defense_edits/DOC_nvariants_breed.tiff", x, base_height = 3.5, base_width = 6)
 
 fit1 <- (lm(nvariants ~ breed, data=intersect_br))
 fit2 <- (lm(nvariants ~ breed + nuclear_placed_DOC, data=intersect_br))
@@ -344,3 +368,5 @@ mean(regions_low$no_indels)
 mean(regions_low$tstv)
 #Print out low variation chrom/pos1/pos2 regions
 write.table(regions_low, file = "Low_variation_regions.txt", quote=F,sep = "\t")
+
+

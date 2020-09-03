@@ -4,61 +4,6 @@ library(cowplot)
 library(dplyr)
 library(reshape2)
 
-setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/bcftools_stats_output/")
-intersect_stats <- read.table("intersect_by_ind_number_of_variants.txt",header=T)
-intersect_stats$nvariants <- intersect_stats$nNonRefHom + intersect_stats$nHets
-
-#Add in DOC info
-DOC <- read.table("../DOC/DOC_by_horse.txt", header=T)
-colnames(DOC) = c("Sample", "total_DOC","nuclear_placed_DOC")
-intersect_doc <- merge(intersect_stats,DOC, by="Sample")
-
-#Look for correlation between number of variants and DOC with line of best fit 
-my_pal <- c("dodgerblue2", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#FF3300", "#33FFFF", 
-            "#CC79A7", "#000000","hotpink","#CC0033")
-intersect_doc$fill <- intersect_doc$breed
-levels(intersect_doc$fill) <- c("dodgerblue2", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#FF3300", "#33FFFF", 
-                     "#CC79A7", "#000000","hotpink","#CC0033")
-
-#Add in breed colors
-x = ggplot(intersect_doc, aes(x=nuclear_placed_DOC,y=nvariants)) + theme_bw() + 
-  ylab("Number of variants") + xlab("Depth of coverage") + geom_point(aes(color=fill), size = 1) + 
-  scale_x_continuous(limits = c(0,50))+ scale_y_continuous(labels=comma, limits = c(0,8000000)) + 
-  geom_smooth()  +
-  theme(panel.background = element_rect(colour = "NA"), plot.background = element_rect(colour = "NA"),
-        legend.position = "none", 
-        panel.grid = element_blank(), panel.border = element_blank(),axis.line.x = element_line(),
-        axis.line.y = element_line(), axis.text.x = element_text(), 
-        axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("../../Abstracts/PAG_2020/Presentation/DOC_nvariants_breed.tiff", x, base_height = 4, base_width = 8)
-
-x = ggplot(intersect_doc, aes(x=nuclear_placed_DOC,y=nvariants)) + theme_bw() + 
-  ylab("Number of variants") + xlab("Depth of coverage") + geom_point(aes(color=breed), size = 1) + 
-  scale_x_continuous(limits = c(0,50))+ scale_y_continuous(labels=comma, limits = c(0,8000000)) + 
-  geom_smooth() + scale_colour_manual(values=my_pal) +
-  theme(panel.background = element_rect(fill=rgb(253/255,244/255,210/255,1), colour = "NA"), 
-        plot.background = element_rect(fill=rgb(253/255,244/255,210/255,1), colour = "NA"),
-        legend.background = element_rect(fill=rgb(253/255,244/255,210/255,1), colour = "NA"),
-        legend.position = "bottom", legend.key = element_rect(fill=rgb(253/255,244/255,210/255,1), color = "NA"),
-        # Change legend key size and key width
-        legend.key.size = unit(0.02, "in"), legend.key.width = unit(0.05,"in"),
-        panel.grid = element_blank(), panel.border = element_blank(),axis.line.x = element_line(),
-        axis.line.y = element_line(), axis.text.x = element_text(), 
-        axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("../../Abstracts/PAG_2020/Poster/DOC_nvariants_breed.tiff", x, base_height = 3, base_width = 4)
-#Paper
-x = ggplot(intersect_doc, aes(x=nuclear_placed_DOC,y=nvariants)) + theme_bw() + 
-  ylab("Number of variants") + xlab("Depth of coverage") + geom_point(aes(color=fill), size = 1) + 
-  scale_x_continuous(limits = c(0,50))+ scale_y_continuous(labels=comma, limits = c(0,8000000)) + 
-  geom_smooth()  +
-  theme(panel.background = element_rect(colour = "NA"), plot.background = element_rect(colour = "NA"),
-        legend.position = "none", 
-        panel.grid = element_blank(), panel.border = element_blank(),axis.line.x = element_line(),
-        axis.line.y = element_line(), axis.text.x = element_text(), 
-        axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("../Paper_2019/Nature_genetics/Figures/DOC_nvariants_breed.tiff", x, base_height = 4, base_width = 8)
-
-
 setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/gb_analysis/nature_genetics_paper/")
 
 #GB
