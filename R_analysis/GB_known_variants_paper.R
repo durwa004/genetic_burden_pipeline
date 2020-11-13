@@ -64,7 +64,7 @@ x = ggplot(intersect_doc, aes(x=nuclear_placed_DOC,y=nvariants)) + theme_bw() + 
         axis.line.y = element_line(), axis.text.x = element_text(angle=90), 
         axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"),
         legend.title = element_blank())
-save_plot("/Users/durwa004/Documents/Postdoc/Papers_for_publication/Nature_genetics/Post_thesis/Draft_April_6/Figures/Fig1_DOC_nvariants_breed.tiff", x, base_height = 3.5, base_width = 6, dpi = 300)
+save_plot("/Users/durwa004/Documents/Postdoc/PhD_papers_for_publication/Nature_genetics/Post_thesis/November_2020/Figures/Fig1_DOC_nvariants_breed.tiff", x, base_height = 3.5, base_width = 6, dpi = 300)
 
 
 ####GB estimation
@@ -73,6 +73,8 @@ setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/gb_analysi
 #GB
 data = read.table("genetic_burden_by_individual.txt", header=F) # V3 = het, V4 = hom
 data$total <- data$V3 + data$V4
+data$total <- 0.7*data$total
+data$V4 <- 0.7*data$V4
 mean(data$total) 
 range(data$total)
 mean(data$V3)
@@ -177,6 +179,8 @@ setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/gb_analysi
 ####LOF variants
 data = read.table("lof_by_individual.txt", header=F) # V3 = het, V4 = hom, V5 = missing?
 data$total = data$V3 + data$V4
+data$total <- 0.7*data$total
+data$V4 <- 0.7*data$V4
 mean(data$total) 
 range(data$total)
 mean(data$V3)
@@ -281,7 +285,7 @@ first_col <- plot_grid(x,x1, labels = c("a", "b"),rel_widths = 1,rel_heights = 1
 second_col <- plot_grid(x3,x4, labels = c("c", "d"), rel_widths = 1,rel_heights = 1, ncol = 1)
 x_c <- plot_grid(first_col,second_col, ncol = 1, rel_widths = 1, rel_heights = 1)
 
-save_plot("/Users/durwa004/Documents/Postdoc/Papers_for_publication/Nature_genetics/Post_thesis/Draft_April_6/Figures/Fig2_gb_gb_hom_EMMEANS.tiff", x_c, base_height = 12, base_width = 6, dpi = 200)
+save_plot("/Users/durwa004/Documents/Postdoc/PhD_papers_for_publication/Nature_genetics/Post_thesis/November_2020/Figures/Fig2_gb_gb_hom_EMMEANS.tiff", x_c, base_height = 12, base_width = 6, dpi = 200)
 
 ####Known variants
 setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/2020/")
@@ -342,7 +346,7 @@ x_c <- plot_grid(first_row,second_row, third_row,
                  ncol = 1, rel_widths = 1, rel_heights = 1)
 
 #Save as dual plot
-save_plot("/Users/durwa004/Documents/Postdoc/Papers_for_publication/Nature_genetics/Post_thesis/Draft_April_6/Figures/Fig3_OMIA_variants.tiff", 
+save_plot("/Users/durwa004/Documents/Postdoc/PhD_papers_for_publication/Nature_genetics/Post_thesis/November_2020/Figures/Fig3_OMIA_variants.tiff", 
           x_c, base_height = 12,base_width = 24, dpi = 100)
 
 
@@ -371,4 +375,4 @@ bp2 <- ggplot(data, aes(x=Phenotype, fill=genotype)) + geom_histogram(stat = "co
 #Save as combined plot
 first_row <- plot_grid(bp1,bp2, labels = c("a", "b"), ncol=1)
 #Save as dual plot
-save_plot("/Users/durwa004/Documents/Postdoc/Papers_for_publication/Nature_genetics/Post_thesis/Draft_April_6/Figures/SI_1_QTLs.tiff", first_row, base_height = 12,base_width = 24, dpi=100)
+save_plot("/Users/durwa004/Documents/Postdoc/PhD_papers_for_publication/Nature_genetics/Post_thesis/November_2020/Figures/SI_1_QTLs.tiff", first_row, base_height = 12,base_width = 24, dpi=100)
