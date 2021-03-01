@@ -5,6 +5,7 @@ library(dplyr)
 library(reshape2)
 library(ggrepel)
 library(Gviz)
+library(stringr)
 
 #setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/gb_analysis/nature_genetics_paper/")
 setwd("/Users/durwa004/Documents/Postdoc/PhD_papers_for_publication/Nature_genetics/Post_thesis/gb_analysis/")
@@ -14,6 +15,14 @@ range(gb_genes$mean_AF)
 mean(gb_genes$n_variants)
 range(gb_genes$n_variants)
 table(gb_genes$n_variants)
+length(gb_genes$gene[gb_genes$n_variants >5])
+length(gb_genes$gene[gb_genes$mean_AF >0.5])
+
+m_variants <- (gb_genes$gene[gb_genes$n_variants >5])
+sum(str_count(m_variants, "LOC"))
+
+c_variants <- (gb_genes$gene[gb_genes$mean_AF >0.5])
+sum(str_count(c_variants, "LOC"))
 
 #Get labels for genes with over 10 LOF variants
 y = gb_genes %>% filter(gb_genes$n_variants > 10)

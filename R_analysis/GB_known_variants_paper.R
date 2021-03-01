@@ -13,6 +13,8 @@ library(ggrepel)
 library(Gviz)
 library(devtools)
 library(nlcor)
+#remotes::install_github("coolbutuseless/ggpattern")
+library(ggpattern)
 
 #Only include autosomes and chr X (not MT and unplaced contigs)
 setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/bcftools_stats_output/")
@@ -73,8 +75,8 @@ setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/gb_analysi
 #GB
 data = read.table("genetic_burden_by_individual.txt", header=F) # V3 = het, V4 = hom
 data$total <- data$V3 + data$V4
-data$total <- 0.7*data$total
-data$V4 <- 0.7*data$V4
+data$total <- 0.78*data$total
+data$V4 <- 0.78*data$V4
 mean(data$total) 
 range(data$total)
 mean(data$V3)
@@ -179,8 +181,8 @@ setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/gb_analysi
 ####LOF variants
 data = read.table("lof_by_individual.txt", header=F) # V3 = het, V4 = hom, V5 = missing?
 data$total = data$V3 + data$V4
-data$total <- 0.7*data$total
-data$V4 <- 0.7*data$V4
+data$total <- 0.78*data$total
+data$V4 <- 0.78*data$V4
 mean(data$total) 
 range(data$total)
 mean(data$V3)
@@ -300,12 +302,27 @@ bp1 <- ggplot(deleterious_causative, aes(x = Phenotype, y = genotype_count, fill
            position = position_dodge(width = 1)) +
   scale_alpha_manual("Genotype", values = c(0.5,1)) +
   ylab("Genotype Count") + scale_y_continuous(limits = c(0,8)) + 
-  xlab("Causal variants (disease)") + 
+  xlab("Causal variants (disease)") +
   scale_fill_manual(values=cbPalette) +
-  theme(axis.text = element_text(size=10,angle=90,hjust=1),
+  theme(axis.text = element_text(size=14,angle=90,hjust=1),
         panel.background = element_blank(),
         legend.title = element_blank(),
-        axis.title = element_text(size=12,face="bold"))
+        axis.title = element_text(size=16,face="bold"))
+
+#Print for Havemeyer presentation
+bp1 <- ggplot(deleterious_causative, aes(x = Phenotype, y = genotype_count, fill = breed, group = genotype)) + 
+  geom_bar(stat = "identity", aes(alpha = factor(genotype)),
+           position = "stack") +
+  scale_alpha_manual("Genotype", values = c(0.5,1)) +
+  ylab("Genotype Count") + scale_y_continuous(limits = c(0,25)) + 
+  xlab("Causal variants (disease)") +
+  scale_fill_manual(values=cbPalette) +
+  theme(axis.text = element_text(size=14,angle=90,hjust=1),
+        panel.background = element_blank(),
+        legend.title = element_blank(),
+        axis.title = element_text(size=16,face="bold"))
+save_plot("/Users/durwa004/Documents/Postdoc/Projects/Genetic_burden/Havemeyer_2020/DCV_OMIA_variants.tiff", 
+          bp1, base_height = 12,base_width = 24, dpi = 100)
 
 non_deleterious_causative <- data1 %>% 
   filter(!grepl('y', disease)) %>%
@@ -318,10 +335,26 @@ bp2 <- ggplot(non_deleterious_causative, aes(x = Phenotype, y = genotype_count, 
   scale_fill_manual(values=cbPalette) +
   ylab("Genotype Count") + scale_y_continuous(limits = c(0,150)) + 
   xlab("Causal variants (non-disease)") + 
-  theme(axis.text = element_text(size=10,angle=90,hjust=1),
+  theme(axis.text = element_text(size=14,angle=90,hjust=1),
         panel.background = element_blank(),
         legend.title = element_blank(),
-        axis.title = element_text(size=12,face="bold"))
+        axis.title = element_text(size=16,face="bold"))
+
+#For Havemeyer
+bp2 <- ggplot(non_deleterious_causative, aes(x = Phenotype, y = genotype_count, fill = breed, group = genotype)) + 
+  geom_bar(stat = "identity", aes(alpha = factor(genotype)),
+           position = "stack") +
+  scale_alpha_manual(values = c(0.5,1)) +
+  scale_fill_manual(values=cbPalette) +
+  ylab("Genotype Count") + scale_y_continuous(limits = c(0,500)) + 
+  xlab("Causal variants (non-disease)") + 
+  theme(axis.text = element_text(size=14,angle=90,hjust=1),
+        panel.background = element_blank(),
+        legend.title = element_blank(),
+        axis.title = element_text(size=16,face="bold"))
+#Save for Havemeyer
+save_plot("/Users/durwa004/Documents/Postdoc/Projects/Genetic_burden/Havemeyer_2020/Non_DCV_OMIA_variants.tiff", 
+          bp2, base_height = 12,base_width = 24, dpi = 100)
 
 deleterious_assoc <- data1 %>%
   filter(!grepl('y', causative))
@@ -333,10 +366,26 @@ bp3 <- ggplot(deleterious_assoc, aes(x = Phenotype, y = genotype_count, fill = b
   ylab("Genotype Count") + scale_y_continuous(limits = c(0,150)) + 
   xlab("Associated variants") + 
   scale_fill_manual(values=cbPalette) +
-  theme(axis.text = element_text(size=10,angle=90,hjust=1),
+  theme(axis.text = element_text(size=14,angle=90,hjust=1),
         panel.background = element_blank(),
         legend.title = element_blank(),
-        axis.title = element_text(size=12,face="bold"))
+        axis.title = element_text(size=16,face="bold"))
+
+#For Havemeyer
+bp3 <- ggplot(deleterious_assoc, aes(x = Phenotype, y = genotype_count, fill = breed, group = genotype)) + 
+  geom_bar(stat = "identity", aes(alpha = factor(genotype)),
+           position = "stack") +
+  scale_alpha_manual("Genotype", values = c(0.5,1)) +
+  ylab("Genotype Count") + scale_y_continuous(limits = c(0,600)) + 
+  xlab("Associated variants") + 
+  scale_fill_manual(values=cbPalette) +
+  theme(axis.text = element_text(size=14,angle=90,hjust=1),
+        panel.background = element_blank(),
+        legend.title = element_blank(),
+        axis.title = element_text(size=16,face="bold"))
+
+save_plot("/Users/durwa004/Documents/Postdoc/Projects/Genetic_burden/Havemeyer_2020/Assoc_OMIA_variants.tiff", 
+          bp3, base_height = 12,base_width = 24, dpi = 100)
 
 #Save as combined plot
 first_row <- plot_grid(bp1, labels = c("a"),rel_widths = 1)
