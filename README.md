@@ -341,6 +341,3 @@ $ Get_known_causal_variants_pop.py
 $ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/known_variants/QTLs_table_tidy.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/known_causal_variants/2020/
 ```
 
-
-# Future things to look at
---Fst of genes containing these variants - look for genes with strong differentiation between populations
