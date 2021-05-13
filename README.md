@@ -1,5 +1,4 @@
 # genetic_burden_pipeline
-Makes up chapter 1, 3, and 4 - need to split this for publication
 Scripts and tools to estimate the genetic burden as part of my first aim of my thesis.
   
 # Get tidy breeds (i.e. with other)
