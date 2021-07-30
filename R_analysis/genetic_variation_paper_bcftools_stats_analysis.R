@@ -44,6 +44,19 @@ intersect_doc <- merge(intersect_stats,DOC, by="Sample")
 summary(intersect_doc$nuclear_placed_DOC)
 intersect_doc$HetNRHomratio <- intersect_doc$nHets/intersect_doc$nNonRefHom
 
+#Add in all breeds for supplementary tables
+breed_info <- read.table("ibio_horses_with_breeds.txt", header=T, sep = "\t")
+intersect_breed <- merge(breed_info,DOC, by="Sample")
+
+breed_doc <- intersect_breed %>% 
+  group_by(Breed)  %>%
+  summarize(DOC = mean(nuclear_placed_DOC),
+            DOC_min = min(nuclear_placed_DOC),
+            DOC_max = max(nuclear_placed_DOC))
+
+mean(intersect_breed$nuclear_placed_DOC)
+
+#Then continue
 table(intersect_doc$breed)
 
 kruskal.test(intersect_doc$HetNRHomratio, intersect_doc$breed)
@@ -54,6 +67,7 @@ intersect_br <- intersect_doc %>%
 
 kruskal.test(intersect_br$HetNRHomratio, intersect_br$breed)
 kruskal.test(intersect_br$tstv, intersect_br$breed)
+
 
 summary(lm(intersect_br$tstv ~ intersect_br$breed))
 gb_m <- (lm(tstv ~ breed + nuclear_placed_DOC,data=intersect_br))
@@ -282,7 +296,7 @@ save_plot("../bcftools_stats_output/10_breeds_tstv.tiff", x, base_height = 3.5, 
 setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/bcftools_stats_output/")
 #Categorize AF: Using python
 AF_data <- read.table("all_horses_AF_freq_info.txt",header=T)
-AF_data$means <- rowMeans(AF_data[,2:536])
+AF_data$means <- rowMeans(AF_data[,2:535])
 
 #AF
 x = ggplot(AF_data, aes(x=AF, y=means)) + theme_bw() + ylab("Number of variants") + 
@@ -309,9 +323,10 @@ save_plot("535_horses_AF_categories.tiff", x, base_height = 3.5, base_width = 6)
 
 
 #Mean number of singletons
-singleton <- AF_data[1,2:53]
+singleton <- AF_data[1,2:535]
 singleton <- as.numeric(singleton)
 mean(singleton)
+range(singleton)
 
 singleton_data <- read.table("10_breeds_singletons.txt",header=F)
 kruskal.test(singleton_data$V3, singleton_data$V2)
