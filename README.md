@@ -8,7 +8,16 @@ Scripts and tools to estimate the genetic burden as part of my first aim of my t
 $ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/convert_breeds.py
 ```
 
-# Get DOC and number of reads - Jillian to do
+# Get DOC and number of reads - Jillian to do (need VCFs)
+
+# Get the number of variants for each horse
+```
+$ sbatch ../scripts/genetic_burden_pipeline/genetic_burden/pbs_scripts/bcftools_stats_per_horse.slurm
+```
+# Pull out bcftools info
+```
+$ https://github.com/durwa004/genetic_variation_paper/blob/52d1e0d6aa6d6456508b31ea30cfd5fffc2a9f41/variant_calling/concordance/Extract_concordance_bcftools_stats.py
+```
 
 ```
 ##$ python python_scripts/Generate_unfreeze_coverage.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/doc/ -i /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/horse_genomes_breeds_tidy.txt -c get -ft coverage.tsv
@@ -20,6 +29,11 @@ $ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden
 ##$ scp durwa004@login02.msi.umn.edu://home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/doc/coverage/summary_files/* ../DOC
 ##$ bcftools_stats_analysis.R
 ```
+
+#Get number of variants
+```
+$ bcftools stats ../../shared/PopulationVCF/joint_genotype_indels.goldenPath.vep.vcf.gz > indels.stats
+$ bcftools stats ../../shared/PopulationVCF/joint_genotype_combined.goldenPath.vep.vcf.gz > SNPs.stats
 
 #Pull out type of variant
 ```
