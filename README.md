@@ -8,25 +8,15 @@ Scripts and tools to estimate the genetic burden as part of my first aim of my t
 $ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/convert_breeds.py
 ```
 
-# Get DOC and number of reads - Jillian to do (need VCFs)
-
-# Get the number of variants for each horse
+# Get the number of variants, tstv, and DOC for each horse
 ```
 $ sbatch ../scripts/genetic_burden_pipeline/genetic_burden/pbs_scripts/bcftools_stats_per_horse.slurm
-```
-# Pull out bcftools info
-```
-$ https://github.com/durwa004/genetic_variation_paper/blob/52d1e0d6aa6d6456508b31ea30cfd5fffc2a9f41/variant_calling/concordance/Extract_concordance_bcftools_stats.py
+$ python ../scripts/genetic_burden_pipeline/genetic_burden/python_scripts/Extract_bcftools_stats_ind.py -d bcftools_stats_combined_per_horse.stats
 ```
 
-```
-##$ python python_scripts/Generate_unfreeze_coverage.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/doc/ -i /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/horse_genomes_breeds_tidy.txt -c get -ft coverage.tsv
-##$ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/s3_scripts/s3cmd_sync_coverage.tsv.pbs 
-##$ python Extract_coverage.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/doc/coverage/
-```
 ##Move DOC and no. reads back to my laptop
 ```
-##$ scp durwa004@login02.msi.umn.edu://home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/doc/coverage/summary_files/* ../DOC
+##$ scp durwa004@mesabi.msi.umn.edu:/home/durwa004/durwa004/genetic_burden/ind_number_of_variants.txt
 ##$ bcftools_stats_analysis.R
 ```
 
