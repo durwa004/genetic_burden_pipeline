@@ -25,9 +25,21 @@ $ python ../scripts/genetic_burden_pipeline/genetic_burden/python_scripts/Extrac
 $ bcftools stats ../../shared/PopulationVCF/joint_genotype_indels.goldenPath.vep.vcf.gz > indels.stats
 $ bcftools stats ../../shared/PopulationVCF/joint_genotype_combined.goldenPath.vep.vcf.gz > SNPs.stats
 
+#Run SnpEff
+```
+$sbatch /home/durwa004/durwa004/scripts/genetic_burden_pipeline/variant_annotation/SnpEff/SnpEff.slurm 
+```
+
+#Pull out high/moderate/low impact variants
+```
+$ sbatch /home/durwa004/durwa004/scripts/genetic_burden_pipeline/variant_annotation/SnpEff/SnpSift.slurm 
+$ sbatch /home/durwa004/durwa004/scripts/genetic_burden_pipeline/variant_annotation/Ensembl-VEP/Ensembl-VEP_filter.pbs
+```
+
 #Pull out type of variant
 ```
-$ Get_type_of_variant_SnpEff.py 
+$ python /home/durwa004/durwa004/scripts/genetic_burden_pipeline/genetic_burden/python_scripts/Get_type_of_variant_SnpEff_coding.py -d joint_genotype_combined.goldenPath.snpeff.hml.vcf.gz -p SnpEff
+$ python /home/durwa004/durwa004/scripts/genetic_burden_pipeline/genetic_burden/python_scripts/Get_type_of_variant_SnpEff_coding.py -d joint_genotype_combined.goldenPath.snpeff.hml.vcf.gz -p SnpEff
 ```
 
 Transfer to my laptop and analyze
