@@ -24,6 +24,7 @@ $ python ../scripts/genetic_burden_pipeline/genetic_burden/python_scripts/Extrac
 ```
 $ bcftools stats ../../shared/PopulationVCF/joint_genotype_indels.goldenPath.vep.vcf.gz > indels.stats
 $ bcftools stats ../../shared/PopulationVCF/joint_genotype_combined.goldenPath.vep.vcf.gz > SNPs.stats
+```
 
 #Run SnpEff
 ```
