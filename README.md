@@ -42,13 +42,27 @@ $ python /home/durwa004/durwa004/scripts/genetic_burden_pipeline/genetic_burden/
 $ python /home/durwa004/durwa004/scripts/genetic_burden_pipeline/genetic_burden/python_scripts/Get_type_of_variant_SnpEff_coding.py -d joint_genotype_combined.goldenPath.snpeff.hml.vcf.gz -p SnpEff
 ```
 
-Transfer to my laptop and analyze
+#Transfer to my laptop and analyze
 ```
-$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/annovar/annovar_variant_type_all.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/variant_type_analysis/
-$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/SnpEff/SnpEff_variant_type_all.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/variant_type_analysis/
+$ scp durwa004@mesabi.msi.umn.edu:/home/durwa004/durwa004/genetic_burden/SnpEff_VEP_intersect.txt GB_project
+$ scp durwa004@mesabi.msi.umn.edu:/home/durwa004/durwa004/genetic_burden/SnpEffVEP.intersect.txt GB_project
+$ variant_type_analysis.R
+$ GB_paper_tables.R
+```
+
+#Get number of variants by individual
+```
+$ Get_genetic_burden_by_individual.py
+$ scp durwa004@mesabi.msi.umn.edu:/home/durwa004/durwa004/genetic_burden/SnpEffVEP.intersect.individual.txt GB_project
 $ variant_type_analysis.R
 ```
 
+
+
+
+
+
+###OLD###
 #Pull out type of variant - coding
 ```
 $ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/Get_type_of_variant_SnpEff_coding.py 
