@@ -8,22 +8,38 @@ Scripts and tools to estimate the genetic burden as part of my first aim of my t
 $ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/convert_breeds.py
 ```
 
-# Get DOC and number of reads - Jillian to do
+# Get the number of variants, tstv, and DOC for each horse
+```
+$ sbatch ../scripts/genetic_burden_pipeline/genetic_burden/pbs_scripts/bcftools_stats_per_horse.slurm
+$ python ../scripts/genetic_burden_pipeline/genetic_burden/python_scripts/Extract_bcftools_stats_ind.py -d bcftools_stats_combined_per_horse.stats
+```
 
-```
-##$ python python_scripts/Generate_unfreeze_coverage.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/doc/ -i /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/horse_genomes_breeds_tidy.txt -c get -ft coverage.tsv
-##$ qsub /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/s3_scripts/s3cmd_sync_coverage.tsv.pbs 
-##$ python Extract_coverage.py -d /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/doc/coverage/
-```
 ##Move DOC and no. reads back to my laptop
 ```
-##$ scp durwa004@login02.msi.umn.edu://home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/doc/coverage/summary_files/* ../DOC
+##$ scp durwa004@mesabi.msi.umn.edu:/home/durwa004/durwa004/genetic_burden/ind_number_of_variants.txt
 ##$ bcftools_stats_analysis.R
+```
+
+#Get number of variants
+```
+$ bcftools stats ../../shared/PopulationVCF/joint_genotype_indels.goldenPath.vep.vcf.gz > indels.stats
+$ bcftools stats ../../shared/PopulationVCF/joint_genotype_combined.goldenPath.vep.vcf.gz > SNPs.stats
+
+#Run SnpEff
+```
+$sbatch /home/durwa004/durwa004/scripts/genetic_burden_pipeline/variant_annotation/SnpEff/SnpEff.slurm 
+```
+
+#Pull out high/moderate/low impact variants
+```
+$ sbatch /home/durwa004/durwa004/scripts/genetic_burden_pipeline/variant_annotation/SnpEff/SnpSift.slurm 
+$ sbatch /home/durwa004/durwa004/scripts/genetic_burden_pipeline/variant_annotation/Ensembl-VEP/Ensembl-VEP_filter.pbs
 ```
 
 #Pull out type of variant
 ```
-$ Get_type_of_variant_SnpEff.py 
+$ python /home/durwa004/durwa004/scripts/genetic_burden_pipeline/genetic_burden/python_scripts/Get_type_of_variant_SnpEff_coding.py -d joint_genotype_combined.goldenPath.snpeff.hml.vcf.gz -p SnpEff
+$ python /home/durwa004/durwa004/scripts/genetic_burden_pipeline/genetic_burden/python_scripts/Get_type_of_variant_SnpEff_coding.py -d joint_genotype_combined.goldenPath.snpeff.hml.vcf.gz -p SnpEff
 ```
 
 Transfer to my laptop and analyze
