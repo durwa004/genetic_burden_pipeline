@@ -39,16 +39,21 @@ $ sbatch /home/durwa004/durwa004/scripts/genetic_burden_pipeline/variant_annotat
 
 #Pull out type of variant
 ```
-$ python /home/durwa004/durwa004/scripts/genetic_burden_pipeline/genetic_burden/python_scripts/Get_type_of_variant_SnpEff_coding.py -d joint_genotype_combined.goldenPath.snpeff.hml.vcf.gz -p SnpEff
-$ python /home/durwa004/durwa004/scripts/genetic_burden_pipeline/genetic_burden/python_scripts/Get_type_of_variant_SnpEff_coding.py -d joint_genotype_combined.goldenPath.snpeff.hml.vcf.gz -p SnpEff
+$ python /home/durwa004/durwa004/scripts/genetic_burden_pipeline/genetic_burden/python_scripts/Get_type_of_variant.py -d joint_genotype_combined.goldenPath.snpeff.hml.vcf.gz -p SnpEff
+$ python /home/durwa004/durwa004/scripts/genetic_burden_pipeline/genetic_burden/python_scripts/Get_type_of_variant.py -d joint_genotype_combined.goldenPath.vep.hml.vcf.gz -p SnpEff
+```
+
+#Get intersect between VEP and SnpEff
+```
+$  /home/durwa004/durwa004/scripts/genetic_burden_pipeline/genetic_burden/python_scripts/Get_intersect_SnpEff_VEP.py
 ```
 
 #Transfer to my laptop and analyze
 ```
 $ scp durwa004@mesabi.msi.umn.edu:/home/durwa004/durwa004/genetic_burden/SnpEff_VEP_intersect.txt GB_project
-$ scp durwa004@mesabi.msi.umn.edu:/home/durwa004/durwa004/genetic_burden/SnpEffVEP.intersect.txt GB_project
-$ variant_type_analysis.R
-$ GB_paper_tables.R
+$ scp durwa004@mesabi.msi.umn.edu:/home/durwa004/durwa004/genetic_burden/SnpEff.VEP.intersect.txt GB_project
+$  /home/durwa004/durwa004/scripts/genetic_burden_pipeline/R_analysis/variant_type_analysis.R
+$ /home/durwa004/durwa004/scripts/genetic_burden_pipeline/R_analysis/GB_paper_tables.R
 ```
 
 #Get number of variants by individual
@@ -58,6 +63,11 @@ $ scp durwa004@mesabi.msi.umn.edu:/home/durwa004/durwa004/genetic_burden/SnpEffV
 $ variant_type_analysis.R
 ```
 
+#Get gene names: https://biodbnet-abcc.ncifcrf.gov/db/db2db.php (ensembl gene ID - gene ID)
+```
+$ scp durwa004@mesabi.msi.umn.edu:/home/durwa004/durwa004/genetic_burden/SnpEff.genes.txt GB_project/
+$ scp durwa004@mesabi.msi.umn.edu:/home/durwa004/durwa004/genetic_burden/VEP.genes.txt GB_project/
+```
 
 
 
