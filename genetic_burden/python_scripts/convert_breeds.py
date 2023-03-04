@@ -20,7 +20,9 @@ with open("horse_genomes_breeds_all.txt", "r") as input_file, open("horse_genome
     print("horse_id", "breed",  file = output_file, sep = "\t")
     input_file.readline()
     for line in input_file:
-        horse,breed,NA = line.rstrip("\n").split("\t")
+        line = line.rstrip("\n").split("\t")
+        horse = line[0]
+        breed = line[1]
         if breed == "Arabian" or breed == "Arab":
             print(horse, "Arabian", file = output_file, sep = "\t")
         elif breed == "Belgian":
@@ -41,6 +43,10 @@ with open("horse_genomes_breeds_all.txt", "r") as input_file, open("horse_genome
             print(horse, "TB", file = output_file, sep = "\t")
         elif breed == "Welsh Pony" or breed == "WP":
             print(horse, "WP", file = output_file, sep = "\t")
+        elif breed == "Franchese Montagne":
+            print(horse, "FM", file = output_file, sep = "\t")
+        elif breed == "Jeju pony":
+            print(horse, "JP", file = output_file, sep = "\t")
         elif breed == "Przewalski":
             next
         else:

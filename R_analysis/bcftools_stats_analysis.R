@@ -12,35 +12,6 @@ library(tidyr)
 #Only include autosomes and chr X (not MT and unplaced contigs)
 setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/bcftools_stats_output/")
 
-###bcftools
-bcftools <- read.table("bcftools_number_of_variants.txt", header=T)
-sum(bcftools$no_records)
-sum(bcftools$no_SNPs)
-sum(bcftools$no_MNPs)
-sum(bcftools$no_indels)
-sum(bcftools$no_multiallelic_sites)
-sum(bcftools$no_nultiallelic_SNPs)
-mean(bcftools$tstv)
-
-###gatk
-gatk <- read.table("gatk_number_of_variants.txt", header=T)
-sum(gatk$no_records)
-sum(gatk$no_SNPs)
-sum(gatk$no_MNPs)
-sum(gatk$no_indels)
-sum(gatk$no_multiallelic_sites)
-sum(gatk$no_nultiallelic_SNPs)
-mean(gatk$tstv)
-
-###union
-union <- read.table("../all_variants/union_number_of_variants.txt", header=T)
-sum(union$no_records)
-sum(union$no_SNPs)
-sum(union$no_indels)
-sum(union$no_multiallelic_sites)
-sum(union$no_nultiallelic_SNPs)
-mean(union$tstv)
-
 ###intersect
 intersect <- read.table("../all_variants/intersect_number_of_variants.txt", header=T)
 sum(intersect$no_records)
