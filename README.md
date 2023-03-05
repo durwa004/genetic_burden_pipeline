@@ -63,11 +63,6 @@ $ scp durwa004@mesabi.msi.umn.edu:/home/durwa004/durwa004/genetic_burden/SnpEffV
 $ variant_type_analysis.R
 ```
 
-#Get gene names: https://biodbnet-abcc.ncifcrf.gov/db/db2db.php (ensembl gene ID - gene ID)
-```
-$ scp durwa004@mesabi.msi.umn.edu:/home/durwa004/durwa004/genetic_burden/SnpEff.genes.txt GB_project/
-$ scp durwa004@mesabi.msi.umn.edu:/home/durwa004/durwa004/genetic_burden/VEP.genes.txt GB_project/
-```
 
 
 
