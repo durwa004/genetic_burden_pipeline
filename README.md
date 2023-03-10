@@ -52,15 +52,14 @@ $  /home/durwa004/durwa004/scripts/genetic_burden_pipeline/genetic_burden/python
 ```
 $ scp durwa004@mesabi.msi.umn.edu:/home/durwa004/durwa004/genetic_burden/SnpEff_VEP_intersect.txt GB_project
 $ scp durwa004@mesabi.msi.umn.edu:/home/durwa004/durwa004/genetic_burden/SnpEff.VEP.intersect.txt GB_project
-$  /home/durwa004/durwa004/scripts/genetic_burden_pipeline/R_analysis/variant_type_analysis.R
-$ /home/durwa004/durwa004/scripts/genetic_burden_pipeline/R_analysis/GB_paper_tables.R
+$ /home/durwa004/durwa004/scripts/genetic_burden_pipeline/R_analysis/GB_paper.R
 ```
 
 #Get number of variants by individual
 ```
 $ Get_genetic_burden_by_individual.py
 $ scp durwa004@mesabi.msi.umn.edu:/home/durwa004/durwa004/genetic_burden/SnpEffVEP.intersect.individual.txt GB_project
-$ variant_type_analysis.R
+$  /home/durwa004/durwa004/scripts/genetic_burden_pipeline/R_analysis/GB_paper.R
 ```
 
 
