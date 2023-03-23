@@ -3,6 +3,12 @@ Scripts and tools to estimate the genetic burden as part of my first aim of my t
 
 #Input vcfs (SNPs and indels): /panfs/jay/groups/6/durwa004/shared/PopulationVCF
 
+#Remove two individuals with very high GB (>3 SDs higher than the mean)
+
+```
+$ gatk SelectVariants -V /home/durwa004/shared/PopulationVCF/joint_genotype_combined.goldenPath.vep.vcf.gz --exclude-sample-name M989 --exclude-sample-name M6468 -O joint_genotype_subset.vep.vcf
+```
+
 # Get tidy breeds (i.e. with other)
 ```
 $ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/convert_breeds.py
