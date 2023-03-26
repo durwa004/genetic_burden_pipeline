@@ -68,12 +68,18 @@ $ scp durwa004@mesabi.msi.umn.edu:/home/durwa004/durwa004/genetic_burden/SnpEffV
 $  /home/durwa004/durwa004/scripts/genetic_burden_pipeline/R_analysis/GB_paper.R
 ```
 
-#Outliers
+#Outliers - thesis union
 ```
+$ Extract_bcftools_stats_ind.py
 $ gatk SelectVariants -R /home/durwa004/durwa004/GCF_002863925.1_EquCab3.0_genomic/GCF_002863925.1_EquCab3.0_genomic.fasta -V thesis_union.vcf.gz -O thesis_union.intersect.vcf -L /home/durwa004/durwa004/genetic_burden/SnpEff.VEP.in
 tersect.pos.list    
 $ Get_genetic_burden_by_ind.py
 $ scp durwa004@mesabi.msi.umn.edu:/scratch.global/marlo072/CheckHorses/thesis_union/tu.SnpEff.VEP.intersect.individual.txt GB_project
+```
+#Outliers - thesis intersect
+```
+$ s3cmd sync s3://durwa004_2019/thesis_analysis/thesis_intersect/thesis_intersect/thesis_intersect.vcf.gz ../thesis_intersect/                                                                                     
+$ Extract_bcftools_stats_ind.py
 $ gatk SelectVariants -R /home/durwa004/durwa004/GCF_002863925.1_EquCab3.0_genomic/GCF_002863925.1_EquCab3.0_genomic.fasta -V thesis_intersect.vcf.gz -O thesis_intersect.intersect.vcf.gz -L /home/durwa004/durwa004/genetic_burden/SnpEff.VEP.intersect.pos.list
 $ Get_genetic_burden_by_ind.py
 $ scp durwa004@mesabi.msi.umn.edu:/scratch.global/marlo072/CheckHorses/thesis_intersect/ti.SnpEff.VEP.intersect.individual.txt GB_project
