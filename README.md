@@ -74,6 +74,7 @@ $ gatk SelectVariants -R /home/durwa004/durwa004/GCF_002863925.1_EquCab3.0_gen
 omic/GCF_002863925.1_EquCab3.0_genomic.fasta -V thesis_union.vcf.gz -O thesis_union.intersect.vcf -L /home/durwa004/durwa004/genetic_burden/SnpEff.VEP.in
 tersect.pos.list    
 $ Get_genetic_burden_by_ind.py
+$ scp durwa004@mesabi.msi.umn.edu:/scratch.global/marlo072/CheckHorses/thesis_union/tu.SnpEff.VEP.intersect.individual.txt GB_project
 ```
 
 
