@@ -85,8 +85,11 @@ $ Get_genetic_burden_by_ind.py
 $ scp durwa004@mesabi.msi.umn.edu:/scratch.global/marlo072/CheckHorses/thesis_intersect/ti.SnpEff.VEP.intersect.individual.txt GB_project
 ```
 
-
-
+####Remove M989 and M6468
+```
+$ sbatch ../scripts/genetic_burden_pipeline/genetic_burden/pbs_scripts/bcftools_view_subset.slurm 
+```
+#Then run through steps above
 
 ###OLD###
 #Pull out type of variant - coding
