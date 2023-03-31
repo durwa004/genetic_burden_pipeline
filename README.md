@@ -46,7 +46,7 @@ $ sbatch /home/durwa004/durwa004/scripts/genetic_burden_pipeline/variant_annotat
 #Pull out type of variant
 ```
 $ python /home/durwa004/durwa004/scripts/genetic_burden_pipeline/genetic_burden/python_scripts/Get_type_of_variant.py -d joint_genotype_combined.goldenPath.snpeff.hml.vcf.gz -p SnpEff
-$ python /home/durwa004/durwa004/scripts/genetic_burden_pipeline/genetic_burden/python_scripts/Get_type_of_variant.py -d joint_genotype_combined.goldenPath.vep.hml.vcf.gz -p SnpEff
+$ python /home/durwa004/durwa004/scripts/genetic_burden_pipeline/genetic_burden/python_scripts/Get_type_of_variant.py -d joint_genotype_combined.goldenPath.vep.hml.vcf.gz -p VEP
 ```
 
 #Get intersect between VEP and SnpEff
