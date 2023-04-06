@@ -8,49 +8,48 @@ library(scales)
 library(emmeans)
 library(dvmisc)
 library(tidyr)
+library(RColorBrewer)
 
 #Only include autosomes and chr X (not MT and unplaced contigs)
-setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/bcftools_stats_output/")
+setwd("/Users/durwa004/Documents/Research/GB_project/")
 
-###bcftools
-bcftools <- read.table("bcftools_number_of_variants.txt", header=T)
-sum(bcftools$no_records)
-sum(bcftools$no_SNPs)
-sum(bcftools$no_MNPs)
-sum(bcftools$no_indels)
-sum(bcftools$no_multiallelic_sites)
-sum(bcftools$no_nultiallelic_SNPs)
+###Number of variants by individual
+bcftools <- read.table("ind_number_of_variants.txt", header=T)
+bcftools$nVariants <- bcftools$nSNPs + bcftools$indels
+mean(bcftools$nVariants)
+mean(bcftools$nSNPs)
+mean(bcftools$indels)
 mean(bcftools$tstv)
+mean(bcftools$DOC)
+range(bcftools$DOC)
 
-###gatk
-gatk <- read.table("gatk_number_of_variants.txt", header=T)
-sum(gatk$no_records)
-sum(gatk$no_SNPs)
-sum(gatk$no_MNPs)
-sum(gatk$no_indels)
-sum(gatk$no_multiallelic_sites)
-sum(gatk$no_nultiallelic_SNPs)
-mean(gatk$tstv)
+#Look for correlation between number of variants and DOC with line of best fit 
+x = ggplot(bcftools, aes(x=DOC,y=nVariants)) + theme_bw() + ylab("Number of variants") + 
+  xlab("Depth of coverage") + geom_point(aes(color=breed)) + 
+  scale_x_continuous(breaks = seq(0,50,5)) + scale_color_brewer(palette="Paired") +
+  labs(title = "Figure 1. Relationship between number of variants identified and depth of coverage.",
+       subtitle = "Correlation between number of variants identified and depth of coverage (DOC) for each of the 607 horses. The blue\nline represents the non-linear correlation between number of variants identified and DOC, with gray shadowing\nrepresenting the 95% confidence intervals. The colored points represent the 10 target horse breeds and the\nremaining horses (Other).") + 
+  scale_y_continuous(breaks = seq(0,8000000,1000000), labels=comma, limits = c(0,8000000)) + geom_smooth() +
+  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
+        axis.line.y = element_line(), 
+        axis.text = element_text(size=8), axis.title = element_text(size=10,face="bold"),
+        legend.title = element_blank(),
+        plot.title = element_text(size=10, face = "bold", hjust = 0),
+        plot.subtitle = element_text(size=8, hjust = 0),
+        plot.title.position = "plot")
+save_plot("figure_1.tiff", x, base_height = 4, base_width = 6)
 
-###union
-union <- read.table("../all_variants/union_number_of_variants.txt", header=T)
-sum(union$no_records)
-sum(union$no_SNPs)
-sum(union$no_indels)
-sum(union$no_multiallelic_sites)
-sum(union$no_nultiallelic_SNPs)
-mean(union$tstv)
+#Show interaction between nvariants and DOC
+fit1 <- (lm(nVariants ~ breed, data=bcftools))
+fit2 <- (lm(nVariants ~ breed + DOC, data=bcftools))
+anova(fit1,fit2)
 
-###intersect
-intersect <- read.table("../all_variants/intersect_number_of_variants.txt", header=T)
-sum(intersect$no_records)
-intersect_snp <- sum(intersect$no_SNPs)
-intersect_indel <- sum(intersect$no_indels)
-intersect_tstv <- mean(intersect$tstv)
-intersect$variant_ratio <- intersect$no_records/intersect$chrom_length
-intersect$snp_ratio <- intersect$no_SNPs/intersect$chrom_length
-intersect$indel_ratio <- intersect$no_indels/intersect$chrom_length
-sum(intersect$no_multiallelic_sites)
+variants_DOC <- (lm(nVariants ~ breed + DOC,data=bcftools))
+summary(variants_DOC)
+
+
+#####
+
 
 #Number of variants by chromosome length
 x = ggplot(intersect, aes(x=CHROM, y=variant_ratio)) + theme_bw() + ylab("Variant:chr length") + 
@@ -102,74 +101,7 @@ jpeg("HC_bcftools_intersect_indel_venn.jpeg",width=6,height=6,units="in",res=135
 plot(vcombo,show=list(SetLabels=FALSE,FaceText=FALSE,Faces=FALSE))
 dev.off()
 
-####Figure out number of variants per individual for bcftools/gatk
-bcftools_stats <- read.table("bcftools_ind_number_of_variants.txt",header=T)
-bcftools_stats$nvariants <- bcftools_stats$nNonRefHom + bcftools_stats$nHets
-mean(bcftools_stats$nvariants)
-mean(bcftools_stats$nIndels)
-mean(bcftools_stats$nNonRefHom)
-mean(bcftools_stats$nHets)
-bcftools_stats$tstv <- bcftools_stats$Ts/bcftools_stats$Tv
-mean(bcftools_stats$tstv)
-mean(bcftools_stats$nHets/bcftools_stats$nNonRefHom)
 
-gatk_stats <- read.table("gatk_ind_number_of_variants.txt",header=T)
-gatk_stats$nvariants <- gatk_stats$nNonRefHom + gatk_stats$nHets
-mean(gatk_stats$nvariants)
-mean(gatk_stats$nIndels)
-mean(gatk_stats$nNonRefHom)
-mean(gatk_stats$nHets)
-gatk_stats$tstv <- gatk_stats$Ts/gatk_stats$Tv
-mean(gatk_stats$tstv)
-mean(gatk_stats$nHets/gatk_stats$nNonRefHom)
-
-####Union
-union_stats <- read.table("union_by_ind_number_of_variants.txt",header=T)
-union_stats$nvariants <- union_stats$nNonRefHom + union_stats$nHets
-mean(union_stats$nvariants)
-mean(union_stats$nIndels)
-mean(union_stats$nNonRefHom)
-mean(union_stats$nHets)
-mean(union_stats$nHets/union_stats$nNonRefHom)
-
-####Figure out number of variants per individual
-intersect_stats <- read.table("intersect_by_ind_number_of_variants.txt",header=T)
-intersect_stats$nvariants <- intersect_stats$nNonRefHom + intersect_stats$nHets
-mean(intersect_stats$nvariants)
-mean(intersect_stats$nIndels)
-mean(intersect_stats$nNonRefHom)
-mean(intersect_stats$nHets)
-intersect_stats$tstv <- intersect_stats$Ts/intersect_stats$Tv
-
-#Get number of heterozygous variants and number of homozygous variants per kb of sequence
-#taken from NCBI (2,474.93 Mb, 2,474,930 kb)
-intersect_stats$het_kb <- intersect_stats$nHets /2474930
-intersect_stats$hom_kb <- intersect_stats$nNonRefHom /2474930
-intersect_stats$nvariants_kb <- intersect_stats$nvariants /2474930
-mean(intersect_stats$het_kb)
-range(intersect_stats$het_kb)
-mean(intersect_stats$hom_kb)
-range(intersect_stats$hom_kb)
-mean(intersect_stats$nvariants_kb)
-range(intersect_stats$nvariants_kb)
-
-#Add in DOC info
-DOC <- read.table("../DOC/DOC_by_horse.txt", header=T)
-colnames(DOC) = c("Sample", "total_DOC","nuclear_placed_DOC")
-intersect_doc <- merge(intersect_stats,DOC, by="Sample")
-summary(intersect_doc$nuclear_placed_DOC)
-intersect_doc$HetNRHomratio <- intersect_doc$nHets/intersect_doc$nNonRefHom
-
-table(intersect_doc$breed)
-
-kruskal.test(intersect_doc$HetNRHomratio, intersect_doc$breed)
-kruskal.test(intersect_doc$tstv, intersect_doc$nuclear_placed_DOC)
-
-intersect_br <- intersect_doc %>% 
-  filter(!grepl('Other', breed))  %>% filter(rowSums(is.na(.)) != ncol(.))
-
-kruskal.test(intersect_br$HetNRHomratio, intersect_br$breed)
-kruskal.test(intersect_br$tstv, intersect_br$breed)
 
 summary(lm(intersect_br$tstv ~ intersect_br$breed))
 gb_m <- (lm(tstv ~ breed + nuclear_placed_DOC,data=intersect_br))
@@ -246,54 +178,7 @@ gb_t$ne <- as.numeric(gb_t$ne)
 cor.test(x=gb_t$ne,y=gb_t$nvariants, method = "pearson", use='complete.obs')
 cor.test(x=gb_t$ne,y=gb_t$nhom, method = "pearson", use='complete.obs')
 
-#Plot DOC histogram
-x = ggplot(intersect_doc, aes(x=nuclear_placed_DOC)) + theme_bw() + ylab("Frequency") + 
-  xlab("Depth of coverage") + geom_histogram() +scale_y_continuous(labels=comma) + 
-  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
-        axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-save_plot("535_individuals_DOC.tiff", x, base_height = 3.5, base_width = 6)
 
-#Look for correlation between number of variants and DOC with line of best fit 
-x = ggplot(intersect_doc, aes(x=nuclear_placed_DOC,y=nvariants)) + theme_bw() + ylab("Number of variants") + 
-  xlab("Depth of coverage") + geom_point() + scale_x_continuous(limits = c(0,50))+
-  scale_y_continuous(labels=comma, limits = c(0,8000000)) + geom_smooth() +
-  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
-        axis.line.y = element_line(), axis.text.x = element_text(angle=90), axis.text = element_text(size=10), 
-        axis.title = element_text(size=12,face="bold"))
-save_plot("/Users/durwa004/Documents/Postdoc/Papers_for_publication/Nature_genetics/Post_thesis/Draft_April_6/Figures/DOC_nvariants_breed.tiff", x, base_height = 3.5, base_width = 6)
-
-#split DOC into quartiles
-i_stats$DOC <- with(i_stats,cut(nuclear_placed_DOC, breaks=quantile(nuclear_placed_DOC,
-                                                                    probs=seq(0,1,by=0.25)),include.lowest = TRUE))
-levels(i_stats$DOC) <- c("Q1", "Q2", "Q3", "Q4")
-
-#Show interaction between nvariants and DOC
-variants_DOC <- (lm(variants ~ v_type + breed + DOC,data=i_stats))
-
-x = emmip(variants_DOC, breed ~ DOC, cov.reduce = FALSE, 
-          type = "response") + theme_bw() + xlab("DOC quantiles") + 
-  ylab("Number of variants") +scale_y_continuous(labels=comma, limits= c(2500000,4500000)) +
-  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
-        axis.line.y = element_line(), axis.text.x = element_text(), axis.text = element_text(size=10), 
-        axis.title = element_text(size=12,face="bold"),
-        legend.title = element_blank()) 
-save_plot("../Paper_2019/Chapter_1_genetic_variation/Figures/Relationship_between_nvariants_DOC.tiff", x, base_height = 3.5, base_width = 8)
-
-
-#Add in breed colors
-x = ggplot(intersect_doc, aes(x=nuclear_placed_DOC,y=nvariants)) + theme_bw() + ylab("Number of variants") + 
-  xlab("Depth of coverage") + geom_point(aes(color=breed)) + scale_x_continuous(limits = c(0,50))+
-  scale_y_continuous(labels=comma, limits = c(0,8000000)) + geom_smooth() +
-  theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
-        axis.line.y = element_line(), axis.text.x = element_text(angle=90), 
-        axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"),
-        legend.title = element_blank())
-save_plot("/Users/durwa004/Documents/Postdoc/Papers_for_publication/Nature_genetics/Post_thesis/Draft_April_6/Figures/DOC_nvariants_breed.tiff", x, base_height = 3.5, base_width = 6)
-
-
-fit1 <- (lm(nvariants ~ breed, data=intersect_stats_br))
-fit2 <- (lm(nvariants ~ breed + nuclear_placed_DOC, data=intersect_stats_br))
-anova(fit1,fit2)
 
 #Need to combine the nvariants, nhet, nNonRefHom into one column, with a different variable
 #to explain what

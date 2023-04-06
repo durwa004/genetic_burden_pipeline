@@ -5,6 +5,70 @@ library(ggthemes)
 library(reshape2)
 library(dplyr)
 
+test <- read.table("/Users/durwa004/Downloads/genetic_burden_details.txt", header = T)
+test2 <- test[,1:2]
+test$pos <- NULL
+test$chrom <- NULL
+ID_test <- colnames(test)
+het_test <- data.frame(colSums(test == "het"))
+colnames(het_test) <- "het_test"
+hom_test <- as.data.frame(colSums(test == "hom"))
+colnames(hom_test) <- "hom_test"
+
+test.df <- cbind(ID_test, het_test$het_test, hom_test$hom_test)
+test.df <- as.data.frame(test.df)
+colnames(test.df) <- c("ID", "het_test", "hom_test")
+test.df$het_test <- as.numeric(test.df$het_test)
+test.df$hom_test <- as.numeric(test.df$hom_test)
+
+test.df$GB <- test.df$het_test + test.df$hom_test
+
+####Look for outliers
+test.df$hom_l <- log10(test.df$hom_test)
+test.df$het_l <- log10(test.df$het_test)
+
+lower_bound <- quantile(test.df$het_test, 0.01)
+upper_bound <- quantile(test.df$het_test, 0.99)
+highlight_df1 <- test.df %>%
+  filter(het_test > upper_bound)
+highlight_df2 <- test.df %>%
+  filter(het_test < lower_bound)
+
+test.df %>% 
+  ggplot(aes(x=ID, y = het_test))+ 
+  scale_color_brewer(palette = "Paired") + 
+  geom_point(alpha=0.3) + 
+  geom_point(data=highlight_df1, 
+             aes(x=ID, y = het_test, 
+                 color= ID),
+             size=3)+ 
+  geom_point(data=highlight_df2, 
+             aes(x=ID, y = het_test, 
+                 color= ID),
+             size=3) 
+
+
+lower_bound <- quantile(test.df$hom_test, 0.01)
+upper_bound <- quantile(test.df$hom_test, 0.99)
+highlight_df1 <- test.df %>%
+  filter(hom_test > upper_bound)
+highlight_df2 <- test.df %>%
+  filter(hom_test < lower_bound)
+
+test.df %>% 
+  ggplot(aes(x=ID, y = hom_test)) + 
+  geom_point(alpha=0.3) + 
+  geom_point(data=highlight_df1, 
+             aes(x=ID, y = hom_test, 
+                 color= ID),
+             size=3)
+
+
+
+
+
+
+
 setwd("/Users/durwa004/Documents/Postdoc/PhD_papers_for_publication/Nature_genetics/Post_thesis/OMIA_variants/")
 #Need to restructure my data: disease/breed/genotype/count
 data1 <- read.table("variants_by_individual_R.txt", header=T)

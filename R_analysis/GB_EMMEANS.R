@@ -8,27 +8,43 @@ library(emmeans)
 library(scales)
 library(dvmisc)
 library(tidyr)
+library(gt)
+library(tidyverse)
 
+setwd("/Users/durwa004/Documents/Research/GB_project")
 ####Figure out differences in the number of variants per breed
-
-
-
 ###Individual GB
-setwd("/Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/gb_analysis/")
+#use ind
 
-#GB
-data = read.table("ann_se_gb_by_individual.txt", header=F) # V3 = het, V4 = hom, V5 = missing?
-data$total = data$V3 + data$V4
-mean(data$total) 
-range(data$total)
-mean(data$V3)
-range(data$V3)
-mean(data$V4)
-range(data$V4)
 
 #Look for association between breed and genetic burden accounting for DOC
-#Add in DOC info
-DOC <- read.table("../DOC/DOC_by_horse.txt", header=T)
+#Add in DOC and breed info 
+bcftools <- read.table("ind_number_of_variants.txt", header=T)
+
+#Add in breed information
+breed <- read.table("horse_genomes_breeds_all.txt", header = T)
+colnames(breed) <- c("ID", "breed")
+bcftools <- merge(bcftools, breed, "ID")
+bcftools <- bcftools %>%
+  mutate(across('Breed', str_replace_all, "_", " ")) %>%
+  mutate(across('Breed', str_replace, "_", " ")) %>%
+  mutate(across('Breed', str_replace, "_", " ")) %>%
+  mutate(across('Breed', str_replace, "_x", " x")) %>%
+  mutate(across('Breed', str_replace, "Uknown", "Unknown")) %>%
+  mutate(across('Breed', str_replace, "Trakenher", "Trakehner")) %>%
+  mutate(across('Breed', str_replace, "Halflinger", "Haflinger")) %>%
+  mutate(across('Breed', str_replace, "Hanovarian", "Hanoverian")) %>%
+  mutate(across('Breed', str_replace, "ColdBlood", "Coldblood")) %>%
+  mutate(across('Breed', str_replace, "Other horse", "Unknown")) %>%
+  mutate(across('Breed', str_replace, "Pony", "Unknown")) %>%
+  mutate(across('Breed', str_replace, "QH", "Quarter Horse")) %>%
+  mutate(across('Breed', str_replace, "STB", "Standardbred")) %>%
+  mutate(across('Breed', str_replace, "TB", "Thoroughbred")) %>%
+  mutate(across('Breed', str_replace, "WarmBlood", "Warmblood")) %>%
+  mutate(across('Breed', str_replace, "TWH", "Tennessee Walking Horse")) %>%
+  mutate(across('Breed', str_replace, "duelmener", "Dulmener"))
+
+
 colnames(DOC) <- c("Sample", "total_DOC", "nuclear_placed_DOC")
 colnames(data) = c("Sample", "breed", "het", "hom", "missing", "total")
 gb_doc <- merge(data,DOC, by="Sample")
