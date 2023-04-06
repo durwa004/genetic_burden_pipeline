@@ -70,7 +70,9 @@ with open("SnpEff_VEP_intersect.txt", "w") as output_f:
 ##Transfer to laptop to create table of SnpEff/VEP overlap
 ##Get only H:H, M:H, and H:M variants
 snpeff = {}
+
 with open("SnpEff.hml.txt", "r") as input_f, open("SnpEff.intersect.txt", "w") as outputf:
+#with open("SnpEff.hml.txt", "r") as input_f, open("SnpEff.mod.intersect.txt", "w") as outputf:
     a = input_f.readline()
     a = a.rstrip("\n").split("\t")
     alpha = ":".join(a[0:6])
@@ -85,6 +87,7 @@ with open("SnpEff.hml.txt", "r") as input_f, open("SnpEff.intersect.txt", "w") a
                 line[i] = "NA"
         if b in intersect.keys():
             if intersect[b] == "HIGH_HIGH" or intersect[b] == "MODERATE_HIGH" or intersect[b] == "HIGH_MODERATE":
+#            if intersect[b] == "MODERATE_MODERATE" or intersect[b] == "MODERATE_LOW" or intersect[b] == "LOW_MODERATE":
                 print(intersect[b], key, "\t".join(line), sep = "\t", file = outputf)
                 c = ":".join(line[6:])
                 snpeff[b] = c
@@ -92,6 +95,7 @@ with open("SnpEff.hml.txt", "r") as input_f, open("SnpEff.intersect.txt", "w") a
                 next
 
 with open("VEP.hml.txt", "r") as input_f, open("VEP.intersect.txt", "w") as outputf, open("SnpEff.VEP.intersect.txt", "w") as outputf2:
+#with open("VEP.hml.txt", "r") as input_f, open("VEP.mod.intersect.txt", "w") as outputf, open("SnpEff.VEP.mod.intersect.txt", "w") as outputf2: 
     for key in snpeff.keys():
         if "chrom" in key:
             aa = key.split(":")
@@ -111,14 +115,11 @@ with open("VEP.hml.txt", "r") as input_f, open("VEP.intersect.txt", "w") as outp
                 line[i] = "NA"
         if b in intersect.keys():
             if intersect[b] == "HIGH_HIGH" or intersect[b] == "MODERATE_HIGH" or intersect[b] == "HIGH_MODERATE":
+            if intersect[b] == "MODERATE_MODERATE" or intersect[b] == "MODERATE_LOW" or intersect[b] == "LOW_MODERATE":
                 print(intersect[b], key, "\t".join(line), sep = "\t", file = outputf)
                 dd = snpeff[b].split(":")
                 print(intersect[b], "\t".join(line[0:6]), "\t".join(dd), "\t".join(line[6:]), sep = "\t", file = outputf2)
    
-
- 
-
-
 
 
 #####################May not use

@@ -3,20 +3,9 @@ import gzip
 
 #Get details of frequency of known variants
 
-#directory = "/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/known_variants/OMIA_variants"
-directory = "/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/known_variants/known_variants_May_2020/"
-#Get breed info
-horse_breed = {}
-with open(directory + "/../../../horse_genomes_breeds_tidy.txt", "r") as input_file:
-    input_file.readline()
-    for line in input_file:
-        line = line.rstrip("\n").split("\t")
-        horse_breed[line[0]] = line[1]
-horse_breed['TWILIGHT'] = "TB"
-                    
 #Get list of horse ids in order of vcf.
 header = []
-with gzip.open(directory + "/../../SnpEff/thesis_intersect_snpeff.ann.vcf.gz", "rt") as input_file:
+with gzip.open("../../shared/PopulationVCF/joint_genotype_combined.goldenPath.vep.vcf.gz", "rt") as input_file:
     for line in input_file:
         line = line.rstrip("\n").split("\t")
         if "#CHROM" in line[0]:
@@ -24,20 +13,40 @@ with gzip.open(directory + "/../../SnpEff/thesis_intersect_snpeff.ann.vcf.gz", "
                 header.append(line[i])
             break
 
-#Get breed in same order as header
-breed = []
-for i in range(len(header)):
-    if header[i] in horse_breed.keys():
-        breed.append(horse_breed[header[i]])
-
+header[0] = "CHROM"
 #Get variant details for each horse
-with open(directory + "No_variants_present.txt", "w") as output_file, open(directory + "/known_variants_present.txt", "w") as output2:
-    print("Phenotype", "chrom", "pos", "ref", "alt", "n_het", "n_hom","AC", "AF", "\t".join(header[9:]), sep = "\t", file = output2)
-    print("NA", "NA", "NA", "NA", "NA", "NA", "NA","NA", "NA", "\t".join(breed), sep = "\t", file = output2)
-    for filename in os.listdir(directory + "/tabix_files/"):
+count = len(header)
+details = []
+for i in range(count):
+    details.append("NA")
+
+with open("known_variants_genotypes.txt", "w") as output2:
+    print("Phenotype\tAC\tAF\timpact\tconsequence", "\t".join(header), sep = "\t", file = output2)
+    for filename in os.listdir("known_variants/"):
         if filename.endswith(".txt"):
-            with open(directory + "/tabix_files/" + filename, "r") as input_file:
-                if os.stat(directory + "/tabix_files/" + filename).st_size !=0:
+            with open("known_variants/" + filename, "r") as input_file:
+                if os.stat("known_variants/" + filename).st_size !=0:
+                    for line in input_file:
+                        line = line.rstrip("\n").split("\t")
+                        filename1 = filename.split(".txt")
+                        print(filename1[0], "\t".join(line),sep = "\t", file = output2)
+                else:
+                    filename1 = filename.split(".txt")
+                    print(filename1[0], "\t".join(details), sep = "\t", file = output2)
+
+
+
+
+
+
+
+################This may be redundant########
+with open("No_variants_present.txt", "w") as output_file, open("known_variants_present.txt", "w") as output2:
+    print(, "n_hom","AC", "AF", "\t".join(header[9:]), sep = "\t", file = output2)
+    for filename in os.listdir("known_variants/"):
+        if filename.endswith(".txt"):
+            with open("known_variants/" + filename, "r") as input_file:
+                if os.stat"known_variants/tabix_files/" + filename).st_size !=0:
                     for line in input_file:
                         genotype = []
                         count = 0

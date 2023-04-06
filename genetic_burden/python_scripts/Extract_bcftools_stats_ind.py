@@ -8,7 +8,6 @@ Created on Mon Aug  5 11:04:17 2019
 
 import argparse
 import os
-
 def make_arg_parser():
     parser = argparse.ArgumentParser(
             prog="GeneratePBS.py",

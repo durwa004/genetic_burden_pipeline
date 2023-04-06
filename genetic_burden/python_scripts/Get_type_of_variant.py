@@ -33,7 +33,7 @@ if __name__ == '__main__':
         prog2 = "CSQ="
 
 #Goal is to convert the snpeff output to a useable text file for analysis, so that we can get a union file of snpeff and annovar output.
-with gzip.open(data, "rt") as input_file, open(f"{prog}.hml.txt", "w") as output_file:
+with gzip.open(data, "rt") as input_file, open(f"{prog}.hml.txt", "w") as output_file, open(f"{prog}.genes.txt", "w") as output2:
     high = 0
     mod = 0
     low = 0
@@ -79,6 +79,10 @@ with gzip.open(data, "rt") as input_file, open(f"{prog}.hml.txt", "w") as output
                             for item, value in enumerate(fg[1:]):
                                 if item == 30:
                                     break
+                                elif item == 3 or item == 2 or item == 5:
+                                    value = value.split(".")
+                                    plant.append(value[0])
+                                    print(value[0], file = output2)
                                 elif value == "":
                                     plant.append("N")
                                 else:
@@ -123,6 +127,10 @@ with gzip.open(data, "rt") as input_file, open(f"{prog}.hml.txt", "w") as output
                 for item, value in enumerate(fg[1:]):
                     if item == 30:
                         break
+                    elif item == 3 or item == 2 or item == 5:
+                        value = value.split(".")
+                        plant.append(value[0])
+                        print(value[0], file = output2)
                     elif value == "":
                         plant.append("N")
                     else:

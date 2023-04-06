@@ -14,9 +14,8 @@
 conda activate ensembl-vep
 module load bcftools
 cd ~/genetic_burden/ 
+bcftools stats -S horse_IDs.txt joint_genotype_subset.vep.vcf.gz > joint_genotype_subset.vep.ind.stats
 
-#bcftools stats -S horse_IDs.txt /panfs/jay/groups/6/durwa004/shared/PopulationVCF/joint_genotype.goldenPath.vep.vcf.gz > bcftools_stats_per_horse.stats
+cd /scratch.global/marlo072/CheckHorses/thesis_union/
+bcftools stats -S /home/durwa004/durwa004/genetic_burden/horse_IDs.txt /scratch.global/marlo072/CheckHorses/thesis_union/thesis_union.vcf.gz > /scratch.global/marlo072/CheckHorses/thesis_union/thesis_union.ind.stats
 
-#bcftools stats -S horse_IDs.txt /panfs/jay/groups/6/durwa004/shared/PopulationVCF/joint_genotype_indels.goldenPath.vep.vcf.gz > bcftools_stats_indels_per_horse.stats
-
-bcftools stats -S horse_IDs.txt /panfs/jay/groups/6/durwa004/shared/PopulationVCF/joint_genotype_combined.goldenPath.vep.vcf.gz > bcftools_stats_combined_per_horse.stats

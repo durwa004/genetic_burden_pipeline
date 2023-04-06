@@ -15,7 +15,14 @@ conda activate ensembl-vep
 
 cd /home/durwa004/durwa004/genetic_burden/
 
-filter_vep --format vcf -i joint_genotype_combined.goldenPath.vep.vcf --filter "(IMPACT = HIGH) or (IMPACT = MODERATE) or (IMPACT = LOW)" -o joint_genotype_combined.goldenPath.vep.hml.vcf --force_overwrite
-
+#filter_vep --format vcf -i joint_genotype_combined.goldenPath.vep.vcf --filter "(IMPACT = HIGH) or (IMPACT = MODERATE) or (IMPACT = LOW)" -o joint_genotype_combined.goldenPath.vep.hml.vcf --force_overwrite
+gunzip joint_genotype.goldenPath.vep.subset.vcf.gz 
+filter_vep --format vcf -i joint_genotype.goldenPath.vep.subset.vcf --filter "(IMPACT = HIGH) or (IMPACT = MODERATE) or (IMPACT = LOW)" -o joint_genotype.vep.subset.hml.vcf --force_overwrite
 #--gtf /home/durwa004/shared/VEPDocs/Equus_caballus.EquCab3.0.103_genomic.nice.gtf --fasta /home/durwa004/shared/VEPDocs/goldenPath.Ec_build-3.0_wMSY.fa  --vcf --force_overwrite
+
+bgzip joint_genotype.vep.subset.hml.vcf
+tabix joint_genotype.vep.subset.hml.vcf.gz 
+bgzip joint_genotype.goldenPath.vep.subset.vcf
+tabix joint_genotype.goldenPath.vep.subset.vcf.gz
+
 

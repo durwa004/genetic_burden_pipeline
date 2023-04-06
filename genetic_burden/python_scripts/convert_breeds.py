@@ -45,8 +45,6 @@ with open("horse_genomes_breeds_all.txt", "r") as input_file, open("horse_genome
             print(horse, "WP", file = output_file, sep = "\t")
         elif breed == "Franchese Montagne":
             print(horse, "FM", file = output_file, sep = "\t")
-        elif breed == "Jeju pony":
-            print(horse, "JP", file = output_file, sep = "\t")
         elif breed == "Przewalski":
             next
         else:

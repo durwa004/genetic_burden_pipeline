@@ -2,18 +2,14 @@ import gzip
 import os
 
 #Get list of horse ids in order of vcf.
-vcf = "joint_genotype_combined.goldenPath.snpeff.hml.vcf.gz"
+vcf = "joint_genotype.goldenPath.vep.subset.snpeff.hml.vcf.gz"
 breeds_file = "horse_genomes_breeds_tidy.txt"
-het = {}
-hom = {}
 header = []
 with gzip.open(vcf, "rt") as input_file:
     for line in input_file:
         line = line.rstrip("\n").split("\t")
         if "#CHROM" in line[0]:
             for i in range(len(line)):
-                het[line[i]] = 0
-                hom[line[i]] = 0
                 header.append(line[i])
             break
 header = header[9:]
@@ -28,6 +24,7 @@ with open(breeds_file, "r") as input_file:
 
 #Get variant location           
 variants = {}
+#with open("SnpEff.VEP.mod.intersect.txt", "r") as input_f:
 with open("SnpEff.VEP.intersect.txt", "r") as input_f:
     input_f.readline()
     for line in input_f:
@@ -38,8 +35,20 @@ with open("SnpEff.VEP.intersect.txt", "r") as input_f:
         else:
             variants[a] = line[3]
 
+RefSeq = {}
+with open("RefSeq_chromosomes.txt", "r") as input_f:
+    input_f.readline()
+    for line in input_f:
+        line = line.rstrip("\n").split("\t")
+        RefSeq[line[1]] = line[0]
+
 #Get genotypes
+all_gt = []
+#with gzip.open(vcf, "rt") as input_file, open("ibio_SnpEff.VEP.mod.intersect.individual.txt", "w") as output_f, open("mod_non_intersect.txt", "w") as outpu2:
 with gzip.open(vcf, "rt") as input_file, open("SnpEff.VEP.intersect.individual.txt", "w") as output_f, open("non_intersect.txt", "w") as outpu2:
+#with gzip.open(vcf, "rt") as input_file, open("ss.SnpEff.VEP.intersect.individual.txt", "w") as output_f, open("ss_non_intersect.txt", "w") as outpu2:
+#with gzip.open(vcf, "rt") as input_file, open("tu.SnpEff.VEP.intersect.individual.txt", "w") as output_f, open("tu_non_intersect.txt", "w") as outpu2:
+#with gzip.open(vcf, "rt") as input_file, open("ti.SnpEff.VEP.intersect.individual.txt", "w") as output_f, open("ti_non_intersect.txt", "w") as outpu2:
     for line in input_file:
         line = line.rstrip("\n").split("\t")
         if "#CHROM" in line[0]:
@@ -48,7 +57,7 @@ with gzip.open(vcf, "rt") as input_file, open("SnpEff.VEP.intersect.individual.t
                 header.append(v)
             print("CHROM", line[1], line[3], line[4], "\t".join(header), sep = "\t", file = output_f)
 #            print("\t".join(header), sep = "\t", file = output_f)
-        elif "#" in line[0]:
+        elif "#" in line[0] or "NW_" in line[0]:
             next
         else:
             if "," in line[4]:
@@ -56,11 +65,15 @@ with gzip.open(vcf, "rt") as input_file, open("SnpEff.VEP.intersect.individual.t
                 alt = line[4].split(",")
                 loc1 = line[0] + ":" + line[1] + ":" + alt[0]
                 loc2 = line[0] + ":" + line[1] + ":" + alt[1]
+#                loc1 = RefSeq[line[0]] + ":" + line[1] + ":" + alt[0]
+#                loc2 = RefSeq[line[0]] + ":" + line[1] + ":" + alt[1]
                 if loc1 in variants.keys():
                     for i,v in enumerate(line[9:]):
                         gt = v.split(":")
+                        all_gt.append(gt[0])
                         genotypes.append(gt[0])
                     for i in range(len(alt)):
+#                        print(RefSeq[line[0]], line[1], line[3], alt[i], "\t".join(genotypes), sep = "\t", file = output_f)
                         print(line[0], line[1], line[3], alt[i], "\t".join(genotypes), sep = "\t", file = output_f)
 #                        print("\t".join(genotypes), sep = "\t", file = output_f)
                 else:
@@ -71,11 +84,14 @@ with gzip.open(vcf, "rt") as input_file, open("SnpEff.VEP.intersect.individual.t
                         print(a[i], file = outpu2)
             else:
                 genotypes = []
+#                loc1 = RefSeq[line[0]] + ":" + line[1] + ":" + line[4]
                 loc1 = line[0] + ":" + line[1] + ":" + line[4]
                 if loc1 in variants.keys():
                     for i,v in enumerate(line[9:]):
                         gt = v.split(":")
+                        all_gt.append(gt[0])
                         genotypes.append(gt[0])
+#                    print(RefSeq[line[0]], line[1], line[3], line[4], "\t".join(genotypes), sep = "\t", file = output_f)
                     print(line[0], line[1], line[3], line[4], "\t".join(genotypes), sep = "\t", file = output_f)
 #                    print("\t".join(genotypes), sep = "\t", file = output_f)
                 else:
@@ -84,37 +100,15 @@ with gzip.open(vcf, "rt") as input_file, open("SnpEff.VEP.intersect.individual.t
                     a = a[0].split(",")
                     print(a[0], file = outpu2)
 
+#Get all possible genotype values for R analysis
+print(set(all_gt))
 
 
 
 
 
 
-
-
-with open(path + "/genetic_burden_details.txt", "r") as input_file, open(path + "/genetic_burden_by_individual.txt", "w") as output_file:
-                        next
-    for line in input_file:
-        line = line.rstrip("\n").split("\t")
-        ab = line[1] + ":" + line[2]
-        cd = line[9] + ":" + line[15]
-        variant_caller[ab] = cd
-        line1 = line[19:]
-        for i in range(len(line1)):
-             if line1[i] == "het":
-                 c = int(het[header[i]]) +1
-                 het[header[i]] = c
-             elif line1[i] == "hom":
-                 c = int(hom[header[i]]) +1
-                 hom[header[i]] = c
-    for key in het.keys():
-        if key in horse_breed.keys():
-            print(key, horse_breed[key], het[key], hom[key], sep = "\t", file = output_file)
-           line1 = line[9:]
-            for i in range(len(line1)):
-                if "0/1" in line1[i] or "1/1" in line1[i] or "0/2" in line1[i] or "1/2" in line1[i] or "2/2" in line1[i] or "2/1" in line1[i] or "1/3" in line1[i] or "0/3" in line1[i] or "2/3" in line1[i]:
-                     de = gb[c_p] + ":" + horse_breed[header1[i]]
-                     gb[c_p] = de
+###################OLD########
 
 #find variants unique to breeds  
 unique = []
