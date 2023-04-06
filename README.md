@@ -3,6 +3,12 @@ Scripts and tools to estimate the genetic burden as part of my first aim of my t
 
 #Input vcfs (SNPs and indels): /panfs/jay/groups/6/durwa004/shared/PopulationVCF
 
+#Remove two individuals with very high GB (>3 SDs higher than the mean)
+
+```
+$ gatk SelectVariants -V /home/durwa004/shared/PopulationVCF/joint_genotype_combined.goldenPath.vep.vcf.gz --exclude-sample-name M989 --exclude-sample-name M6468 -O joint_genotype_subset.vep.vcf
+```
+
 # Get tidy breeds (i.e. with other)
 ```
 $ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/convert_breeds.py
@@ -24,6 +30,7 @@ $ python ../scripts/genetic_burden_pipeline/genetic_burden/python_scripts/Extrac
 ```
 $ bcftools stats ../../shared/PopulationVCF/joint_genotype_indels.goldenPath.vep.vcf.gz > indels.stats
 $ bcftools stats ../../shared/PopulationVCF/joint_genotype_combined.goldenPath.vep.vcf.gz > SNPs.stats
+```
 
 #Run SnpEff
 ```
@@ -38,17 +45,54 @@ $ sbatch /home/durwa004/durwa004/scripts/genetic_burden_pipeline/variant_annotat
 
 #Pull out type of variant
 ```
-$ python /home/durwa004/durwa004/scripts/genetic_burden_pipeline/genetic_burden/python_scripts/Get_type_of_variant_SnpEff_coding.py -d joint_genotype_combined.goldenPath.snpeff.hml.vcf.gz -p SnpEff
-$ python /home/durwa004/durwa004/scripts/genetic_burden_pipeline/genetic_burden/python_scripts/Get_type_of_variant_SnpEff_coding.py -d joint_genotype_combined.goldenPath.snpeff.hml.vcf.gz -p SnpEff
+$ python /home/durwa004/durwa004/scripts/genetic_burden_pipeline/genetic_burden/python_scripts/Get_type_of_variant.py -d joint_genotype_combined.goldenPath.snpeff.hml.vcf.gz -p SnpEff
+$ python /home/durwa004/durwa004/scripts/genetic_burden_pipeline/genetic_burden/python_scripts/Get_type_of_variant.py -d joint_genotype_combined.goldenPath.vep.hml.vcf.gz -p VEP
 ```
 
-Transfer to my laptop and analyze
+#Get intersect between VEP and SnpEff
 ```
-$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/annovar/annovar_variant_type_all.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/variant_type_analysis/
-$ scp durwa004@login.msi.umn.edu:/home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/joint_gvcf/SnpEff/SnpEff_variant_type_all.txt /Users/durwa004/Documents/PhD/Projects/1000_genomes/GB_project/variant_type_analysis/
-$ variant_type_analysis.R
+$  /home/durwa004/durwa004/scripts/genetic_burden_pipeline/genetic_burden/python_scripts/Get_intersect_SnpEff_VEP.py
 ```
 
+#Transfer to my laptop and analyze
+```
+$ scp durwa004@mesabi.msi.umn.edu:/home/durwa004/durwa004/genetic_burden/SnpEff_VEP_intersect.txt GB_project
+$ scp durwa004@mesabi.msi.umn.edu:/home/durwa004/durwa004/genetic_burden/SnpEff.VEP.intersect.txt GB_project
+$ scp durwa004@mesabi.msi.umn.edu:/home/durwa004/durwa004/genetic_burden/non_intersect.txt GB_project
+$ /home/durwa004/durwa004/scripts/genetic_burden_pipeline/R_analysis/GB_paper.R
+```
+
+#Get number of variants by individual
+```
+$ Get_genetic_burden_by_individual.py
+$ scp durwa004@mesabi.msi.umn.edu:/home/durwa004/durwa004/genetic_burden/SnpEff.VEP.intersect.individual.txt GB_project
+$  /home/durwa004/durwa004/scripts/genetic_burden_pipeline/R_analysis/GB_paper.R
+```
+
+#Outliers - thesis union
+```
+$ Extract_bcftools_stats_ind.py
+$ gatk SelectVariants -R /home/durwa004/durwa004/GCF_002863925.1_EquCab3.0_genomic/GCF_002863925.1_EquCab3.0_genomic.fasta -V thesis_union.vcf.gz -O thesis_union.intersect.vcf -L /home/durwa004/durwa004/genetic_burden/SnpEff.VEP.in
+tersect.pos.list    
+$ Get_genetic_burden_by_ind.py
+$ scp durwa004@mesabi.msi.umn.edu:/scratch.global/marlo072/CheckHorses/thesis_union/tu.SnpEff.VEP.intersect.individual.txt GB_project
+```
+#Outliers - thesis intersect
+```
+$ s3cmd sync s3://durwa004_2019/thesis_analysis/thesis_intersect/thesis_intersect/thesis_intersect.vcf.gz ../thesis_intersect/                                                                                     
+$ Extract_bcftools_stats_ind.py
+$ gatk SelectVariants -R /home/durwa004/durwa004/GCF_002863925.1_EquCab3.0_genomic/GCF_002863925.1_EquCab3.0_genomic.fasta -V thesis_intersect.vcf.gz -O thesis_intersect.intersect.vcf.gz -L /home/durwa004/durwa004/genetic_burden/SnpEff.VEP.intersect.pos.list
+$ Get_genetic_burden_by_ind.py
+$ scp durwa004@mesabi.msi.umn.edu:/scratch.global/marlo072/CheckHorses/thesis_intersect/ti.SnpEff.VEP.intersect.individual.txt GB_project
+```
+
+####Remove M989 and M6468
+```
+$ sbatch ../scripts/genetic_burden_pipeline/genetic_burden/pbs_scripts/bcftools_view_subset.slurm 
+```
+#Then run through steps above
+
+###OLD###
 #Pull out type of variant - coding
 ```
 $ /home/mccuem/shared/Projects/HorseGenomeProject/scripts/EquCab3/genetic_burden_pipeline/genetic_burden/python_scripts/Get_type_of_variant_SnpEff_coding.py 
