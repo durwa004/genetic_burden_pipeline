@@ -71,7 +71,8 @@ $  /home/durwa004/durwa004/scripts/genetic_burden_pipeline/R_analysis/GB_paper.R
 
 #Get known variants
 ```
-$ Get_known_variants.py
+$ Get_type_of_known_variant.py
+$ GB_paper.R
 ```
 
 #Outliers - thesis union
