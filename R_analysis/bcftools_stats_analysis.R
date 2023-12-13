@@ -13,6 +13,7 @@ library(RColorBrewer)
 #Only include autosomes and chr X (not MT and unplaced contigs)
 setwd("/Users/durwa004/Documents/Research/GB_project/")
 
+<<<<<<< HEAD
 ###Number of variants by individual
 bcftools <- read.table("ind_number_of_variants.txt", header=T)
 bcftools$nVariants <- bcftools$nSNPs + bcftools$indels
@@ -50,6 +51,18 @@ summary(variants_DOC)
 
 #####
 
+=======
+###intersect
+intersect <- read.table("../all_variants/intersect_number_of_variants.txt", header=T)
+sum(intersect$no_records)
+intersect_snp <- sum(intersect$no_SNPs)
+intersect_indel <- sum(intersect$no_indels)
+intersect_tstv <- mean(intersect$tstv)
+intersect$variant_ratio <- intersect$no_records/intersect$chrom_length
+intersect$snp_ratio <- intersect$no_SNPs/intersect$chrom_length
+intersect$indel_ratio <- intersect$no_indels/intersect$chrom_length
+sum(intersect$no_multiallelic_sites)
+>>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
 
 #Number of variants by chromosome length
 x = ggplot(intersect, aes(x=CHROM, y=variant_ratio)) + theme_bw() + ylab("Variant:chr length") + 

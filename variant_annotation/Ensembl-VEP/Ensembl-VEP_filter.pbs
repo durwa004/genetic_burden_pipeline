@@ -1,15 +1,28 @@
 #!/bin/bash -l
-#PBS -l nodes=1:ppn=6,walltime=48:00:00,mem=10g
-#PBS -m abe
-#PBS -M durwa004@umn.edu
-#PBS -q mcqueue
+#SBATCH --job-name=VEP.slurm
+#SBATCH --nodes=1 #specify one node
+#SBATCH --ntasks=1
+#SBATCH --time=24:00:00 
+#SBATCH --ntasks=2 
+#SBATCH --mem=10g 
+#SBATCH --mail-type=FAIL 
+#SBATCH --mail-user=durwa004@umn.edu 
+#SBATCH -A durwa004 
+#SBATCH -e VEP.%j.e 
+#SBATCH -o VEP.%j.o 
 
+conda activate ensembl-vep
 
-source /home/mccuem/shared/.local/conda/bin/activate ensembl-vep
+cd /home/durwa004/durwa004/genetic_burden/
 
-cd /home/mccuem/shared/Projects/HorseGenomeProject/Data/ibio_EquCab3/ibio_output_files/
+#filter_vep --format vcf -i joint_genotype_combined.goldenPath.vep.vcf --filter "(IMPACT = HIGH) or (IMPACT = MODERATE) or (IMPACT = LOW)" -o joint_genotype_combined.goldenPath.vep.hml.vcf --force_overwrite
+gunzip joint_genotype.goldenPath.vep.subset.vcf.gz 
+filter_vep --format vcf -i joint_genotype.goldenPath.vep.subset.vcf --filter "(IMPACT = HIGH) or (IMPACT = MODERATE) or (IMPACT = LOW)" -o joint_genotype.vep.subset.hml.vcf --force_overwrite
+#--gtf /home/durwa004/shared/VEPDocs/Equus_caballus.EquCab3.0.103_genomic.nice.gtf --fasta /home/durwa004/shared/VEPDocs/goldenPath.Ec_build-3.0_wMSY.fa  --vcf --force_overwrite
 
-filter_vep -i ibio_union.ensembl-vep.ann --filter "(IMPACT = HIGH) or (IMPACT = MODERATE) or (IMPACT = LOW)" -o ibio_union.high_mod_low.ensembl-vep.txt --format tab
+bgzip joint_genotype.vep.subset.hml.vcf
+tabix joint_genotype.vep.subset.hml.vcf.gz 
+bgzip joint_genotype.goldenPath.vep.subset.vcf
+tabix joint_genotype.goldenPath.vep.subset.vcf.gz
 
-filter_vep -i ibio_intersect.ensembl-vep.ann --filter "(IMPACT = HIGH) or (IMPACT = MODERATE) or (IMPACT = LOW)" -o ibio_intersect.high_mod_low.ensembl-vep.txt --format tab
 
