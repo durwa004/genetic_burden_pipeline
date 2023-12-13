@@ -210,3 +210,23 @@ first_row <- plot_grid(bp1,bp2, labels = c("A", "B"), ncol=1)
 #Save as dual plot
 save_plot("../../Papers_for_publication/Nature_genetics/Figures/QTLs.tiff", first_row, base_height = 12,base_width = 24)
 
+
+
+
+
+
+yy <- ggplot(known_yy, aes(x = phenotype, y = genotype_count, 
+                           fill = Breed, group = genotype)) + 
+  geom_bar_pattern(stat = "identity", aes(pattern = factor(genotype)),
+                   position = position_dodge(width = 1)) +
+  scale_pattern_manual(values = c("none", "stripe")) + 
+  scale_pattern_density_manual(values = c(het = 0, hom = 0.05)) + 
+  scale_fill_manual(values = as.vector(alphabet2(13))) +
+  scale_alpha_manual("Genotype", values = c(0.5,1)) +
+  ylab("Genotype Count") + scale_y_continuous(limits = c(0,25)) + 
+  xlab("Disease causing variants") + 
+  theme(axis.text = element_text(size=12,angle=90,hjust=1),
+        panel.background = element_blank(),
+        legend.title = element_blank(),
+        axis.title = element_text(size=14,face="bold"))
+
