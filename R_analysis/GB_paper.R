@@ -48,10 +48,6 @@ bcf_breed <- bcf_breed %>%
   mutate(across('Breed', str_replace, "WarmBlood", "Warmblood")) %>%
   mutate(across('Breed', str_replace, "TWH", "Tennessee Walking Horse")) %>%
   mutate(across('Breed', str_replace, "duelmener", "Dulmener"))
-<<<<<<< HEAD
-  
-=======
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
 
 mean(bcf_breed$DOC)
 range(bcf_breed$DOC)
@@ -87,13 +83,11 @@ gt_breed <-
     Breed ~ px(150),
     Number ~ px(100),
     DOC ~ px(100)
-<<<<<<< HEAD
   ) %>%   tab_options(
     table.font.size = 8,
     table.width = px(200)) 
-=======
   )
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
+
 gt_breed %>% gtsave("Figures_tables/supp_table1.pdf", expand = 0)
 
 
@@ -146,18 +140,15 @@ bcftools_br <- bcf_breed %>%
   mutate(across('Breed', str_replace, "STB", "Standardbred")) %>%
   mutate(across('Breed', str_replace, "TB", "Thoroughbred")) %>%
   mutate(across('Breed', str_replace, "WarmBlood", "Warmblood")) %>%
-<<<<<<< HEAD
-=======
   mutate(across('Breed', str_replace, "TWH", "Warmblood")) %>%
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
   mutate(across('Breed', str_replace, "duelmener", "Other")) %>%
   mutate(across('Breed', str_replace, "UK Warmblood", "Warmblood")) %>%
   mutate(across('Breed', str_replace, "Tennessee Walking Horse", "Other")) %>%
   mutate(across('Breed', str_replace, "WP", "Welsh Pony")) %>%
-<<<<<<< HEAD
   mutate(across('Breed', str_replace, "Jeju pony", "Other")) %>%
   mutate(across('Breed', str_replace, "POA", "Other")) %>%
   mutate(across('Breed', str_replace, "Quarter Horse x", "Other")) %>%
+  mutate(across('Breed', str_replace, "Jeju pony", "Other"))
   mutate(across('Breed', str_replace, "Thoroughbred x", "Other"))
 
 bcftools_br$br[bcftools_br$Breed == "Arabian"] <- "Arab"
@@ -179,37 +170,25 @@ color_mapping <- c("Arab" = "grey", "Belg" = "blue", "Clyd" = "cyan",
                    "Oth" = "khaki", "QH" = "dodgerblue", "Shet" = "green4",
                    "STB" = "black", "TB" = "maroon", "WB" = "#FDBF6F",
                    "WP" = "yellow")
-#Look for correlation between number of variants and DOC with line of best fit 
-x = ggplot(bcftools_br, aes(x=DOC,y=nVariants)) + theme_bw() + ylab("Number of variants") + 
-  xlab("Depth of coverage") + geom_point(aes(color=br)) + 
-  scale_color_manual(values = color_mapping) +
-=======
-  mutate(across('Breed', str_replace, "Jeju pony", "Other"))
 
 
 #Look for correlation between number of variants and DOC with line of best fit 
 x = ggplot(bcftools_br, aes(x=DOC,y=nVariants)) + theme_bw() + ylab("Number of variants") + 
   xlab("Depth of coverage") + geom_point(aes(color=Breed)) + 
   scale_color_manual(values = as.vector(polychrome(13))) +
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
   scale_x_continuous(breaks = seq(0,50,5))+
   scale_y_continuous(breaks = seq(0,8000000,1000000), labels=comma, limits = c(0,8000000)) + geom_smooth() +
   theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
         axis.line.y = element_line(), 
         axis.text = element_text(size=8), axis.title = element_text(size=10,face="bold"),
         legend.title = element_blank(),
-<<<<<<< HEAD
-=======
         legend.position = "bottom",
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
         legend.key.size = unit(1, "mm"),
         plot.title = element_text(size=10, face = "bold", hjust = 0),
         plot.subtitle = element_text(size=8, hjust = 0),
         plot.title.position = "plot")
-<<<<<<< HEAD
-=======
+
 save_plot("Figures_tables/figure_1.tiff", x, base_height = 4, base_width = 6)
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
 
 
 #Show interaction between nvariants and DOC
@@ -217,7 +196,6 @@ fit1 <- (lm(nVariants ~ Breed, data=bcftools_br))
 fit2 <- (lm(nVariants ~ Breed + DOC, data=bcftools_br))
 anova(fit1,fit2)
 
-<<<<<<< HEAD
 variants_DOC <- (lm(nVariants ~ br + DOC,data=bcftools_br))
 summary(variants_DOC)
 
@@ -321,11 +299,6 @@ print(heatmap_table)
 ggsave("Figures_tables/table1.pdf", heatmap_table)
 
 
-=======
-variants_DOC <- (lm(nVariants ~ Breed + DOC,data=bcftools_br))
-summary(variants_DOC)
-
-
 ####Overlap between Ensembl-VEP and SnpEff impact####
 ##Table 1: Get count of overlap
 int <- read.table("SnpEff_VEP_intersect.txt", header = F)
@@ -339,7 +312,7 @@ int_tbl<- int_tbl %>%
   mutate(across('SE_VEP', str_replace, "_", ":"))
 colnames(int_tbl) <- c("Impact", "Count")  
 
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
+
 gt_int <- gt(int_tbl)
 gt_int <- 
   gt_int %>%
@@ -360,31 +333,18 @@ gt_int <-
     style = cell_fill(color = "lightgray"),
     locations = cells_body(
       rows = Impact == "MODERATE:HIGH")) %>%
-  fmt_number(columns = Count, sep_mark = ",", use_seps = TRUE, decimals = 0) %>%
-  cols_width(
-<<<<<<< HEAD
-    Impact ~ px(100),
-    Count ~ px(50)
-  )  %>% tab_options(
+  fmt_number(columns = Count, sep_mark = ",", use_seps = TRUE, decimals = 0)  %>% tab_options(
     table.font.size = 8,
     table.font.color = "black",
     table.font.color.light = NULL,
-    table.width = px(200)) 
-=======
+    table.width = px(200)) %>%
+  cols_width(
     Impact ~ px(200),
     Count ~ px(100)
   )
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
 
 gt_int %>% gtsave("Figures_tables/table1.png")
 
-
-<<<<<<< HEAD
-summary(int_all$AF)
-
-#Get no. SNPs vs indels
-snp_indels <- int_all %>% mutate(
-=======
 high_int <- read.table("SnpEff.VEP.intersect.txt", header = T)
 mean(high_int$AF)
 range(high_int$AF)
@@ -393,27 +353,23 @@ table(high_int$Intersect)
 
 #Get no. SNPs vs indels
 snp_indels <- high_int %>% mutate(
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
   indel = nchar(alt) >1
 )
 
 table(snp_indels$indel)
 
 #Get non GB AF
-<<<<<<< HEAD
 non <- read.table("non_intersect.txt", header=T)
 summary(non$AF)
 
 #Check for differences
 t.test(int_all$AF, non$V1)
-=======
 non <- read.table("non_intersect.txt", header=F)
 mean(non$V1)
 range(non$V1)
 
 #Check for differences
 t.test(high_int$AF, non$V1)
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
 
 
 ###Get count of genotypes for each individual
@@ -453,33 +409,23 @@ ind <- ind %>%
 #Get het/hom by individual
 het <- colSums(ind == "het")
 hom <- colSums(ind == "hom")
-<<<<<<< HEAD
 median(hom)
 summary(hom)
 total_variant <- het + hom
 median(total_variant)
 summary(total_variant)
-=======
 mean(hom)
 range(hom)
 total_variant <- het + hom
 mean(total_variant)
 range(total_variant)
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
 
 #Get number of genes
 #Need to convert gene names so they're interpretable
 ensembl <- useEnsembl(biomart = "genes", 
                       dataset = "ecaballus_gene_ensembl",
                       mirror = "useast")
-<<<<<<< HEAD
 
-SE.gene.ID <- getBM( attributes = c("hgnc_symbol", "ensembl_gene_id", "start_position", "end_position"),
-                     values = int_all$SE.Gene_Name, 
-                     mart = ensembl)
-VEP.gene.ID <- getBM( attributes = c("hgnc_symbol", "ensembl_gene_id"),
-                      values = int_all$VEP.Gene, 
-=======
 searchAttributes(mart = ensembl, pattern = "ensembl_gene_id")
 
 SE.gene.ID <- getBM( attributes = c("hgnc_symbol", "ensembl_gene_id"),
@@ -487,28 +433,27 @@ SE.gene.ID <- getBM( attributes = c("hgnc_symbol", "ensembl_gene_id"),
                      mart = ensembl)
 VEP.gene.ID <- getBM( attributes = c("hgnc_symbol", "ensembl_gene_id"),
                       values = high_int$VEP.Gene, 
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
                       mart = ensembl)
 
 SE.HGNC <- SE.gene.ID %>%
   subset(nchar(hgnc_symbol) >1)
 
 #Merge with high_int
-<<<<<<< HEAD
+
 colnames(SE.gene.ID) <- c("hgnc_symbol", "SE.Gene_Name", "N1", "N2")
 high_int_m <- merge(int_all, SE.gene.ID, by = "SE.Gene_Name")
 
-=======
+
 colnames(SE.gene.ID) <- c("hgnc_symbol", "SE.Gene_Name")
 high_int_m <- merge(high_int, SE.gene.ID, by = "SE.Gene_Name")
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
+
 
 gene_count <- high_int_m %>%
   group_by(SE.Gene_Name) %>%
   count(SE.Gene_Name)
 
 length(unique(gene_count$SE.Gene_Name))
-<<<<<<< HEAD
+
 summary(gene_count$n)
 table(gene_count$n)
 
@@ -533,7 +478,7 @@ hgnc_count2 <- high_int_m %>%
   summarize(AF = mean(AF))
 
 summary(hgnc_count2$AF)
-=======
+
 mean(gene_count$n)
 range(gene_count$n)
 table(gene_count$n)
@@ -556,7 +501,7 @@ table(gene_count$n)
 
 #mean(hgnc_count2$AF)
 #range(hgnc_count2$AF)
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
+
 
 #Get genes containing 5 or more variants
 #high_hgnc <- hgnc_count %>% 
@@ -585,31 +530,23 @@ gt_high <-
   cols_label(SE.Gene_Name = md("**Ensembl gene ID**"),
              n = md("**Number**")) %>%
   cols_width(
-<<<<<<< HEAD
     SE.Gene_Name ~ px(100),
     n ~ px(50)
   ) %>% tab_options(
     table.font.size = 8,
     table.font.color = "black",
     table.font.color.light = NULL,
-    table.width = px(200)) 
-=======
-    SE.Gene_Name ~ px(200),
-    n ~ px(100)
+    table.width = px(200)
   )
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
 gt_high %>% gtsave("Figures_tables/supp_table2.pdf")
 
 #Get genes with AF >50%
 #Get AF in each gene
-<<<<<<< HEAD
-=======
 gene_count2 <- high_int_m %>%
   group_by(SE.Gene_Name) %>%
   summarize(AF = mean(AF))
 mean(gene_count2$AF)
 range(gene_count2$AF)
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
 
 gene_count2_h <- gene_count2 %>%
   filter(AF > 0.05)
@@ -623,20 +560,15 @@ length(unique(gene_count2_h$SE.Gene_Name))
 write.table(gene_count2_h$SE.Gene_Name, file = "high_AF_Ensembl.txt", quote = FALSE, sep = "\t", row.names = F, col.names = F)
 
 intersect(gene_count_h$SE.Gene_Name, gene_count2_h$SE.Gene_Name)
-<<<<<<< HEAD
 
-=======
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
 #Export for DAVID
 #high_hgnc$hgnc_symbol
 #high_hgnc <- merge(high_hgnc, SE.gene.ID, by = "hgnc_symbol")
 #high_AF_hgnc <- merge(high_AF_hgnc, SE.gene.ID, by = "hgnc_symbol")
 
-<<<<<<< HEAD
+
 length(intersect(gene_count2_h$SE.Gene_Name, gene_count_h$SE.Gene_Name))
 
-=======
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
 #Export for paper
 gt_high_AF <- gt(gene_count2_h)
 gt_high_AF <- 
@@ -651,7 +583,6 @@ gt_high_AF <-
   cols_width(
     SE.Gene_Name ~ px(200),
     AF ~ px(100)
-<<<<<<< HEAD
   )%>% tab_options(
     table.font.size = 8,
     table.font.color = "black",
@@ -663,19 +594,12 @@ gt_high_AF %>% gtsave("Figures_tables/supp_table3.pdf")
 table(int_all$SE.LOF)
 table(int_all$VEP.Consequence)
 
-#Take first consequence when >1 consequence listed)
-high_int_tidy <- int_all %>%
-=======
-  )
-gt_high_AF %>% gtsave("Figures_tables/supp_table3.pdf")
-
 ##Frequency of loss of function variants
 table(high_int$SE.LOF)
 table(high_int$VEP.Consequence)
 
 #Take first consequence when >1 consequence listed)
 high_int_tidy <- high_int %>%
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
   mutate(across('VEP.Consequence', str_replace, "&inframe_deletion", "")) %>%
   mutate(across('VEP.Consequence', str_replace, "&splice_region_variant", "")) %>%
   mutate(across('VEP.Consequence', str_replace, "&3_prime_UTR_variant", "")) %>%
@@ -739,7 +663,6 @@ high_int_tidy <- high_int_tidy %>%
   mutate(consequence_agreement = if_else(SE.Annotation == VEP.Consequence, "yes", "no"))
 
 table(high_int_tidy$consequence_agreement)
-<<<<<<< HEAD
 table(high_int_tidy$intersect)
 
 high_int_tidy$consequence <- paste(high_int_tidy$SE.Annotation, ":", high_int_tidy$VEP.Consequence)
@@ -787,9 +710,7 @@ gt_int <- gt_int %>%
     table.width = px(300)) 
 
 gt_int %>% gtsave("Figures_tables/table2.png")
-=======
 23026/(length(high_int_tidy$consequence_agreement))
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
 
 #x <- ggplot(data = high_int_tidy) + theme_bw() + 
 #  geom_mosaic(aes(x = product(SE.Annotation, VEP.Consequence), 
@@ -828,8 +749,7 @@ gt_int %>% gtsave("Figures_tables/table2.png")
 #high_int_tidy$consequence_combined <- paste(high_int_tidy$SE.Annotation,
 #high_int_tidy$VEP.Consequence, sep = "_")
 
-<<<<<<< HEAD
-=======
+
 consequence <- c(high_int_tidy$SE.Annotation, high_int_tidy$VEP.Consequence)
 consequence <- unique(consequence)
 
@@ -857,7 +777,6 @@ gt_SE_VEP <-
   )
 gt_SE_VEP %>% gtsave("Figures_tables/table2.png")
 
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
 
 ###No gene enrichment using enricher
 #test <- biomartr::organismBM(organism = "Equus caballus")
@@ -900,7 +819,6 @@ gt_SE_VEP %>% gtsave("Figures_tables/table2.png")
 ##Need to figure it out manually for VEP
 table(high_int_tidy$SE.LOF)
 
-<<<<<<< HEAD
 high_int_tidy <- high_int_tidy %>%
   mutate(VEP.LOF = str_detect(VEP.Consequence, "frameshift|splice acceptor|
                               splice donor|start lost|stop lost|stop gained"))
@@ -918,7 +836,6 @@ high_int_tidy$chrom_pos <- paste(high_int_tidy$chrom, high_int_tidy$pos, sep = "
 
 LOF <- high_int_tidy$chrom_pos[high_int_tidy$LOF == "yes:yes"]
 summary(high_int_tidy$AF[high_int_tidy$LOF == "yes:yes"])
-=======
 high_int <- high_int %>%
   mutate(VEP.LOF = str_detect(VEP.Consequence, "frameshift|splice_acceptor_variant|
                               splice_donor_variant|splice_region|stop_gained"))
@@ -939,7 +856,6 @@ mean(high_int$AF[high_int$LOF == "yes:yes"])
 range(high_int$AF[high_int$LOF == "yes:yes"])
 
 ind$chrom_pos <- ind_details$chrom_pos
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
 
 LOF_ind <- ind %>% 
   filter(ind$chrom_pos %in% LOF)
@@ -972,18 +888,15 @@ LOF_ind_b <- LOF_ind %>%
 
 het <- colSums(LOF_ind_b == "het")
 hom <- colSums(LOF_ind_b == "hom")
-<<<<<<< HEAD
 summary(hom)
 
 total_variant <- het + hom
 summary(total_variant)
-=======
 mean(hom)
 range(hom)
 total_variant <- het + hom
 mean(total_variant)
 range(total_variant)
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
 
 
 #Get LOF genes
@@ -993,17 +906,14 @@ ensembl <- useEnsembl(biomart = "genes",
 searchAttributes(mart = ensembl, pattern = "ensembl_gene_id")
 
 SE.gene.ID <- getBM( attributes = c("hgnc_symbol", "ensembl_gene_id"),
-<<<<<<< HEAD
                      values = high_int_tidy$SE.Gene_Name[high_int_tidy$LOF == "yes:yes"], 
                      mart = ensembl)
 VEP.gene.ID <- getBM( attributes = c("hgnc_symbol", "ensembl_gene_id"),
                       values = high_int_tidy$VEP.Gene[high_int_tidy$LOF == "yes:yes"], 
-=======
                      values = high_int$SE.Gene_Name[high_int$LOF == "yes:yes"], 
                      mart = ensembl)
 VEP.gene.ID <- getBM( attributes = c("hgnc_symbol", "ensembl_gene_id"),
                       values = high_int$VEP.Gene[high_int$LOF == "yes:yes"], 
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
                       mart = ensembl)
 
 SE.HGNC <- SE.gene.ID %>%
@@ -1011,27 +921,21 @@ SE.HGNC <- SE.gene.ID %>%
 
 #Merge with high_int
 colnames(SE.gene.ID) <- c("hgnc_symbol", "SE.Gene_Name")
-<<<<<<< HEAD
 high_int_m <- merge(high_int_tidy[high_int_tidy$LOF == "yes:yes",], 
                     SE.gene.ID, by = "SE.Gene_Name")
-=======
 high_int_m <- merge(high_int[high_int$LOF == "yes:yes",], SE.gene.ID, by = "SE.Gene_Name")
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
 
 gene_count <- high_int_m %>%
   group_by(SE.Gene_Name) %>%
   count(SE.Gene_Name)
 
 length(unique(gene_count$SE.Gene_Name))
-<<<<<<< HEAD
 summary(gene_count$n)
 table(gene_count$n)
 table(gene_count$n > 5)
-=======
 mean(gene_count$n)
 range(gene_count$n)
 table(gene_count$n)
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
 
 hgnc_count <- high_int_m %>%
   group_by(hgnc_symbol) %>%
@@ -1040,12 +944,11 @@ hgnc_count <- high_int_m %>%
 #Remove ""
 hgnc_count <- hgnc_count[-1,]
 length(hgnc_count$hgnc_symbol)
-<<<<<<< HEAD
+
 summary(hgnc_count$n)
-=======
+
 mean(hgnc_count$n)
 range(hgnc_count$n)
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
 table(hgnc_count$n)
 table(hgnc_count$n > 5)
 
@@ -1054,23 +957,22 @@ gene_count2 <- high_int_m %>%
   group_by(SE.Gene_Name) %>%
   summarize(AF = mean(AF))
 
-<<<<<<< HEAD
+
 summary(gene_count2$AF)
-=======
+
 mean(gene_count2$AF)
 range(gene_count2$AF)
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
 
 hgnc_count2 <- high_int_m %>%
   group_by(hgnc_symbol) %>%
   summarize(AF = mean(AF))
 
-<<<<<<< HEAD
+
 summary(hgnc_count2$AF)
-=======
+
 mean(hgnc_count2$AF)
 range(hgnc_count2$AF)
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
+
 
 #Get genes containing 5 or more variants
 high_LOF <- gene_count %>% 
@@ -1093,7 +995,7 @@ gt_high <-
   cols_label(SE.Gene_Name = md("**Ensembl gene ID**"),
              n = md("**Number**")) %>%
   cols_width(
-<<<<<<< HEAD
+
     SE.Gene_Name ~ px(100),
     n ~ px(50)
   )%>% tab_options(
@@ -1101,11 +1003,8 @@ gt_high <-
     table.font.color = "black",
     table.font.color.light = NULL,
     table.width = px(200)) 
-=======
-    SE.Gene_Name ~ px(200),
-    n ~ px(100)
-  )
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
+
+
 gt_high %>% gtsave("Figures_tables/supp_table4.pdf")
 
 #Get genes with AF >50%
@@ -1115,15 +1014,15 @@ length(unique(high_AF$SE.Gene_Name))
 write.table(high_AF$SE.Gene_Name, file = "LOF_high_AF.txt", quote = FALSE, sep = "\t", row.names = F, col.names = F)
 
 #Export for DAVID
-<<<<<<< HEAD
+
 #high_hgnc$hgnc_symbol
 #high_hgnc <- merge(high_hgnc, SE.gene.ID, by = "hgnc_symbol")
 #high_AF_hgnc <- merge(high_AF_hgnc, SE.gene.ID, by = "hgnc_symbol")
-=======
+
 high_hgnc$hgnc_symbol
 high_hgnc <- merge(high_hgnc, SE.gene.ID, by = "hgnc_symbol")
 high_AF_hgnc <- merge(high_AF_hgnc, SE.gene.ID, by = "hgnc_symbol")
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
+
 
 #Export for paper
 high_AF <- as.data.frame(high_AF)
@@ -1136,7 +1035,7 @@ gt_high_AF <-
   cols_label(SE.Gene_Name = md("**Gene ID**"),
              n = md("**Number**")) %>%
   cols_width(
-<<<<<<< HEAD
+
     SE.Gene_Name ~ px(100),
     n ~ px(50)
   )%>% tab_options(
@@ -1144,11 +1043,7 @@ gt_high_AF <-
     table.font.color = "black",
     table.font.color.light = NULL,
     table.width = px(200)) 
-=======
-    SE.Gene_Name ~ px(200),
-    n ~ px(100)
-  )
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
+
 gt_high_AF %>% gtsave("Figures_tables/supp_table5.pdf")
 
 
@@ -1189,12 +1084,12 @@ hand <- hand %>%
   mutate(across('chrom', str_replace, "NC_009175.3", "chrX"))
 
 hand$chrom_pos <- paste(hand$chrom, hand$pos, sep = ":")
-<<<<<<< HEAD
+
 hand2 <- hand %>%
   filter(hand$chrom_pos %in% intersect(hand$chrom_pos, high_int_tidy$chrom_pos))
 
 
-=======
+
 
 high_int_tidy$chrom_pos <- paste(high_int_tidy$chrom, high_int_tidy$pos, sep = ":")
 high_int_hand <- high_int_tidy %>%
@@ -1202,7 +1097,7 @@ high_int_hand <- high_int_tidy %>%
 
 high_int_hand <- high_int_tidy$chrom_pos[hand$chrom_pos]
 high_int_hand <- as.factor(high_int_hand)
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
+
 
 ####GB and LOF variants by breed####
 ####Figure out differences in the number of variants per breed
@@ -1248,7 +1143,7 @@ hom_gb_m <- (lm(hom_GB ~ Breed + DOC,data=GB_b))
 #Get EMMEANs
 gb_emm <- emmeans(gb_m, specs = "Breed", weights = "proportional", 
                   type = "response")
-<<<<<<< HEAD
+
 gb_emm <- as.data.frame(gb_emm)
 gb_emm <- gb_emm %>%
   arrange(emmean)
@@ -1261,18 +1156,18 @@ gb_hom_emm <- gb_hom_emm %>%
 
 x1 <- plot(gb_emm) + geom_boxplot(col = color_mapping[gb_emm$Breed]) + 
   theme_bw() + xlab("EMMEAN of genetic burden") + 
-=======
+
 
 gb_hom_emm <- emmeans(hom_gb_m, specs = "Breed", weights = "proportional", 
                   type = "response")
 
 x1 <- plot(gb_emm) + geom_boxplot() + theme_bw() + xlab("EMMEAN of genetic burden") + 
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
+
   ylab("Breed") +
   scale_x_continuous(breaks = seq(550,1000,50))+
   theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
         axis.line.y = element_line(), axis.text.x = element_text(), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
-<<<<<<< HEAD
+
 x2 <- plot(gb_hom_emm) + geom_boxplot(col = color_mapping[gb_hom_emm$Breed]) + theme_bw() + 
   xlab("EMMEAN of homozygous genetic burden") + 
   ylab("Breed") +
@@ -1407,7 +1302,7 @@ x3 <- plot(lof_emm) + geom_boxplot(col = color_mapping[lof_emm$Breed]) +
         axis.line.y = element_line(), axis.text.x = element_text(), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
 x4 <- plot(lof_hom_emm) + geom_boxplot(col = color_mapping[lof_hom_emm$Breed]) + theme_bw() + 
   xlab("EMMEAN of homozygous LOF variants") + 
-=======
+
 x2 <- plot(gb_hom_emm) + geom_boxplot() + theme_bw() + xlab("EMMEAN of homozygous genetic burden") + 
   ylab("Breed") +
   scale_x_continuous(breaks = seq(150,400,50))+
@@ -1419,7 +1314,7 @@ x3 <- plot(lof_emm) + geom_boxplot() + theme_bw() + xlab("EMMEAN of LOF variants
   theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
         axis.line.y = element_line(), axis.text.x = element_text(), axis.text = element_text(size=10), axis.title = element_text(size=12,face="bold"))
 x4 <- plot(lof_hom_emm) + geom_boxplot() + theme_bw() + xlab("EMMEAN of homozygous LOF variants") + 
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
+
   ylab("Breed") +
   scale_x_continuous(breaks = seq(50,225,25))+
   theme(panel.grid = element_blank(), panel.border = element_blank(), axis.line.x = element_line(),
@@ -1428,119 +1323,6 @@ x4 <- plot(lof_hom_emm) + geom_boxplot() + theme_bw() + xlab("EMMEAN of homozygo
 c <- ggarrange(x1, x2, x3, x4, ncol = 1, nrow = 4, labels = "auto")#, common.legend = TRUE, legend = "bottom")
 save_plot("Figures_tables/GB_EMMEANs.pdf", c,
           base_height = 16, base_width = 8)
-
-
-<<<<<<< HEAD
-lof_t <- lof_emm %>%
-  arrange(emmean)
-
-lof_hom_t <- lof_hom_emm %>%
-  arrange(emmean)
-
-lof_full <- rbind(lof_t, lof_hom_t)
-lof_full <- gt(lof_full)
-
-lof_full <- 
-  lof_full %>%
-  tab_header(
-    title = md("**Table 4. Estimated marginal means (EMMEANs) of the LOF genetic burden by breed.** EMMEAN accounting for depth of coverage, standard error (SE), and 95% confidence intervals (CI) for the LOF genetic burden for each breed with 17 or greater individuals for all variants and those only present in homozygous states.")
-=======
-gb_t <- gt(summary(gb_emm))
-gb_hom_t <- gt(summary(gb_hom_emm))
-
-gb_full <- rbind(gb_t$`_data`, gb_hom_t$`_data`)
-gb_full <- gt(gb_full)
-
-
-gb_full <- 
-  gb_full %>%
-  tab_header(
-    title = md("**Table 3.** Estimated marginal means (EMMEANs) of the genetic burden by breed"),
-    subtitle = md("EMMEAN, standard error (SE), and 95% confidence intervals (CI) for the genetic burden for each breed with 17 or greater individuals for all variants and those only present in homozygous states.")
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
-  ) %>%
-  opt_align_table_header(align = "left") %>%
-  cols_label(Breed = md("**Breed**"),
-             emmean = md("**EMMEAN**"),
-             SE = md("**SE**"),
-             lower.CL = md("**Lower CI**"),
-             upper.CL = md("**Upper CI**")
-<<<<<<< HEAD
-  ) %>%
-  tab_row_group(
-    label = md("**All LOF variants**"),
-=======
-             ) %>%
-  tab_row_group(
-    label = md("**All genetic burden variants**"),
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
-    rows = 1:13) %>%
-  tab_row_group(
-    label = md("**Homozygous variants**"),
-    rows = 14:26
-  ) %>% 
-  tab_style(
-    style = list(
-      cell_fill(color = "gray"),
-      cell_text(weight = "bold")),
-    locations = cells_body(
-      columns = emmean,
-      rows = emmean == max(emmean[14:26]))) %>%
-  tab_style(
-    style = list(
-      cell_fill(color = "gray"),
-      cell_text(weight = "bold")),
-    locations = cells_body(
-      columns = emmean,
-      rows = emmean == max(emmean[1:13]))) %>%
-  tab_style(
-    style = list(
-      cell_fill(color = "cyan"),
-      cell_text(weight = "bold")),
-    locations = cells_body(
-      columns = emmean,
-      rows = emmean == min(emmean[1:13]))) %>%
-  tab_style(
-    style = list(
-      cell_fill(color = "cyan"),
-      cell_text(weight = "bold")),
-    locations = cells_body(
-      columns = emmean,
-      rows = emmean == min(emmean[14:26]))) %>%
-<<<<<<< HEAD
-=======
-    tab_style(
-      style = cell_borders(
-        sides = "all", color = "#000000", style = "solid", weight = px(1.5)),
-      locations = cells_body(
-        columns = everything(),
-        rows = everything()
-      )
-    ) %>%
-  fmt_number(columns = c(emmean, SE, lower.CL, upper.CL), sep_mark = ",", use_seps = TRUE, decimals = 0) %>%
-  tab_footnote(
-    footnote = "Maximum EMMEAN (grey) and minimum EMMEAN (cyan)"
-  ) %>%
-  cols_hide(
-    column = df
-  ) %>%
-  cols_align(
-    align = "left",
-    column = Breed) %>%
-  tab_options(
-    table.font.size = 12
-  ) %>%
-  cols_width(
-    Breed ~ px(110),
-    emmean ~px(60),
-    SE ~ px(25),
-    lower.CL ~ px(40),
-    upper.CL ~ px(40)) %>%
-  tab_options(table.width = pct(55),
-              data_row.padding = px(5))
-  
-gb_full %>% gtsave("Figures_tables/table3.png")
-
 
 
 ######LOF table
@@ -1613,7 +1395,7 @@ lof_full <-
     locations = cells_body(
       columns = emmean,
       rows = emmean == min(emmean[14:26]))) %>%
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
+
   tab_style(
     style = cell_borders(
       sides = "all", color = "#000000", style = "solid", weight = px(1.5)),
@@ -1633,7 +1415,7 @@ lof_full <-
     align = "left",
     column = Breed) %>%
   tab_options(
-<<<<<<< HEAD
+
     table.font.size = 8,
     table.font.color = "black",
     table.font.color.light = NULL
@@ -1649,33 +1431,19 @@ lof_full <-
 
 lof_full %>% gtsave("Figures_tables/table4.png")
 
-=======
-    table.font.size = 12
-  ) %>%
-  cols_width(
-    Breed ~ px(110),
-    emmean ~px(60),
-    SE ~ px(25),
-    lower.CL ~ px(40),
-    upper.CL ~ px(40)) %>%
-  tab_options(table.width = pct(55),
-              data_row.padding = px(5))
-
-lof_full %>% gtsave("Figures_tables/table4.png")
 
 
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
 ######Look at effective population size######
 # Add in Ne from Jessica's paper
 GB_b$ne_JP <- "NA"
 GB_b$ne_JP[GB_b$Breed == "Arabian"] <- 346
 GB_b$ne_JP[GB_b$Breed == "Belgian"] <- 431
 GB_b$ne_JP[GB_b$Breed == "Clydesdale"] <- 194
-<<<<<<< HEAD
+
 GB_b$ne_JP[GB_b$Breed == "Franchese Montagne"] <- 316
-=======
+
 GB_b$ne_JP[GB_b$Breed == "Franches Montagne"] <- 316
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
+
 GB_b$ne_JP[GB_b$Breed == "Shetland"] <- 365
 GB_b$ne_JP[GB_b$Breed == "Icelandic"] <- 555
 GB_b$ne_JP[GB_b$Breed == "Morgan"] <- 448
@@ -1684,29 +1452,29 @@ GB_b$ne_JP[GB_b$Breed == "Standardbred"] <- 290
 GB_b$ne_JP[GB_b$Breed == "Thoroughbred"] <- 190
 GB_b$ne_JP <- as.numeric(GB_b$ne_JP)
 
-<<<<<<< HEAD
+
 JP_GB <- cor.test(x=GB_b$ne_JP,y=GB_b$GB, method = "pearson", use='complete.obs')
 JP_hom_GB <- cor.test(x=GB_b$ne_JP,y=GB_b$hom_GB, method = "pearson", use='complete.obs')
 JP_LOF <- cor.test(x=GB_b$ne_JP,y=GB_b$LOF, method = "pearson", use='complete.obs')
 JP_hom_LOF <- cor.test(x=GB_b$ne_JP,y=GB_b$hom_LOF, method = "pearson", use='complete.obs')
 
-=======
+
 cor.test(x=GB_b$ne_JP,y=GB_b$GB, method = "pearson", use='complete.obs')
 cor.test(x=GB_b$ne_JP,y=GB_b$hom_GB, method = "pearson", use='complete.obs')
 cor.test(x=GB_b$ne_JP,y=GB_b$LOF, method = "pearson", use='complete.obs')
 cor.test(x=GB_b$ne_JP,y=GB_b$hom_LOF, method = "pearson", use='complete.obs')
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
+
 
 #Add in effective population size (from Sam's paper)
 GB_b$ne_SB <- "NA"
 GB_b$ne_SB[GB_b$Breed == "Arabian"] <- 3561
 GB_b$ne_SB[GB_b$Breed == "Belgian"] <- 3570
 GB_b$ne_SB[GB_b$Breed == "Icelandic"] <- 2736
-<<<<<<< HEAD
+
 GB_b$ne_SB[GB_b$Breed == "Franchese Montagne"] <- 3305
-=======
+
 GB_b$ne_SB[GB_b$Breed == "Franches Montagne"] <- 3305
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
+
 GB_b$ne_SB[GB_b$Breed == "Morgan"] <- 4481
 GB_b$ne_SB[GB_b$Breed == "Icelandic"] <- 2736
 GB_b$ne_SB[GB_b$Breed == "Quarter Horse"] <- 6516
@@ -1715,7 +1483,7 @@ GB_b$ne_SB[GB_b$Breed == "Thoroughbred"] <- 1784
 GB_b$ne_SB[GB_b$Breed == "Welsh Pony"] <- 5625
 
 GB_b$ne_SB <- as.numeric(GB_b$ne_SB)
-<<<<<<< HEAD
+
 SB_GB <- cor.test(x=GB_b$ne_SB,y=GB_b$GB, method = "pearson", use='complete.obs')
 SB_hom_GB <- cor.test(x=GB_b$ne_SB,y=GB_b$hom_GB, method = "pearson", use='complete.obs')
 SB_LOF <- cor.test(x=GB_b$ne_SB,y=GB_b$LOF, method = "pearson", use='complete.obs')
@@ -1748,7 +1516,7 @@ save_plot("Figures_tables/NE_results.png", x1,
           base_height = 8, base_width = 8)
 
 ########################Known variants
-=======
+
 cor.test(x=GB_b$ne_SB,y=GB_b$GB, method = "pearson", use='complete.obs')
 cor.test(x=GB_b$ne_SB,y=GB_b$hom_GB, method = "pearson", use='complete.obs')
 cor.test(x=GB_b$ne_SB,y=GB_b$LOF, method = "pearson", use='complete.obs')
@@ -1762,7 +1530,7 @@ snpMart = useEnsembl(biomart = "snps",
                      dataset = "ecaballus_snp")
 
 ##Known variants
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
+
 ##Have to tidy the files outside of excel so it doesn't mess things up
 known_gt <- read.table("known_variants_tidy.txt", header = T)
 known_pos <- read.table("known_variants.txt", header = T)
@@ -1780,7 +1548,7 @@ known_gt$chrom_pos[known_pos$overlap == "FALSE"]
 #total no in this pop, no. heterozygotes, no. homozygotes, 
 #mean (range) AF
 known_pos$type <- paste(known_pos$Causative., known_pos$Deleterious., sep = ":")
-<<<<<<< HEAD
+
 table(known_pos$type) #causative:deleterious
 colnames(known_pos)[1] <- "phenotype"
 
@@ -1836,70 +1604,13 @@ known_tb_gt <-
   cols_merge_range(IQR1, IQR3, sep = " - ") %>% 
   tab_header(
     title = md("**Table 5. Classification of OMIA variants by type.** Number of: causative variants for disease and non-coat color traits, associated and causative variants for coat color, associated variants for disease, and associated variants for non-disease and non-coat color traits present in this population, and the median and range of the allele frequency.")
-=======
-table(known_pos$type)
-colnames(known_pos)[1] <- "phenotype"
-
-known_all <- merge(known_pos, known_gt, "phenotype")
-mean(known_all$AF, na.rm = T)
-range(known_all$AF, na.rm = T)
-table(known_all$type[known_all$chrom != "NA"])
-
-known_tbl <- known_all %>%
-  select(phenotype, AF, Chromosome, type)
-
-known_tbl1 <- known_tbl %>%
-  group_by(type) %>%
-  summarize(count=n(), AF=mean(AF, na.rm = T))
-
-OMIA <- as.data.frame(table(known_all$type[known_all$chrom != "NA"]))
-colnames(OMIA) <- c("type", "OMIA_count")
-min_AF <- known_tbl %>%
-  group_by(type) %>%
-  summarize(min_AF=min(AF, na.rm = T))
-min_AF<- as.data.frame(min_AF)
-colnames(min_AF) <- c("type", "min_AF")
-
-max_AF <- known_tbl %>%
-  group_by(type) %>%
-  summarize(max_AF=max(AF, na.rm = T))
-max_AF<- as.data.frame(max_AF)
-colnames(max_AF) <- c("type", "max_AF")
-
-known_tbl <- merge(known_tbl1, OMIA, "type")
-known_tbl <- merge(known_tbl, min_AF, "type") 
-known_tbl <- merge(known_tbl, max_AF, "type") 
-
-known_tbl <- known_tbl %>%
-  select(type, count, OMIA_count, AF, min_AF, max_AF)
-
-known_tbl <- known_tbl %>%
-  mutate(across('type', str_replace, "no:no", "Non-disease associated")) %>%
-  mutate(across('type', str_replace, "no:yes", "Non-disease causing")) %>%
-  mutate(across('type', str_replace, "yes:no", "Disease associated")) %>%
-  mutate(across('type', str_replace, "yes:yes", "Disease causing"))
-
-known_tb_gt <- gt(known_tbl)
-
-known_tb_gt <- 
-  known_tb_gt %>%
-  fmt_number(columns = c(AF, min_AF, max_AF), sep_mark = ",", use_seps = TRUE, decimals = 2) %>%
-  cols_merge_range(min_AF, max_AF, sep = " - ") %>% 
-  tab_header(
-    title = md("**Table 5. Classification of OMIA variants by type (disease/non-disease and associated/causative).**")
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
   ) %>%
   opt_align_table_header(align = "left") %>%
   cols_label(type = md("**OMIA variant type**"),
              count = md("**Number of OMIA variants**"),
              OMIA_count = md("**Number of OMIA variants in this population**"),
-<<<<<<< HEAD
              AF = md("**Median allele frequency (%)**"),
              IQR1 = md("**AF interquartile range (%)**")
-=======
-             AF = md("**Allele frequency**"),
-             min_AF = md("**Allele frequency range**")
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
   ) %>%
   tab_style(
     style = cell_borders(
@@ -1923,20 +1634,15 @@ known_tb_gt <-
       column = AF) %>%
     cols_align(
       align = "center",
-<<<<<<< HEAD
       column = IQR1) %>%
-=======
-      column = min_AF) %>%
   tab_options(
     table.font.size = 12
   ) %>%
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
   cols_width(
     type ~ px(110),
     count ~px(100),
     OMIA_count ~ px(100),
     AF ~ px(100),
-<<<<<<< HEAD
     IQR1 ~ px(100)) %>%
   tab_options(data_row.padding = px(5))%>% 
   tab_options(table.font.size = 10,
@@ -1944,13 +1650,6 @@ known_tb_gt <-
               table.font.color.light = NULL) 
 
 known_tb_gt %>% gtsave("Figures_tables/table5.png", expand = 0)
-=======
-    min_AF ~ px(100)) %>%
-  tab_options(table.width = pct(55),
-              data_row.padding = px(5))
-
-known_tb_gt %>% gtsave("Figures_tables/table5.pdf", expand = 0)
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
 
 
 #Get figure 3 - known variants present
@@ -1970,56 +1669,49 @@ yy <- ggplot(known_yy, aes(x = phenotype, y = genotype_count,
            position = position_dodge(width = 1)) +
   scale_pattern_manual(values = c("none", "stripe")) + 
   scale_pattern_density_manual(values = c(het = 0, hom = 0.05)) + 
-<<<<<<< HEAD
+
   scale_fill_manual(values = c("grey", "blue", "purple", "orchid1", "khaki", "dodgerblue",
                                "green4", "black", "maroon", "#FDBF6F", "yellow")) +
   scale_alpha_manual("Genotype", values = c(0.5,1)) +
   ylab("Genotype Count") + scale_y_continuous(limits = c(0,50)) + 
   xlab("Disease and non-coat color trait causing variants") + 
-=======
+
   scale_fill_manual(values = as.vector(alphabet2(13)),
                     guide = guide_legend(override.aes = list(pattern = "none"))) +
   scale_alpha_manual("Genotype", values = c(0.5,1)) +
   ylab("Genotype Count") + scale_y_continuous(limits = c(0,25)) + 
   xlab("Disease causing variants") + 
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
+
   theme(axis.text = element_text(size=12,angle=90,hjust=1),
         panel.background = element_blank(),
         legend.title = element_blank(),
         axis.title = element_text(size=14,face="bold"))
 
-<<<<<<< HEAD
+
 known_CC <- known_sp %>%
   filter(type == "CC:CC") %>%
   filter(genotype_count != 0)
 
-CC <- ggplot(known_CC, aes(x = phenotype, y = genotype_count, 
-=======
-known_yn <- known_sp %>%
-  filter(type == "yes:no") %>%
-  filter(genotype_count != 0)
-
-yn <- ggplot(known_yn, aes(x = phenotype, y = genotype_count, 
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
+CC <- ggplot(known_CC, aes(x = phenotype, y = genotype_count,
                            fill = Breed, group = genotype)) +
   geom_bar_pattern(stat = "identity", aes(pattern = factor(genotype)),
                  position = position_dodge(width = 1)) +
   scale_pattern_manual(values = c("none", "stripe")) + 
   scale_pattern_density_manual(values = c(het = 0, hom = 0.05)) + 
-<<<<<<< HEAD
+
   scale_fill_manual(values = c("grey", "blue", "cyan", "red", "purple", "orchid1", 
                                "khaki", "dodgerblue", "green4", "black", "maroon",
                                "#FDBF6F", "yellow")) +
   scale_alpha_manual(values = c(0.5,1)) +
   ylab("Genotype Count") + scale_y_continuous(limits = c(0,100)) + 
   xlab("Coat color associated and causative variants") + 
-=======
+
   scale_fill_manual(values = as.vector(alphabet2(13)),
                     guide = guide_legend(override.aes = list(pattern = "none"))) +
   scale_alpha_manual(values = c(0.5,1)) +
   ylab("Genotype Count") + scale_y_continuous(limits = c(0,125)) + 
   xlab("Non-disease causing variants") + 
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
+
   theme(axis.text = element_text(size=12,angle=90,hjust=1),
         panel.background = element_blank(),
         legend.title = element_blank(),
@@ -2034,20 +1726,20 @@ ny <- ggplot(known_ny, aes(x = phenotype, y = genotype_count,
   geom_bar_pattern(stat = "identity", aes(pattern = factor(genotype)),
                    position = position_dodge(width = 1)) +
   scale_pattern_manual(values = c("none", "stripe")) + 
-<<<<<<< HEAD
+
   scale_pattern_density_manual(values = c(het = 0, hom = 0.05)) +  
   scale_fill_manual(values = c("grey", "blue", "cyan", "red", "purple", "orchid1", 
                                "khaki", "dodgerblue", "green4", "black", "maroon",
                                "#FDBF6F", "yellow")) +
   scale_alpha_manual("Genotype", values = c(0.5,1)) +
   ylab("Genotype Count") + scale_y_continuous(limits = c(0,100)) + 
-=======
+
   scale_pattern_density_manual(values = c(het = 0, hom = 0.05)) + 
   scale_fill_manual(values = as.vector(alphabet2(13)), 
                     guide = guide_legend(override.aes = list(pattern = "none"))) +
   scale_alpha_manual("Genotype", values = c(0.5,1)) +
   ylab("Genotype Count") + scale_y_continuous(limits = c(0,125)) + 
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
+
   xlab("Disease associated variants") + 
   theme(axis.text = element_text(size=12,angle=90,hjust=1),
         panel.background = element_blank(),
@@ -2063,7 +1755,7 @@ nn <- ggplot(known_nn, aes(x = phenotype, y = genotype_count,
   geom_bar_pattern(stat = "identity", aes(pattern = factor(genotype)),
                    position = position_dodge(width = 1)) +
   scale_pattern_manual(values = c("none", "stripe")) + 
-<<<<<<< HEAD
+
   scale_pattern_density_manual(values = c(het = 0, hom = 0.05)) +  
   scale_fill_manual(values = c("grey", "blue", "cyan", "red", "purple", "orchid1", 
                                "khaki", "dodgerblue", "green4", "black", "maroon",
@@ -2072,14 +1764,14 @@ nn <- ggplot(known_nn, aes(x = phenotype, y = genotype_count,
   scale_alpha_manual("Genotype", values = c(0.5,1)) +
   ylab("Genotype Count") + scale_y_continuous(limits = c(0,80)) + 
   xlab("Non-disease and non-coat color trait associated variants") + 
-=======
+
   scale_pattern_density_manual(values = c(het = 0, hom = 0.05)) + 
   scale_fill_manual(values = as.vector(alphabet2(13)),
                     guide = guide_legend(override.aes = list(pattern = "none"))) +
   scale_alpha_manual("Genotype", values = c(0.5,1)) +
   ylab("Genotype Count") + scale_y_continuous(limits = c(0,80)) + 
   xlab("Non-disease associated variants") + 
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
+
   theme(axis.text = element_text(size=12,angle=90,hjust=1),
         panel.background = element_blank(),
         legend.title = element_blank(),
@@ -2087,7 +1779,7 @@ nn <- ggplot(known_nn, aes(x = phenotype, y = genotype_count,
         axis.title = element_text(size=14,face="bold"))
 
 #Save as combined plot
-<<<<<<< HEAD
+
 OMIA_fig <- ggarrange(yy, CC, ny, nn, ncol=1, nrow=4, common.legend = TRUE, 
                   legend = "bottom", labels = "auto")
 save_plot("Figures_tables/OMIA_variants.png", 
@@ -2162,6 +1854,38 @@ gt_known_sp %>% gtsave("Figures_tables/supp_table6.pdf", expand = 0)
 rownames(known_all) <- known_all$phenotype
 known_IMM <- known_all %>%
   filter(rownames(known_all) == "MYHM") %>%
+  select(where(~ grepl("0/1",.)))
+
+known_IMM_b <- t(known_IMM) 
+known_IMM_b <- as.data.frame(known_IMM_b)
+known_IMM_b$ID <- rownames(known_IMM_b)
+known_IMM_b <- merge(known_IMM_b, breeds, "ID")
+
+##CLF
+rownames(known_all) <- known_all$phenotype
+known_CLF <- known_all[11:15,]
+
+selected_columns <- known_CLF[, apply(known_CLF, 2, function(x) any(grepl("0/1", x) | grepl("1/1", x)))]
+
+selected_columns2 <- selected_columns %>%
+ mutate_all(., str_replace_all, "/", "") %>%
+  mutate_all(., str_replace, "01", "1") %>%
+  mutate_all(., str_replace, "11", "1")
+
+to_numeric <- function(x) {
+  as.numeric(as.character(x))
+}
+# Apply the function to all columns in the data frame
+data_numeric <- apply(selected_columns2, 2, to_numeric)
+
+# Convert the resulting matrix back to a data frame
+data_numeric <- as.data.frame(data_numeric)
+
+sel_cols <- colSums(data_numeric[1:369])
+which(sel_cols ==5) 
+
+known_CLF %>%
+  filter(rownames(known_all) == "CLF") %>%
   select(where(~ grepl("0/1",.)))
 
 known_IMM_b <- t(known_IMM) 
@@ -2294,7 +2018,7 @@ known_coat_bl2$ID <- rownames(known_coat_bl2)
 known_coat_bl2 <- merge(known_coat_bl2, breeds, "ID")
 known_coat_bl2
 
-=======
+
 OMIA_fig <- ggarrange(yy, yn, ny, nn, ncol=1, nrow=4, common.legend = TRUE, 
                   legend = "bottom", labels = "auto")
 save_plot("Figures_tables/OMIA_variants.pdf", 
@@ -2306,7 +2030,7 @@ save_plot("Figures_tables/OMIA_legend.tiff", yy, base_height = 6, base_width = 1
 
 
 
->>>>>>> 8d7e488e57c69c12b878cb06e1e730b46005028e
+
 # Pull out CLF variants for zoom
 CLF <- data1 %>%
   filter(grepl(c('CLF'), Phenotype))
